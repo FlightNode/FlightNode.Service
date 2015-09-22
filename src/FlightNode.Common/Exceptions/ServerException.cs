@@ -4,7 +4,7 @@ namespace FlightNode.Common.Exceptions
 {
     public class ServerException : Exception
     {
-        private const string MESSAGE = "A server error occurred, please try again soon.";
+        public const string MESSAGE = "A server error occurred.";
 
         public DatabaseExceptionContent Content { get; private set; }
 

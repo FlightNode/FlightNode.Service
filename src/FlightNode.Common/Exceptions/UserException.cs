@@ -20,7 +20,7 @@ namespace FlightNode.Common.Exceptions
             var message = string.Empty;
             foreach(var e in errors)
             {
-                message += e + ",";
+                message += e + ", ";
             }
 
             message = message.Substring(0, message.Length - 2);
