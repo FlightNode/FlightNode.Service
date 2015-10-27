@@ -36,7 +36,7 @@ namespace FlightNode.Common.Exceptions
             };
         }
        
-        public static ServerException HandleException<TModel>(Exception exception, string action, int? id)
+        public static ServerException HandleException<TModel>(Exception exception, string action, int? id = null)
         {
             return new ServerException(exception)
             {

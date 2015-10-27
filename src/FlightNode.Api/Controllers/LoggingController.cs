@@ -14,7 +14,7 @@ namespace FligthNode.Common.Api.Controllers
         // the thread-safe dictionary.
         private static ConcurrentDictionary<string, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>();
 
-        protected virtual ILogger Logger
+        public ILogger Logger
         {
             get
             {
@@ -30,6 +30,27 @@ namespace FligthNode.Common.Api.Controllers
                     return logger;
                 }
             }
+            set
+            {
+                _loggers.TryAdd(GetType().FullName, value);
+            }
+        }
+
+
+        protected IHttpActionResult WrapWithTryCatch(Func<IHttpActionResult> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch (UserException uex)
+            {
+                return Handle(uex);
+            }
+            catch (Exception ex)
+            {
+                return Handle(ex);
+            }
         }
 
         protected IHttpActionResult Handle(UserException ex)
@@ -42,6 +63,12 @@ namespace FligthNode.Common.Api.Controllers
             Logger.Error(ex);
 
             return InternalServerError();
+        }
+
+
+        protected internal virtual IHttpActionResult NoContent()
+        {
+            return StatusCode(System.Net.HttpStatusCode.NoContent);
         }
     }
 }
