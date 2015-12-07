@@ -9,6 +9,6 @@ namespace FlightNode.DataCollection.Domain.Managers
         IEnumerable<TEntity> FindAll();
         TEntity FindById(int id);
         TEntity Create(TEntity input);
-        void Update(TEntity input);
+        int Update(TEntity input);
     }
 }

@@ -7,31 +7,45 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
     public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence
     {
-        IDbSet<Location> IPersistenceBase<Location>.Collection
+        #region Collections used by persistence interfaces that inherit from IPersistenceBase
+
+        ICrudSet<Location> IPersistenceBase<Location>.Collection
         {
             get
             {
-                return this.Set<Location>();
+                return new CrudSetDecorator<Location>(this.Locations);
             }
         }
 
 
-        IDbSet<WorkLog> IPersistenceBase<WorkLog>.Collection
+        ICrudSet<WorkLog> IPersistenceBase<WorkLog>.Collection
         {
             get
             {
-                return this.Set<WorkLog>();
+                return new CrudSetDecorator<WorkLog>(this.WorkLogs);
             }
         }
 
 
-        IDbSet<WorkType> IPersistenceBase<WorkType>.Collection
+        ICrudSet<WorkType> IPersistenceBase<WorkType>.Collection
         {
             get
             {
-                return this.Set<WorkType>();
+                return new CrudSetDecorator<WorkType>(this.WorkTypes);
             }
         }
+
+        #endregion
+
+        #region DbSets used by EF to generate the database migrations
+
+        public DbSet<Location> Locations { get; set; }
+
+        public DbSet<WorkLog> WorkLogs { get; set; }
+
+        public DbSet<WorkType> WorkTypes { get; set; }
+
+        #endregion
 
 
         public DataCollectionContext()
@@ -48,6 +62,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             modelBuilder.Entity<Location>().ToTable("Locations");
             modelBuilder.Entity<WorkType>().ToTable("WorkType");
             modelBuilder.Entity<WorkLog>().ToTable("WorkLog");
+            
         }
 
 

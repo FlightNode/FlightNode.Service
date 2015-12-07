@@ -25,7 +25,7 @@ namespace FlightNode.DataCollection.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(localdb)\\\\ProjectsV12;Database=FlightNode;Integrated Security=true;")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(localdb)\\ProjectsV12;Database=FlightNode;Integrated Security=true;")]
         public string ConnectionString {
             get {
                 return ((string)(this["ConnectionString"]));

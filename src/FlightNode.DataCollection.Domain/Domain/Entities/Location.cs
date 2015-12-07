@@ -6,8 +6,6 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public class Location : IEntity
     {
-        public int LocationId { get; set; }
-
         [Required]
         [MaxLength(100)] // required for Entity Framework
         [StringLength(100)] // required for validator
@@ -23,6 +21,6 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public virtual List<WorkLog> WorkLogs { get; set; }
 
-        public int Id {  get { return LocationId;  } }
+        public int Id { get; set; }
     }
 }

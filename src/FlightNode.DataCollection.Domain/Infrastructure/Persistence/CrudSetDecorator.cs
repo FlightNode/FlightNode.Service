@@ -7,15 +7,23 @@ using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
+namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
-    public class FakeDbSet<TEntity> : ICrudSet<TEntity>
+
+    public class CrudSetDecorator<TEntity> : ICrudSet<TEntity>
         where TEntity : class, IEntity
     {
-        public List<TEntity> List = new List<TEntity>();
+        private DbSet<TEntity> _dbSet;
+
+        public CrudSetDecorator(DbSet<TEntity> dbSet)
+        {
+            if (dbSet == null)
+            {
+                throw new ArgumentNullException("dbSet");
+            }
+            _dbSet = dbSet;
+        }
 
         public Type ElementType
         {
@@ -29,7 +37,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         {
             get
             {
-                return List.AsQueryable().Expression;
+                return _dbSet.AsQueryable().Expression;
             }
         }
 
@@ -37,7 +45,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         {
             get
             {
-                return new ObservableCollection<TEntity>(List);
+                return _dbSet.Local;
             }
         }
 
@@ -45,50 +53,48 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         {
             get
             {
-                return List.AsQueryable().Provider;
+                return _dbSet.AsQueryable().Provider;
             }
         }
 
         public TEntity Add(TEntity entity)
         {
-            List.Add(entity);
-            return entity;
+            return _dbSet.Add(entity);
         }
 
         public TEntity Attach(TEntity entity)
         {
-            return Add(entity);
+            return _dbSet.Attach(entity);
         }
 
         public TEntity Create()
         {
-            return Activator.CreateInstance<TEntity>();
+            return _dbSet.Create();
         }
 
         public TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, TEntity
         {
-            throw new NotImplementedException();
+            return _dbSet.Create<TDerivedEntity>();
         }
 
         public TEntity Find(params object[] keyValues)
         {
-            throw new NotImplementedException();
+            return _dbSet.Find(keyValues);
         }
 
         public IEnumerator<TEntity> GetEnumerator()
         {
-            return List.GetEnumerator();
+            return _dbSet.AsEnumerable().GetEnumerator();
         }
 
         public TEntity Remove(TEntity entity)
         {
-            List.Remove(entity);
-            return entity;
+            return _dbSet.Remove(entity);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return List.GetEnumerator();
+            return _dbSet.AsEnumerable().GetEnumerator();
         }
     }
 }

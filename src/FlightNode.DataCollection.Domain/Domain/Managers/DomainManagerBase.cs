@@ -49,12 +49,15 @@ namespace FlightNode.DataCollection.Domain.Managers
             return _persistence.Collection.FirstOrDefault(x => x.Id == id);
         }
 
-        public void Update(TEntity input)
+        public int Update(TEntity input)
         {
             input.Validate();
 
             _persistence.Collection.Attach(input);
-            _persistence.SaveChanges();
+            _persistence.Entry(input).State = System.Data.Entity.EntityState.Modified;
+
+            return _persistence.SaveChanges();
+            
         }
     }
 }

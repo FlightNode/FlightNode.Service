@@ -82,13 +82,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             private const int RECORD_COUNT = 1;
             private WorkLog item = new WorkLog
             {
-                WorkLogId = 1,
                 LocationId = 1,
+                WorkTypeId = 1,
                 TravelTimeHours = 1.0m,
                 UserId = 1,
                 WorkDate = DateTime.Parse("2015-11-12 6:04 PM"),
                 WorkHours = 1.1m,
-                WorkTypeId = 3
+                Id = 3
             };
 
 
@@ -100,14 +100,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 34234;
                 base.SetupWorkLogsCollection();
                 base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.WorkLogId = id)
+                    .Callback(() => item.LocationId = id)
                     .Returns(RECORD_COUNT);
 
                 // Act
                 var result = BuildSystem().Create(item);
 
                 // Assert
-                Assert.Equal(id, item.WorkLogId);
+                Assert.Equal(id, item.LocationId);
             }
 
 
@@ -119,7 +119,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 34234;
                 base.SetupWorkLogsCollection();
                 base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.WorkLogId = id)
+                    .Callback(() => item.LocationId = id)
                     .Returns(RECORD_COUNT);
 
                 // Act
@@ -134,13 +134,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 private WorkLog item = new WorkLog
                 {
-                    WorkLogId = 1,
                     LocationId = 1,
+                    WorkTypeId = 1,
                     TravelTimeHours = 1.0m,
                     UserId = 1,
                     WorkDate = DateTime.Parse("2015-11-12 6:04 PM"),
                     WorkHours = 1.1m,
-                    WorkTypeId = 3
+                    Id = 3
                 };
 
                 private void RunNegativeTest(string memberName)
@@ -243,7 +243,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 23423;
                 base.SetupWorkLogsCollection();
                 var one = new WorkLog();
-                var two = new WorkLog { WorkLogId = id };
+                var two = new WorkLog { Id = id };
                 base.FakeSet.List.AddRange(new List<WorkLog>() { one, two });
 
                 // Act
@@ -259,13 +259,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             private const int RECORD_COUNT = 1;
             private WorkLog item = new WorkLog
             {
-                WorkLogId = 1,
                 LocationId = 1,
+                WorkTypeId = 1,
                 TravelTimeHours = 1.0m,
                 UserId = 1,
                 WorkDate = DateTime.Parse("2015-11-12 6:04 PM"),
                 WorkHours = 1.1m,
-                WorkTypeId = 3
+                Id = 3
             };
 
             [Fact]
@@ -285,13 +285,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 private WorkLog item = new WorkLog
                 {
-                    WorkLogId = 1,
                     LocationId = 1,
+                    WorkTypeId = 1,
                     TravelTimeHours = 1.0m,
                     UserId = 1,
                     WorkDate = DateTime.Parse("2015-11-12 6:04 PM"),
                     WorkHours = 1.1m,
-                    WorkTypeId = 3
+                    Id = 3
                 };
 
                 private void RunPositiveTest()

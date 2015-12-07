@@ -32,10 +32,11 @@ namespace FlightNode.DataCollection.Domain.Migrations
                 .PrimaryKey(t => t.WorkLogId)
                 .ForeignKey("dbo.Locations", t => t.LocationId, cascadeDelete: false)
                 .ForeignKey("dbo.WorkType", t => t.WorkTypeId, cascadeDelete: false)
-                .ForeignKey("dbo.Uses", t=> t.UserId, cascadeDelete: false)
                 .Index(t => t.LocationId)
                 .Index(t => t.UserId)
                 .Index(t => t.WorkTypeId);
+
+            AddForeignKey("dbo.WorkLog", "UserId", "dbo.Users", "Id", false);
             
             CreateTable(
                 "dbo.WorkType",

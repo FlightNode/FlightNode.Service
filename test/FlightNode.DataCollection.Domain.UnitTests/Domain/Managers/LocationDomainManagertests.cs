@@ -85,7 +85,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 Description = "this is a valid description",
                 Latitude = 0m,
                 Longitude = 0m,
-                LocationId = 0,
+                Id = 0,
                 WorkLogs = null
             };
 
@@ -98,14 +98,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 34234;
                 base.SetupLocationsCollection();
                 base.LocationPersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.LocationId = id)
+                    .Callback(() => item.Id = id)
                     .Returns(RECORD_COUNT);
 
                 // Act
                 var result = BuildSystem().Create(item);
 
                 // Assert
-                Assert.Equal(id, item.LocationId);
+                Assert.Equal(id, item.Id);
             }
 
 
@@ -117,7 +117,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 34234;
                 base.SetupLocationsCollection();
                 base.LocationPersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.LocationId = id)
+                    .Callback(() => item.Id = id)
                     .Returns(RECORD_COUNT);
 
                 // Act
@@ -135,7 +135,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     Description = "this is a valid description",
                     Latitude = 0m,
                     Longitude = 0m,
-                    LocationId = 0,
+                    Id = 0,
                     WorkLogs = null
                 };
 
@@ -275,7 +275,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 23423;
                 base.SetupLocationsCollection();
                 var one = new Location();
-                var two = new Location { LocationId = id };
+                var two = new Location { Id = id };
                 base.FakeSet.List.AddRange(new List<Location>(){ one, two });
 
                 // Act
@@ -294,7 +294,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 Description = "this is a valid description",
                 Latitude = 0m,
                 Longitude = 0m,
-                LocationId = 0,
+                Id = 0,
                 WorkLogs = null
             };
 
@@ -319,7 +319,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     Description = "this is a valid description",
                     Latitude = 0m,
                     Longitude = 0m,
-                    LocationId = 0,
+                    Id = 0,
                     WorkLogs = null
                 };
 

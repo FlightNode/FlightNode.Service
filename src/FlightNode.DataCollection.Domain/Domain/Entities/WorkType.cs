@@ -6,7 +6,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public class WorkType :IEntity
     {
-        public int WorkTypeId { get; set; }
+        //public int WorkTypeId { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -14,6 +14,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public virtual List<WorkLog> WorkLogs { get; set; }
 
-        public int Id { get { return WorkTypeId; } }
+        public int Id { get; set; }
+        //{ return WorkTypeId; } }
     }
 }

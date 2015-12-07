@@ -1,23 +1,24 @@
-﻿using FlightNode.DataCollection.Domain.Managers;
+﻿using FlightNode.DataCollection.Domain.Entities;
+using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Models;
 using FligthNode.Common.Api.Controllers;
+using Flurl;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
 namespace FlightNode.DataCollection.Domain.Services.Controllers
 {
-    public class LocationController : LoggingController
+    public class LocationsController : LoggingController
     {
 
         private readonly ILocationDomainManager _domainManager;
 
         /// <summary>
-        /// Creates a new instance of <see cref="LocationController"/>.
+        /// Creates a new instance of <see cref="LocationsController"/>.
         /// </summary>
         /// <param name="domainManager">An instance of <see cref="ILocationDomainManager"/></param>
-        public LocationController(ILocationDomainManager domainManager)
+        public LocationsController(ILocationDomainManager domainManager)
         {
             if (domainManager == null)
             {
@@ -34,23 +35,23 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/location
         /// </example>
-        [Authorize]
+        //[Authorize]
         public IHttpActionResult Get()
         {
-            //IEnumerable<LocationModel>
-
-            var locations = _domainManager.FindAll();
-
-            var models = locations.Select(x => new LocationModel
+            return WrapWithTryCatch(() =>
             {
-                Description = x.Description,
-                Id = x.Id,
-                Latitude = x.Latitude,
-                Longitude = x.Longitude
-            }).ToList();
+                var locations = _domainManager.FindAll();
 
+                var models = locations.Select(x => new LocationModel
+                {
+                    Description = x.Description,
+                    Id = x.Id,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude
+                });
 
-            return Ok(models);
+                return Ok(models);
+            });
         }
 
         /// <summary>
@@ -61,11 +62,23 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/location/123
         /// </example>
-        [Authorize]
+        //[Authorize]
         public IHttpActionResult Get(int id)
         {
-            //LocationModel
-            return null;
+            return WrapWithTryCatch(() =>
+            {
+                var x = _domainManager.FindById(id);
+
+                var model = new LocationModel
+                {
+                    Description = x.Description,
+                    Id = x.Id,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude
+                };
+
+                return Ok(model);
+            });
         }
 
         /// <summary>
@@ -81,12 +94,33 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "latitude": "73.47885"
         /// }
         /// </example>
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         public IHttpActionResult Post([FromBody]LocationModel input)
         {
-            //LocationModel
-            return null;
+            if (input == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            return WrapWithTryCatch(() =>
+            {
+                var location = new Location
+                {
+                    Description = input.Description,
+                    Latitude = input.Latitude,
+                    Longitude = input.Longitude
+                };
+
+                location = _domainManager.Create(location);
+
+                var locationHeader = this.Request
+                    .RequestUri
+                    .ToString()
+                    .AppendPathSegment(location.Id.ToString());
+
+                return Created(locationHeader, location);
+            });
         }
 
         /// <summary>
@@ -102,11 +136,29 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "latitude": "73.47885"
         /// }
         /// </example>
-        [Authorize]
+        //[Authorize]
         [HttpPut]
         public IHttpActionResult Put([FromBody]LocationModel input)
         {
-            return null;
+            if (input == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            return WrapWithTryCatch(() =>
+            {
+                var location = new Location
+                {
+                    Description = input.Description,
+                    Latitude = input.Latitude,
+                    Longitude = input.Longitude,
+                    Id = input.Id
+                };
+
+                _domainManager.Update(location);                
+
+                return NoContent();
+            });
         }
 
         /// <summary>
@@ -116,12 +168,24 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/location/simple
         /// </example>
-        [Authorize]
+        //[Authorize]
         [Route("api/v1/location/simple")]
         public IHttpActionResult GetSimpleList()
         {
             //IEnumerable<SimpleListItem>
-            return null;
+
+            return WrapWithTryCatch(() =>
+            {
+                var locations = _domainManager.FindAll();
+
+                var models = locations.Select(x => new SimpleListItem
+                {
+                    Value = x.Description,
+                    Id = x.Id
+                });
+
+                return Ok(models);
+            });
         }
 
     }

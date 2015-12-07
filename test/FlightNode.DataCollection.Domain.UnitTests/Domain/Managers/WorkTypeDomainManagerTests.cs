@@ -83,7 +83,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             private WorkType item = new WorkType
             {
                 Description = "this is a valid description",
-                WorkTypeId = 1,
+                Id = 1,
                 WorkLogs = null
             };
 
@@ -96,14 +96,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 34234;
                 base.SetupWorkTypesCollection();
                 base.WorkTypePersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.WorkTypeId = id)
+                    .Callback(() => item.Id = id)
                     .Returns(RECORD_COUNT);
 
                 // Act
                 var result = BuildSystem().Create(item);
 
                 // Assert
-                Assert.Equal(id, item.WorkTypeId);
+                Assert.Equal(id, item.Id);
             }
 
 
@@ -115,7 +115,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 34234;
                 base.SetupWorkTypesCollection();
                 base.WorkTypePersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.WorkTypeId = id)
+                    .Callback(() => item.Id = id)
                     .Returns(RECORD_COUNT);
 
                 // Act
@@ -131,7 +131,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 private WorkType item = new WorkType
                 {
                     Description = "this is a valid description",
-                    WorkTypeId = 1,
+                    Id = 1,
                     WorkLogs = null
                 };
 
@@ -212,7 +212,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var id = 23423;
                 base.SetupWorkTypesCollection();
                 var one = new WorkType();
-                var two = new WorkType { WorkTypeId = id };
+                var two = new WorkType { Id = id };
                 base.FakeSet.List.AddRange(new List<WorkType>() { one, two });
 
                 // Act
@@ -229,7 +229,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             private WorkType item = new WorkType
             {
                 Description = "this is a valid description",
-                WorkTypeId = 0,
+                Id = 0,
                 WorkLogs = null
             };
 
@@ -252,7 +252,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 private WorkType item = new WorkType
                 {
                     Description = "this is a valid description",
-                    WorkTypeId = 0,
+                    Id = 0,
                     WorkLogs = null
                 };
 
