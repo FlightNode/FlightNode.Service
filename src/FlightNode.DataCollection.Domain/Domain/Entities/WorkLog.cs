@@ -6,8 +6,6 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public class WorkLog : IEntity
     {
-        //public int WorkLogId { get; set; }
-
         [Required]
         public DateTime WorkDate { get; set; }
 
@@ -28,8 +26,7 @@ namespace FlightNode.DataCollection.Domain.Entities
         [Required]
         public int UserId { get; set; }
 
-
+        [Required]
         public int LocationId { get; set; }
-        //{ return WorkLogId; } }
     }
 }

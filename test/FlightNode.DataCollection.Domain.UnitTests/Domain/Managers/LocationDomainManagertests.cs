@@ -6,6 +6,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -75,6 +76,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 base.LocationPersistenceMock.SetupGet(x => x.Collection)
                     .Returns(FakeSet);
             }
+
         }
 
         public class Create : CreateFakeSet
@@ -127,7 +129,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 Assert.Same(item, base.FakeSet.List[0]);
             }
 
-            
+
             public class Validation : CreateFakeSet
             {
                 private Location item = new Location
@@ -248,7 +250,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             }
         }
 
-        public class FindAll :CreateFakeSet
+        public class FindAll : CreateFakeSet
         {
             [Fact]
             public void ConfirmHappyPath()
@@ -257,7 +259,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 base.SetupLocationsCollection();
                 var one = new Location();
                 base.FakeSet.List.Add(one);
-                
+
                 // Act
                 var result = BuildSystem().FindAll();
 
@@ -276,7 +278,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 base.SetupLocationsCollection();
                 var one = new Location();
                 var two = new Location { Id = id };
-                base.FakeSet.List.AddRange(new List<Location>(){ one, two });
+                base.FakeSet.List.AddRange(new List<Location>() { one, two });
 
                 // Act
                 var result = BuildSystem().FindById(id);
@@ -298,6 +300,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkLogs = null
             };
 
+            protected bool SetModifiedWasCalled = false;
+
+            protected void BypassEntryMethod()
+            {
+                DomainManagerBase<Location>.SetModifiedState = (IPersistenceBase<Location> persistenceLayer, Location input) => 
+                {
+                    SetModifiedWasCalled = true;
+                };
+            }
 
             [Fact]
             public void ConfirmHappyPath()
@@ -305,14 +316,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Arrange
                 base.SetupLocationsCollection();
+                BypassEntryMethod();
                 base.LocationPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(RECORD_COUNT);
 
                 // Act
                 BuildSystem().Update(item);
+
+                Assert.True(SetModifiedWasCalled);
             }
 
-            public class Validation : CreateFakeSet
+            public class Validation : Update
             {
                 private Location item = new Location
                 {
@@ -326,6 +340,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 private void RunPositiveTest()
                 {
                     base.SetupLocationsCollection();
+                    BypassEntryMethod();
                     LocationPersistenceMock.Setup(x => x.SaveChanges())
                            .Returns(1);
 
@@ -417,7 +432,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmLongitudeRejectsGreaterThan180()
                 {
-                    item.Longitude= 180.1m;
+                    item.Longitude = 180.1m;
 
                     RunNegativeTest("Longitude");
                 }

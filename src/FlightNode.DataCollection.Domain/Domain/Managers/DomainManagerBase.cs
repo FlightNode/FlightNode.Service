@@ -54,10 +54,19 @@ namespace FlightNode.DataCollection.Domain.Managers
             input.Validate();
 
             _persistence.Collection.Attach(input);
-            _persistence.Entry(input).State = System.Data.Entity.EntityState.Modified;
 
-            return _persistence.SaveChanges();
-            
+            SetModifiedState(_persistence, input);
+
+            return _persistence.SaveChanges();            
         }
+
+        // This is an ugly hack because I can find no way to unit test the Entry() method, and 
+        // using Entry() and setting the Modified property seems to be the only way to convinc
+        // EF6 to save an object that was Attached, without having first retrieved the object 
+        // from the database (which would be a completely unnecessary db call).
+        public static Action<IPersistenceBase<TEntity>, TEntity> SetModifiedState = (IPersistenceBase<TEntity> persistenceLayer, TEntity input) =>
+        {
+            persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
+        };
     }
 }

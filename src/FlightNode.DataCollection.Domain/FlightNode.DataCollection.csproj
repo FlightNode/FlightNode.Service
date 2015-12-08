@@ -149,9 +149,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\Controllers\WorkLogController.cs" />
+    <Compile Include="Services\Controllers\WorkTypesController.cs" />
     <Compile Include="Services\Models\LocationModel.cs" />
     <Compile Include="Services\Models\SimpleListItem.cs" />
     <Compile Include="Services\Controllers\LocationsController.cs" />
+    <Compile Include="Services\Models\WorkLogModel.cs" />
+    <Compile Include="Services\Models\WorkTypeModel.cs" />
     <Compile Include="Services\Providers\ApiStartup.cs" />
   </ItemGroup>
   <ItemGroup>

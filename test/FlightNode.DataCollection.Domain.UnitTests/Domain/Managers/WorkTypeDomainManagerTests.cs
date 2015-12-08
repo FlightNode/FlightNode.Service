@@ -234,12 +234,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             };
 
 
+            protected bool SetModifiedWasCalled = false;
+
+            protected void BypassEntryMethod()
+            {
+                DomainManagerBase<WorkType>.SetModifiedState = (IPersistenceBase<WorkType> persistenceLayer, WorkType input) =>
+                {
+                    SetModifiedWasCalled = true;
+                };
+            }
+
             [Fact]
             public void ConfirmHappyPath()
             {
 
                 // Arrange
                 base.SetupWorkTypesCollection();
+                BypassEntryMethod();
                 base.WorkTypePersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(RECORD_COUNT);
 
@@ -247,7 +258,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 BuildSystem().Update(item);
             }
 
-            public class Validation : CreateFakeSet
+            public class Validation : Update
             {
                 private WorkType item = new WorkType
                 {
@@ -259,6 +270,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 private void RunPositiveTest()
                 {
                     base.SetupWorkTypesCollection();
+                    BypassEntryMethod();
                     WorkTypePersistenceMock.Setup(x => x.SaveChanges())
                            .Returns(1);
 
