@@ -3,6 +3,7 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Controllers;
 using FlightNode.DataCollection.Domain.Services.Models;
+using FlightNode.DataCollection.Services.Models;
 using Moq;
 using NLog;
 using System;
@@ -12,30 +13,29 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 using System.Web.Http.Results;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services
 {
-    public class LocationControllerTests
+    public class WorkTypeControllerTests
     {
         public class Fixture : IDisposable
         {
             protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
-            protected Mock<ILocationDomainManager> MockDomainManager;
+            protected Mock<IWorkTypeDomainManager> MockDomainManager;
             protected Mock<ILogger> MockLogger;
             protected const string url = "http://some/where/";
 
             public Fixture()
             {
-                MockDomainManager = MockRepository.Create<ILocationDomainManager>();
+                MockDomainManager = MockRepository.Create<IWorkTypeDomainManager>();
                 MockLogger = MockRepository.Create<ILogger>();
             }
 
-            protected LocationsController BuildSystem()
+            protected WorkTypesController BuildSystem()
             {
-                var controller = new LocationsController(MockDomainManager.Object);
+                var controller = new WorkTypesController(MockDomainManager.Object);
 
                 controller.Logger = MockLogger.Object;
 
@@ -66,7 +66,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             [Fact]
             public void ConfirmConstructorRejectsNullArgument()
             {
-                Assert.Throws<ArgumentNullException>(() => new LocationsController(null));
+                Assert.Throws<ArgumentNullException>(() => new WorkTypesController(null));
             }
         }
 
@@ -74,8 +74,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
         {
             private int id = 123;
             private string description = "somewhere";
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
 
             [Fact]
             public void ConfirmGetMapsDescription()
@@ -89,28 +87,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             {
                 Assert.Equal(id, RunPositiveTest().Id);
             }
+            
 
-            [Fact]
-            public void ConfirmGetMapsLongitude()
-            {
-                Assert.Equal(longitude, RunPositiveTest().Longitude);
-            }
-
-            [Fact]
-            public void ConfirmMapsLatitude()
-            {
-                Assert.Equal(latitude, RunPositiveTest().Latitude);
-            }
-
-
-            private LocationModel RunPositiveTest()
+            private WorkTypeModel RunPositiveTest()
             {
                 // Arrange 
-                var record = new Location
+                var record = new WorkType
                 {
                     Description = description,
-                    Latitude = latitude,
-                    Longitude = longitude,
                     Id = id,
                     WorkLogs = null
                 };
@@ -126,7 +110,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
                 Assert.Equal(HttpStatusCode.OK, message.StatusCode);
 
-                return message.Content.ReadAsAsync<LocationModel>().Result;
+                return message.Content.ReadAsAsync<WorkTypeModel>().Result;
             }
 
             public class ExceptionHandling : Fixture
@@ -173,8 +157,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
         {
             private int id = 123;
             private string description = "somewhere";
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
 
             [Fact]
             public void ConfirmGetMapsDescription()
@@ -188,30 +170,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             {
                 Assert.Equal(id, RunPositiveTest().First().Id);
             }
-
-            [Fact]
-            public void ConfirmGetMapsLongitude()
-            {
-                Assert.Equal(longitude, RunPositiveTest().First().Longitude);
-            }
-
-            [Fact]
-            public void ConfirmMapsLatitude()
-            {
-                Assert.Equal(latitude, RunPositiveTest().First().Latitude);
-            }
-
-
-            private List<LocationModel> RunPositiveTest()
+            
+            private List<WorkTypeModel> RunPositiveTest()
             {
                 // Arrange 
-                var records = new List<Location>
+                var records = new List<WorkType>
                 {
-                    new Location
+                    new WorkType
                     {
                         Description = description,
-                        Latitude = latitude,
-                        Longitude= longitude,
                         Id = id,
                         WorkLogs = null
                     }
@@ -227,7 +194,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
                 Assert.Equal(HttpStatusCode.OK, message.StatusCode);
 
-                return message.Content.ReadAsAsync<List<LocationModel>>().Result;
+                return message.Content.ReadAsAsync<List<WorkTypeModel>>().Result;
             }
 
             public class ExceptionHandling : Fixture
@@ -273,30 +240,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
         {
             private int id = 123;
             private string description = "somewhere";
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
 
             [Fact]
             public void ConfirmMapsDescription()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Description == description)));
+                MockDomainManager.Verify(x => x.Create(It.Is<WorkType>(y => y.Description == description)));
             }
-
-            [Fact]
-            public void ConfirmMapsLongitude()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Longitude == longitude)));
-            }
-
-            [Fact]
-            public void ConfirmMapsLatitude()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Latitude == latitude)));
-            }
-
+            
             [Fact]
             public void ConfirmUpdatesLocationHeader()
             {
@@ -319,15 +270,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             private HttpResponseMessage RunPositiveTest()
             {
                 // Arrange 
-                var record = new LocationModel
+                var record = new WorkTypeModel
                 {
                     Description = description,
-                    Latitude = latitude,
-                    Longitude = longitude
                 };
 
-                MockDomainManager.Setup(x => x.Create(It.IsAny<Location>()))
-                .Returns((Location actual) =>
+                MockDomainManager.Setup(x => x.Create(It.IsAny<WorkType>()))
+                .Returns((WorkType actual) =>
                 {
                     // inject an ID value so we can confirm that it is passed in the response
                     actual.Id = id;
@@ -349,10 +298,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
                 protected HttpResponseMessage RunTest(Exception ex)
                 {
-                    MockDomainManager.Setup(x => x.Create(It.IsAny<Location>()))
+                    MockDomainManager.Setup(x => x.Create(It.IsAny<WorkType>()))
                         .Throws(ex);
 
-                    return BuildSystem().Post(new LocationModel()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                    return BuildSystem().Post(new WorkTypeModel()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
                 }
 
                 [Fact]
@@ -430,10 +379,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
                     var e = DomainValidationException.Create(list);
 
-                    MockDomainManager.Setup(x => x.Create(It.IsAny<Location>()))
+                    MockDomainManager.Setup(x => x.Create(It.IsAny<WorkType>()))
                                            .Throws(e);
 
-                    return BuildSystem().Post(new LocationModel()) as InvalidModelStateResult;
+                    return BuildSystem().Post(new WorkTypeModel()) as InvalidModelStateResult;
                 }
             }
         }
@@ -450,28 +399,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             public void ConfirmMapsDescription()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Description == description)));
+                MockDomainManager.Verify(x => x.Update(It.Is<WorkType>(y => y.Description == description)));
             }
+            
 
             [Fact]
-            public void ConfirmMapsLongitude()
+            public void ConfirmMapsWorkTypeId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Longitude == longitude)));
-            }
-
-            [Fact]
-            public void ConfirmMapsLatitude()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Latitude == latitude)));
-            }
-
-            [Fact]
-            public void ConfirmMapsLocationId()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Id == id)));
+                MockDomainManager.Verify(x => x.Update(It.Is<WorkType>(y => y.Id == id)));
             }
 
             [Fact]
@@ -480,23 +416,21 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 Assert.Equal(HttpStatusCode.NoContent, RunPositiveTest().StatusCode);
             }
 
-            private LocationModel GetTestResult()
+            private WorkTypeModel GetTestResult()
             {
-                return RunPositiveTest().Content.ReadAsAsync<LocationModel>().Result;
+                return RunPositiveTest().Content.ReadAsAsync<WorkTypeModel>().Result;
             }
 
             private HttpResponseMessage RunPositiveTest()
             {
                 // Arrange 
-                var record = new LocationModel
+                var record = new WorkTypeModel
                 {
                     Description = description,
-                    Latitude = latitude,
-                    Longitude = longitude,
                     Id = id
                 };
 
-                MockDomainManager.Setup(x => x.Update(It.IsAny<Location>()))
+                MockDomainManager.Setup(x => x.Update(It.IsAny<WorkType>()))
                     .Returns(1);
 
 
@@ -514,10 +448,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
                 private HttpResponseMessage RunTest(Exception ex)
                 {
-                    MockDomainManager.Setup(x => x.Update(It.IsAny<Location>()))
+                    MockDomainManager.Setup(x => x.Update(It.IsAny<WorkType>()))
                         .Throws(ex);
 
-                    return BuildSystem().Put(new LocationModel()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                    return BuildSystem().Put(new WorkTypeModel()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
                 }
 
                 [Fact]
@@ -597,10 +531,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
                     var e = DomainValidationException.Create(list);
 
-                    MockDomainManager.Setup(x => x.Update(It.IsAny<Location>()))
+                    MockDomainManager.Setup(x => x.Update(It.IsAny<WorkType>()))
                                            .Throws(e);
 
-                    return BuildSystem().Put(new LocationModel()) as InvalidModelStateResult;
+                    return BuildSystem().Put(new WorkTypeModel()) as InvalidModelStateResult;
                 }
             }
         }
@@ -640,14 +574,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             private HttpResponseMessage RunPositiveTest()
             {
                 // Arrange 
-                var records = new List<Location>
+                var records = new List<WorkType>
                 {
-                    new Location
+                    new WorkType
                     {
                         Description = description1,
                         Id = id1
                     },
-                    new Location
+                    new WorkType
                     {
                         Description = description2,
                         Id = id2
