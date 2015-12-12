@@ -36,7 +36,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/worktypes
         /// </example>
-        //[Authorize]
+        [Authorize]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>
@@ -61,7 +61,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/worktypes/123
         /// </example>
-        //[Authorize]
+        [Authorize]
         public IHttpActionResult Get(int id)
         {
             return WrapWithTryCatch(() =>
@@ -89,7 +89,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "description": "some location"
         /// }
         /// </example>
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public IHttpActionResult Post([FromBody]WorkTypeModel input)
         {
@@ -128,7 +128,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "id": 3
         /// }
         /// </example>
-        //[Authorize]
+        [Authorize]
         [HttpPut]
         public IHttpActionResult Put([FromBody]WorkTypeModel input)
         {
@@ -158,7 +158,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/worktypes/simple
         /// </example>
-        //[Authorize]
+        [Authorize]
         [Route("api/v1/worktypes/simple")]
         public IHttpActionResult GetSimpleList()
         {
