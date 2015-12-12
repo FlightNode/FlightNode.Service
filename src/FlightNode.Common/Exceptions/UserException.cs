@@ -13,7 +13,6 @@ namespace FlightNode.Common.Exceptions
         public UserException(string message) : base(message)
         {
         }
-       
 
         public static UserException FromMultipleMessages(IEnumerable<string> errors)
         {

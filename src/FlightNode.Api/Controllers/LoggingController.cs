@@ -3,36 +3,28 @@ using System;
 using System.Collections.Concurrent;
 using System.Web.Http;
 using FlightNode.Common.Exceptions;
+using System.Web.Http.ModelBinding;
+using System.Linq;
 
 namespace FligthNode.Common.Api.Controllers
 {
     public abstract class LoggingController : ApiController
     {
-        // Loggers do not maintain state, and therefore it should be safe to keep one 
-        // logger for each controller in memory rather than rebuild one with every
-        // use of the logger. But, we need to ensure thread safety, and thus using
-        // the thread-safe dictionary.
-        private static ConcurrentDictionary<string, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>();
+        private ILogger _logger;
 
         public ILogger Logger
         {
             get
             {
-                var fullName = GetType().FullName;
-                if (_loggers.ContainsKey(fullName))
+                if (_logger ==null)
                 {
-                    return _loggers[fullName];
+                    _logger = LogManager.GetLogger(GetType().FullName);
                 }
-                else
-                {
-                    var logger = LogManager.GetLogger(fullName);
-                    _loggers[fullName] = logger;
-                    return logger;
-                }
+                return _logger;
             }
             set
             {
-                _loggers.TryAdd(GetType().FullName, value);
+                _logger = value;
             }
         }
 
@@ -47,6 +39,10 @@ namespace FligthNode.Common.Api.Controllers
             {
                 return Handle(uex);
             }
+            catch (DomainValidationException dex)
+            {
+                return Handle(dex);
+            }
             catch (Exception ex)
             {
                 return Handle(ex);
@@ -55,7 +51,30 @@ namespace FligthNode.Common.Api.Controllers
 
         protected IHttpActionResult Handle(UserException ex)
         {
+            // No logging necessary when it was a user-induced error
+
             return BadRequest(ex.Message);
+        }
+
+        protected IHttpActionResult Handle(DomainValidationException ex)
+        {
+            // No logging necessary when it was a user-induced error
+            
+            return BadRequest(ConvertToModelStateErrors(ex));
+        }
+
+        private static ModelStateDictionary ConvertToModelStateErrors(DomainValidationException ex)
+        {
+            var modelState = new ModelStateDictionary();
+
+            ex.ValidationResults.ToList().ForEach(x =>
+            {
+                x.MemberNames.ToList().ForEach(y =>
+                {
+                    modelState.AddModelError(y, x.ErrorMessage);
+                });
+            });
+            return modelState;
         }
 
         protected IHttpActionResult Handle(Exception ex)

@@ -9,7 +9,7 @@ namespace FlightNode.Common.UnitTests.Exceptions
     {
         public class Entity : IEntity
         {
-
+            public int Id { get; set; }
         }
 
         public class WrapAGeneralExceptionInServerExceptionWithNonNullId
