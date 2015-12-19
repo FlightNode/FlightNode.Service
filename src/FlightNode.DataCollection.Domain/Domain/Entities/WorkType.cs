@@ -15,6 +15,5 @@ namespace FlightNode.DataCollection.Domain.Entities
         public virtual List<WorkLog> WorkLogs { get; set; }
 
         public int Id { get; set; }
-        //{ return WorkTypeId; } }
     }
 }

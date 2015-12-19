@@ -1,10 +1,13 @@
-﻿using FlightNode.DataCollection.Domain.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
     public interface IWorkLogDomainManager : ICrudManager<WorkLog>
     {
+        List<WorkLogReportRecord> GetReport();
     }
 
     public class WorkLogDomainManager : DomainManagerBase<WorkLog>, IWorkLogDomainManager
@@ -17,7 +20,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// how to access the specific persistence layer when overriding the base class
         /// methods or adding methods not in the base class.
         /// </remarks>
-        private IWorkLogPersistence LocationPersistence
+        private IWorkLogPersistence WorkLogPersistence
         {
             get
             {
@@ -27,6 +30,11 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public WorkLogDomainManager(IWorkLogPersistence persistence) : base(persistence)
         {
+        }
+
+        public List<WorkLogReportRecord> GetReport()
+        {
+            return WorkLogPersistence.WorkLogReportRecords.ToList();
         }
     }
 }

@@ -106,7 +106,12 @@
     <Compile Include="Domain\Entities\Location.cs" />
     <Compile Include="Domain\Entities\ValidationHelper.cs" />
     <Compile Include="Domain\Entities\WorkLog.cs" />
+    <Compile Include="Domain\Entities\WorkLogReportRecord.cs" />
     <Compile Include="Domain\Entities\WorkType.cs" />
+    <Compile Include="Infrastructure\Customization\CreateViewOperation.cs" />
+    <Compile Include="Infrastructure\Customization\CustomSqlServerMigrationSqlGenerator.cs" />
+    <Compile Include="Infrastructure\Customization\DropViewOperation.cs" />
+    <Compile Include="Infrastructure\Customization\MigrationExtensions.cs" />
     <Compile Include="Infrastructure\Persistence\CrudSetDecorator.cs" />
     <Compile Include="Infrastructure\Persistence\DataCollectionContext.cs" />
     <Compile Include="Domain\Interfaces\Persistence\IPersistenceBase.cs" />
@@ -127,6 +132,10 @@
     <Compile Include="Infrastructure\Migrations\201512070258005_DecSix.Designer.cs">
       <DependentUpon>201512070258005_DecSix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\Migrations\201512190439081_WorkLogReport.cs" />
+    <Compile Include="Infrastructure\Migrations\201512190439081_WorkLogReport.Designer.cs">
+      <DependentUpon>201512190439081_WorkLogReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -139,6 +148,7 @@
     <Compile Include="Services\Models\SimpleListItem.cs" />
     <Compile Include="Services\Controllers\LocationsController.cs" />
     <Compile Include="Services\Models\WorkLogModel.cs" />
+    <Compile Include="Services\Models\WorkLogReportModel.cs" />
     <Compile Include="Services\Models\WorkTypeModel.cs" />
     <Compile Include="Services\Providers\ApiStartup.cs" />
   </ItemGroup>
@@ -170,6 +180,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Infrastructure\Migrations\201512070258005_DecSix.resx">
       <DependentUpon>201512070258005_DecSix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Infrastructure\Migrations\201512190439081_WorkLogReport.resx">
+      <DependentUpon>201512190439081_WorkLogReport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

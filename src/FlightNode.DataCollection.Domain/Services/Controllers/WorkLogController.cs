@@ -35,7 +35,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/worklogs
         /// </example>
-        //[Authorize]
+        [Authorize]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>
@@ -65,7 +65,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/worklogs/123
         /// </example>
-        //[Authorize]
+        [Authorize]
         public IHttpActionResult Get(int id)
         {
             return WrapWithTryCatch(() =>
@@ -87,6 +87,14 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             });
         }
 
+        //[Authorize]
+        [Route("api/v1/worklogs/export")]
+        public IHttpActionResult GetExport()
+        {
+            var data = _domainManager.GetReport();
+            return Ok(data);
+        }
+
         /// <summary>
         /// Creates a new work type resource.
         /// </summary>
@@ -96,7 +104,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// POST: /api/v1/worklogs
         /// {
         ///   "locationdId": 1
-        ///   "id": 3,
         ///   "travelTimeHours": 1.53,
         ///   "userId": 43,
         ///   "workDate": "2015-12-07 13:43", 
