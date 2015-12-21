@@ -2,7 +2,6 @@
 namespace FlightNode.DataCollection.Domain.Migrations
 {
     using System.CodeDom.Compiler;
-    using System.Data.Entity.Migrations;
     using System.Data.Entity.Migrations.Infrastructure;
     using System.Resources;
     
@@ -13,7 +12,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201512190439081_WorkLogReport"; }
+            get { return "201512200248278_WorkLogReport"; }
         }
         
         string IMigrationMetadata.Source

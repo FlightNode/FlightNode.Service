@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
+using System.Collections.Generic;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
     public interface IWorkLogDomainManager : ICrudManager<WorkLog>
     {
-        List<WorkLogReportRecord> GetReport();
+        IEnumerable<WorkLogReportRecord> GetReport();
     }
 
     public class WorkLogDomainManager : DomainManagerBase<WorkLog>, IWorkLogDomainManager
@@ -32,9 +31,9 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
         }
 
-        public List<WorkLogReportRecord> GetReport()
+        public IEnumerable<WorkLogReportRecord> GetReport()
         {
-            return WorkLogPersistence.WorkLogReportRecords.ToList();
+            return WorkLogPersistence.GetWorkLogReportRecords();
         }
     }
 }

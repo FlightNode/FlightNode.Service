@@ -1,10 +1,8 @@
-﻿using System;
+﻿using FlightNode.DataCollection.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FlightNode.DataCollection.Domain.Entities
+namespace FlightNode.DataCollection.Services.Models
 {
 
     public class WorkLogReportModel

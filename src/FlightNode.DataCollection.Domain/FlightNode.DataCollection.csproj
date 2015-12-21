@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\..\..\FlightNode.Service\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\..\..\Packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -132,9 +135,9 @@
     <Compile Include="Infrastructure\Migrations\201512070258005_DecSix.Designer.cs">
       <DependentUpon>201512070258005_DecSix.cs</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\Migrations\201512190439081_WorkLogReport.cs" />
-    <Compile Include="Infrastructure\Migrations\201512190439081_WorkLogReport.Designer.cs">
-      <DependentUpon>201512190439081_WorkLogReport.cs</DependentUpon>
+    <Compile Include="Infrastructure\Migrations\201512200248278_WorkLogReport.cs" />
+    <Compile Include="Infrastructure\Migrations\201512200248278_WorkLogReport.Designer.cs">
+      <DependentUpon>201512200248278_WorkLogReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -181,8 +184,8 @@
     <EmbeddedResource Include="Infrastructure\Migrations\201512070258005_DecSix.resx">
       <DependentUpon>201512070258005_DecSix.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Infrastructure\Migrations\201512190439081_WorkLogReport.resx">
-      <DependentUpon>201512190439081_WorkLogReport.cs</DependentUpon>
+    <EmbeddedResource Include="Infrastructure\Migrations\201512200248278_WorkLogReport.resx">
+      <DependentUpon>201512200248278_WorkLogReport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

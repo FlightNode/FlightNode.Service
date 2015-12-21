@@ -35,7 +35,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/worklogs
         /// </example>
-        [Authorize]
+        [Authorize(Roles = "Administrator,Coordinator,Lead")]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>
@@ -87,7 +87,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             });
         }
 
-        //[Authorize]
+        [Authorize(Roles="Administrator,Coordinator,Lead")]
         [Route("api/v1/worklogs/export")]
         public IHttpActionResult GetExport()
         {
@@ -116,7 +116,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// location. In any statistical calculations, it is the relative time of day
         /// that matters, not the absolute (UTC) time.
         /// </remarks>
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public IHttpActionResult Post([FromBody]WorkLogModel input)
         {
@@ -171,7 +171,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// location. In any statistical calculations, it is the relative time of day
         /// that matters, not the absolute (UTC) time.
         /// </remarks>
-        //[Authorize]
+        [Authorize]
         [HttpPut]
         public IHttpActionResult Put([FromBody]WorkLogModel input)
         {

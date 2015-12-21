@@ -1,9 +1,8 @@
-using System.Data.Entity.ModelConfiguration;
-using System.Text;
+using Dapper;
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
+using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
@@ -39,16 +38,34 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 		}
 		#endregion
 
+        #region Specialized Queries for IWorkLogPersistence
 
-		#region DbSets used by EF to generate the database migrations
+	    public IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords()
+	    {
+	        using (var conn = this.Database.Connection)
+	        {
+	            if (conn.State != System.Data.ConnectionState.Open)
+	            {
+	                conn.Open();
+	            }
 
-		public DbSet<Location> Locations { get; set; }
+	            return conn.Query<WorkLogReportRecord>("SELECT * FROM dbo.WorkLogReport");
+	        }
+
+	    } 
+
+        
+        #endregion
+
+
+        #region DbSets used by EF to generate the database migrations
+
+        public DbSet<Location> Locations { get; set; }
 
 		public DbSet<WorkLog> WorkLogs { get; set; }
 
 		public DbSet<WorkType> WorkTypes { get; set; }
 
-		public DbSet<WorkLogReportRecord> WorkLogReportRecords { get; set; }
 		#endregion
 
 
@@ -66,8 +83,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 			modelBuilder.Entity<Location>().ToTable("Locations");
 			modelBuilder.Entity<WorkType>().ToTable("WorkType");
 			modelBuilder.Entity<WorkLog>().ToTable("WorkLog");
-			//modelBuilder.Entity<WorkLogReportRecord>().ToTable("WorkLogReport");
-            //modelBuilder.Configurations.Add(new WorkLogReportRecordConfiguration());
 		}
 
 
@@ -77,14 +92,5 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 		}
 
 
-	}
-
-	public class WorkLogReportRecordConfiguration : EntityTypeConfiguration<WorkLogReportRecord>
-	{
-	    public WorkLogReportRecordConfiguration()
-	    {
-	        this.HasKey(t => t.Id);
-	        this.ToTable("dbo.WorkLogReport");
-	    }
 	}
 }

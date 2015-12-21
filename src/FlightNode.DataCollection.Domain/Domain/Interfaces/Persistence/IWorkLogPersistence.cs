@@ -1,11 +1,10 @@
-﻿using System.Data.Entity;
-using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.DataCollection.Domain.Entities;
+using System.Collections.Generic;
 
 namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
 {
     public interface IWorkLogPersistence : IPersistenceBase<WorkLog>
     {
-
-        DbSet<WorkLogReportRecord> WorkLogReportRecords { get; set; }
+        IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords();
     }
 }
