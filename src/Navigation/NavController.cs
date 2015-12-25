@@ -6,14 +6,25 @@ using System.Linq;
 
 namespace FlightNode.Service.Navigation
 {
+    /// <summary>
+    /// API Controller for serving a user-customized navigation tree.
+    /// </summary>
     public class NavController : LoggingController
     {
+        /// <summary>
+        /// HTTP GET request for a navigation menu.
+        /// </summary>
+        /// <returns>
+        /// IHttpActionResult with OK status, containing the navigation tree in the body.
+        /// </returns>
+        /// <example>
+        /// GET: /api/v1/nav
+        /// </example>
         public IHttpActionResult Get()
         {
             var reqContext = this.RequestContext;
 
             var parent = new NavigationNode();
-            parent.AddChild(new NavigationNode("Login", "#/login"));
 
             var claimsPrincipal = reqContext.Principal as ClaimsPrincipal;
             if (claimsPrincipal == null)
@@ -22,13 +33,23 @@ namespace FlightNode.Service.Navigation
             }
 
             var claims = (claimsPrincipal.Claims ?? new List<Claim>()).ToList();
-            if (claims.Any(x => HasRole(x, "Administrator")))
+
+            if (claims.Any())
             {
-                parent = AddAdministrativeTree(parent);
+                parent.AddChild(new NavigationNode("Logout", "#/logout"));
+
+                if (claims.Any(x => HasRole(x, "Administrator")))
+                {
+                    parent = AddAdministrativeTree(parent);
+                }
+                if (claims.Any(x => HasRole(x, "Reporter")))
+                {
+                    parent = AddReporterTree(parent);
+                }
             }
-            if (claims.Any(x => HasRole(x, "Reporter")))
+            else
             {
-                parent = AddReporterTree(parent);
+                parent.AddChild(new NavigationNode("Login", "#/login"));
             }
 
             return Ok(parent);
@@ -42,32 +63,29 @@ namespace FlightNode.Service.Navigation
 
         private NavigationNode AddAdministrativeTree(NavigationNode parent)
         {
-            parent = BuildUserMenu(parent);
+            // When the application is multi-project aware, there will be a need
+            // to separate Coordinator and Administrator privileges. Right now,
+            // the following make sense for a Coordinator as much as an Admin -
+            // except that a coordinator should only be able to create users
+            // at a "lower" level.
 
-
-
-            return parent;
-        }
-
-        private static NavigationNode BuildUserMenu(NavigationNode parent)
-        {
             var users = new NavigationNode("Manage", "#/users");
 
             users.AddChild(new NavigationNode("Users", "#/users"));
+            users.AddChild(new NavigationNode("Work Days", "#/workdays"));
             users.AddChild(new NavigationNode("Work Types", "#/worktypes"));
             users.AddChild(new NavigationNode("Locations", "#/locations"));
 
-            parent.AddChild(users);
-            return parent;
+            return parent.AddChild(users);
         }
 
         private NavigationNode AddReporterTree(NavigationNode parent)
         {
             var collection = new NavigationNode("Reporting", "");
 
-            collection.AddChild(new NavigationNode("Work Log", "#/workday/create"));
+            collection.AddChild(new NavigationNode("Work Log", "#/workdays/new"));
 
-            return parent;
+            return parent.AddChild(collection);
         }
     }
 }
