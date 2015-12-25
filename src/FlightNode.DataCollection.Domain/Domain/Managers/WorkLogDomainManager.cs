@@ -45,14 +45,33 @@ namespace FlightNode.DataCollection.Domain.Managers
                 throw new ArgumentNullException("input");
             }
 
-            // Do not allow the user to be changed
+            input.Validate();
+
             var existing = this.FindById(input.Id);
+            DoNotAllowUserToBeChanged(input, existing);
+
+            existing = MapInputToExisting(input, existing);
+
+            return _persistence.SaveChanges();
+        }
+
+        private static WorkLog MapInputToExisting(WorkLog input, WorkLog existing)
+        {
+            existing.LocationId = input.LocationId;
+            existing.TravelTimeHours = input.TravelTimeHours;
+            existing.WorkDate = input.WorkDate;
+            existing.WorkHours = input.WorkHours;
+            existing.WorkTypeId = input.WorkTypeId;
+
+            return existing;
+        }
+
+        private static void DoNotAllowUserToBeChanged(WorkLog input, WorkLog existing)
+        {
             if (existing.UserId != input.UserId)
             {
                 throw ServerException.UpdateFailed<WorkLog>("Changing the person on a work log entry is forbidden.", input.Id);
             }
-
-            return base.Update(input);
         }
     }
 }
