@@ -1,5 +1,6 @@
 ﻿using FlightNode.Api.DependencyResolution;
 using FligthNode.Common.Api.Controllers;
+using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 using Moq;
 using System;
@@ -14,9 +15,9 @@ namespace FligthNote.Common.Api.UnitTests
         // Test-specific Subclass for accessing protected property
         public class UnityDependencyScopeTss : UnityDependencyScope
         {
-            public UnityDependencyScopeTss(IUnityContainer container): base(container) { }
+            public UnityDependencyScopeTss(IUnityContainer container) : base(container) { }
 
-            public new IUnityContainer Container {  get { return base.Container; } }
+            public new IUnityContainer Container { get { return base.Container; } }
         }
 
         public abstract class Fixture : IDisposable
@@ -117,15 +118,31 @@ namespace FligthNote.Common.Api.UnitTests
             [Fact]
             public void ConfirmNonControllerResolutionCatchesException()
             {
+                // Ridiculous amount of work to create a ResolutionFailedException from mocks... 
+                // therefore, just generate a real one.
+
+                ResolutionFailedException exception = null;
+                try
+                {
+                    new UnityContainer().Resolve<DependencyAttribute>();
+                }
+                catch (ResolutionFailedException res)
+                {
+                    exception = res;
+                }
+                
+
                 MockContainer.Setup(x => x.Resolve(It.Is<Type>(y => y == typeof(DependencyAttribute)),
                                                    It.Is<string>(y => y == null),
                                                    It.Is<ResolverOverride[]>(y => y.Length == 0))
                    )
-                   .Throws(new InvalidOperationException());
+                   .Throws(exception);
 
                 Assert.Null(BuildSystem().GetService(typeof(DependencyAttribute)));
             }
         }
+
+
 
         public class GetServicesBehavior : Fixture
         {

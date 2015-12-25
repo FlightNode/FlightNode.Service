@@ -54,17 +54,26 @@ namespace FlightNode.Api.DependencyResolution
 
         public object GetService(Type serviceType)
         {
-            if (typeof(IHttpController).IsAssignableFrom(serviceType))
+            // WebAPI tries to resolve these types, but Unity isn't setup
+            // for them. Lack of resolution doesn't seem  to cause a problem -
+            // but each of them is throwin exceptions and that causes a 
+            // performance degradation.
+            if (serviceType == null ||
+                serviceType == typeof(System.Web.Http.Dispatcher.IHttpControllerActivator) ||
+                serviceType == typeof(System.Web.Http.Controllers.IHttpActionInvoker) ||
+                serviceType.Name == "IModelValidatorCache")
             {
-                return Container.Resolve(serviceType);
+                return null;
             }
+
 
             try
             {
                 return Container.Resolve(serviceType);
             }
-            catch
+            catch (ResolutionFailedException)
             {
+                // Any other exception might really be a problem, so let it escape.
                 return null;
             }
         }
