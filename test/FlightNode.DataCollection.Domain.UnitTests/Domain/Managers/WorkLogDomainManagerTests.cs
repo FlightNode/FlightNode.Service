@@ -267,6 +267,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkHours = 1.1m,
                 Id = 3
             };
+            private WorkLog differentUser = new WorkLog
+            {
+                LocationId = 1,
+                WorkTypeId = 1,
+                TravelTimeHours = 1.0m,
+                UserId = 2,
+                WorkDate = DateTime.Parse("2015-11-12 6:04 PM"),
+                WorkHours = 1.1m,
+                Id = 3
+            };
 
             protected bool SetModifiedWasCalled = false;
 
@@ -288,8 +298,29 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(RECORD_COUNT);
 
+                // ... for validating that the userid was not changed
+                base.SetupWorkLogsCollection();
+                base.FakeSet.List.Add(item);
+
                 // Act
                 BuildSystem().Update(item);
+            }
+
+            [Fact]
+            public void NotAllowedToModifyTheUserId()
+            {
+                // Arrange
+                base.SetupWorkLogsCollection();
+                BypassEntryMethod();
+                base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
+                    .Returns(RECORD_COUNT);
+
+                // ... for validating that the userid was not changed
+                base.SetupWorkLogsCollection();
+                base.FakeSet.List.Add(differentUser);
+
+                // Act & Assert
+                Assert.Throws<ServerException>(() => BuildSystem().Update(item));
             }
 
             public class Validation : Update
@@ -312,11 +343,21 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                            .Returns(1);
 
+
+                    // ... for validating that the userid was not changed
+                    base.SetupWorkLogsCollection();
+                    base.FakeSet.List.Add(item);
+
                     BuildSystem().Update(item);
                 }
 
                 private void RunNegativeTest(string memberName)
                 {
+
+                    // ... for validating that the userid was not changed
+                    base.SetupWorkLogsCollection();
+                    base.FakeSet.List.Add(item);
+
                     try
                     {
                         BuildSystem().Update(item);

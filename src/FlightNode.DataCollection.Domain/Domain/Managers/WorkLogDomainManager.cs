@@ -1,6 +1,8 @@
-﻿using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.Common.Exceptions;
+using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System.Collections.Generic;
+using System;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
@@ -34,6 +36,23 @@ namespace FlightNode.DataCollection.Domain.Managers
         public IEnumerable<WorkLogReportRecord> GetReport()
         {
             return WorkLogPersistence.GetWorkLogReportRecords();
+        }
+
+        public override int Update(WorkLog input)
+        {
+            if (input == null)
+            {
+                throw new ArgumentNullException("input");
+            }
+
+            // Do not allow the user to be changed
+            var existing = this.FindById(input.Id);
+            if (existing.UserId != input.UserId)
+            {
+                throw ServerException.UpdateFailed<WorkLog>("Changing the person on a work log entry is forbidden.", input.Id);
+            }
+
+            return base.Update(input);
         }
     }
 }
