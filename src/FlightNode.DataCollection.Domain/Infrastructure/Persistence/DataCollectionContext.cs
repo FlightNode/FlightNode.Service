@@ -83,7 +83,12 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 			modelBuilder.Entity<Location>().ToTable("Locations");
 			modelBuilder.Entity<WorkType>().ToTable("WorkType");
 			modelBuilder.Entity<WorkLog>().ToTable("WorkLog");
-		}
+
+            // Entity framework truncates decimal data types to two places unless you tell it otherwise. How dumb.
+            // Geographic coordinates need 6 digits to the right of the decimal point, and at most 3 to the left.
+            modelBuilder.Entity<Location>().Property(x => x.Longitude).HasPrecision(9,6);
+            modelBuilder.Entity<Location>().Property(x => x.Latitude).HasPrecision(9, 6);
+        }
 
 
 		public static DataCollectionContext Create()
