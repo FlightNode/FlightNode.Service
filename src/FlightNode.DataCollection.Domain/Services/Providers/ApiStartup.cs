@@ -2,7 +2,7 @@
 using Owin;
 using System.Reflection;
 
-namespace FlightNode.Identity.Services.Providers
+namespace FlightNode.DataCollection.Services.Providers
 {
     public static class ApiStartup
     {

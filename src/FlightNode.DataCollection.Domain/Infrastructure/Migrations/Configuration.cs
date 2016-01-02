@@ -1,3 +1,5 @@
+using FlightNode.DataCollection.Infrastructure.Customization;
+
 namespace FlightNode.DataCollection.Domain.Migrations
 {
     using System.Data.Entity.Migrations;
@@ -7,22 +9,11 @@ namespace FlightNode.DataCollection.Domain.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+            SetSqlGenerator("System.Data.SqlClient", new CustomSqlServerMigrationSqlGenerator());
         }
 
         protected override void Seed(FlightNode.DataCollection.Infrastructure.Persistence.DataCollectionContext context)
         {
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
         }
     }
 }

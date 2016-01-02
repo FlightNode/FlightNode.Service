@@ -257,6 +257,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         public class Update : CreateFakeSet
         {
             private const int RECORD_COUNT = 1;
+            private WorkLog original = new WorkLog
+            {
+                LocationId = 2,
+                WorkTypeId = 2,
+                TravelTimeHours = 1.1m,
+                UserId = 1,
+                WorkDate = DateTime.Parse("2015-11-12 6:05 PM"),
+                WorkHours = 1.2m,
+                Id = 3
+            };
             private WorkLog item = new WorkLog
             {
                 LocationId = 1,
@@ -267,34 +277,94 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkHours = 1.1m,
                 Id = 3
             };
+            private WorkLog differentUser = new WorkLog
+            {
+                LocationId = 1,
+                WorkTypeId = 1,
+                TravelTimeHours = 1.0m,
+                UserId = 2,
+                WorkDate = DateTime.Parse("2015-11-12 6:04 PM"),
+                WorkHours = 1.1m,
+                Id = 3
+            };
 
             protected bool SetModifiedWasCalled = false;
-
-            protected void BypassEntryMethod()
+            
+            [Fact]
+            public void ConfirmMapsLocationId()
             {
-                DomainManagerBase<WorkLog>.SetModifiedState = (IPersistenceBase<WorkLog> persistenceLayer, WorkLog input) =>
-                {
-                    SetModifiedWasCalled = true;
-                };
+                RunHappyPathTest();
+
+                // Assert - original object should have been modified to match item
+                Assert.Equal(item.LocationId, original.LocationId);
             }
 
             [Fact]
-            public void ConfirmHappyPath()
+            public void ConfirmMapsWorkTypeId()
             {
+                RunHappyPathTest();
 
+                // Assert - original object should have been modified to match item
+                Assert.Equal(item.WorkTypeId, original.WorkTypeId);
+            }
+
+            [Fact]
+            public void ConfirmMapsTravelTimeHours()
+            {
+                RunHappyPathTest();
+
+                // Assert - original object should have been modified to match item
+                Assert.Equal(item.TravelTimeHours, original.TravelTimeHours);
+            }
+
+            [Fact]
+            public void ConfirmMapsWorkDate()
+            {
+                RunHappyPathTest();
+
+                // Assert - original object should have been modified to match item
+                Assert.Equal(item.WorkDate, original.WorkDate);
+            }
+
+            [Fact]
+            public void ConfirmMapsWorkHours()
+            {
+                RunHappyPathTest();
+
+                // Assert - original object should have been modified to match item
+                Assert.Equal(item.WorkHours, original.WorkHours);
+            }
+
+            private void RunHappyPathTest()
+            {
                 // Arrange
                 base.SetupWorkLogsCollection();
-                BypassEntryMethod();
                 base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(RECORD_COUNT);
+
+                // ... for validating that the userid was not changed
+                base.FakeSet.List.Add(original);
 
                 // Act
                 BuildSystem().Update(item);
             }
 
+            [Fact]
+            public void NotAllowedToModifyTheUserId()
+            {
+                // Arrange
+                base.SetupWorkLogsCollection();
+
+                // ... for validating that the userid was not changed
+                base.FakeSet.List.Add(differentUser);
+
+                // Act & Assert
+                Assert.Throws<ServerException>(() => BuildSystem().Update(item));
+            }
+
             public class Validation : Update
             {
-                private WorkLog item = new WorkLog
+                private new WorkLog item = new WorkLog
                 {
                     LocationId = 1,
                     WorkTypeId = 1,
@@ -308,9 +378,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 private void RunPositiveTest()
                 {
                     base.SetupWorkLogsCollection();
-                    BypassEntryMethod();
                     WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                            .Returns(1);
+
+
+                    // ... for validating that the userid was not changed
+                    base.SetupWorkLogsCollection();
+                    base.FakeSet.List.Add(item);
 
                     BuildSystem().Update(item);
                 }

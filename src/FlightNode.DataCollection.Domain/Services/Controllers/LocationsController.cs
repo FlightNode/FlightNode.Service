@@ -9,6 +9,9 @@ using System.Web.Http;
 
 namespace FlightNode.DataCollection.Domain.Services.Controllers
 {
+    /// <summary>
+    /// API endpoints for managing geographic locations.
+    /// </summary>
     public class LocationsController : LoggingController
     {
 
@@ -35,7 +38,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/locations
         /// </example>
-        //[Authorize]
+        /// <remarks>
+        /// Only Administrators and Project Coordinators may access this endpoint.
+        /// </remarks>
+        [Authorize(Roles = "Administrator, Coordinator")]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>
@@ -62,7 +68,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/locations/123
         /// </example>
-        //[Authorize]
+        /// <remarks>
+        /// Only Administrators and Project Coordinators may access this endpoint.
+        /// </remarks>
+        [Authorize(Roles = "Administrator, Coordinator")]
         public IHttpActionResult Get(int id)
         {
             return WrapWithTryCatch(() =>
@@ -94,7 +103,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "latitude": 73.47885
         /// }
         /// </example>
-        //[Authorize]
+        /// <remarks>
+        /// Only Administrators and Project Coordinators may access this endpoint.
+        /// </remarks>
+        [Authorize(Roles = "Administrator, Coordinator")]
         [HttpPost]
         public IHttpActionResult Post([FromBody]LocationModel input)
         {
@@ -137,7 +149,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "id": 123
         /// }
         /// </example>
-        //[Authorize]
+        /// <remarks>
+        /// Only Administrators and Project Coordinators may access this endpoint.
+        /// </remarks>
+        [Authorize(Roles = "Administrator, Coordinator")]
         [HttpPut]
         public IHttpActionResult Put([FromBody]LocationModel input)
         {
@@ -169,7 +184,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/locations/simple
         /// </example>
-        //[Authorize]
+        /// <remarks>
+        /// Any authenticated user may access this endpoint.
+        /// </remarks>
+        [Authorize]
         [Route("api/v1/locations/simple")]
         public IHttpActionResult GetSimpleList()
         {

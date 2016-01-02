@@ -39,17 +39,17 @@ namespace FlightNode.DataCollection.Domain.Managers
             return input;
         }
 
-        public IEnumerable<TEntity> FindAll()
+        public virtual IEnumerable<TEntity> FindAll()
         {
             return _persistence.Collection.ToList();
         }
 
-        public TEntity FindById(int id)
+        public virtual TEntity FindById(int id)
         {
             return _persistence.Collection.FirstOrDefault(x => x.Id == id);
         }
 
-        public int Update(TEntity input)
+        public virtual int Update(TEntity input)
         {
             input.Validate();
 
