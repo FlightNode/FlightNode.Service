@@ -2,7 +2,7 @@
 using System.Web.Http;
 using System.Linq;
 
-namespace FlightNode.Identity.App
+namespace FlightNode.Service.App
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
