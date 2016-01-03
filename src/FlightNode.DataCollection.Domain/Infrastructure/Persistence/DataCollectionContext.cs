@@ -66,10 +66,15 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
 		public DbSet<WorkType> WorkTypes { get; set; }
 
-		#endregion
+        public DbSet<BirdSpecies> BirdSpecies { get; set; }
+
+        public DbSet<SurveyType> SurveyTypes { get; set; }
+        
+
+        #endregion
 
 
-		public DataCollectionContext()
+        public DataCollectionContext()
 			: base(Properties.Settings.Default.ConnectionString)
 		{
 			this.Configuration.LazyLoadingEnabled = false;
@@ -88,6 +93,20 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             // Geographic coordinates need 6 digits to the right of the decimal point, and at most 3 to the left.
             modelBuilder.Entity<Location>().Property(x => x.Longitude).HasPrecision(9,6);
             modelBuilder.Entity<Location>().Property(x => x.Latitude).HasPrecision(9, 6);
+
+
+            modelBuilder.Entity<SurveyType>().ToTable("SurveyType");
+            modelBuilder.Entity<BirdSpecies>()
+                .HasMany(x => x.SurveyTypes)
+                .WithMany(x => x.BirdSpecies)
+                .Map(m =>
+               {
+                   m.MapLeftKey("BirdSpeciesId");
+                   m.MapRightKey("SurveyTypeId");
+                   m.ToTable("SurveyType_BirdSpecies");
+               });                          
+
+
         }
 
 

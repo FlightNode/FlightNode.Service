@@ -3,8 +3,8 @@ using FlightNode.DataCollection.Infrastructure.Customization;
 namespace FlightNode.DataCollection.Domain.Migrations
 {
     using System.Data.Entity.Migrations;
-
-    internal sealed class Configuration : DbMigrationsConfiguration<FlightNode.DataCollection.Infrastructure.Persistence.DataCollectionContext>
+    using System.Data.OleDb;
+    public sealed class Configuration : DbMigrationsConfiguration<FlightNode.DataCollection.Infrastructure.Persistence.DataCollectionContext>
     {
         public Configuration()
         {
@@ -14,6 +14,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
 
         protected override void Seed(FlightNode.DataCollection.Infrastructure.Persistence.DataCollectionContext context)
         {
+            
         }
     }
 }
