@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace FlightNode.Service.Navigation
 {
@@ -16,6 +17,7 @@ namespace FlightNode.Service.Navigation
     /// parent.AddChild(users).AddChild(logout);
     /// 
     /// users.AddChild(new NavigationNode("Users", "#/users"));
+    /// users.AddChild(new NavigationNode());
     /// users.AddChild(new NavigationNode("Work Days", "#/workdays"));
     /// users.AddChild(new NavigationNode("Work Types", "#/worktypes"));
     /// users.AddChild(new NavigationNode("Locations", "#/locations"));
@@ -27,6 +29,7 @@ namespace FlightNode.Service.Navigation
     /// * Logout
     /// * Manage
     /// ** Users
+    /// ** ---------
     /// ** Work Days
     /// ** Work Types
     /// ** Locations
@@ -62,6 +65,15 @@ namespace FlightNode.Service.Navigation
         /// <param name="path">Parent entry's path</param>
         public NavigationNode(string title, string path)
         {
+            if (title == null)
+            {
+                throw new ArgumentNullException("title");
+            }
+            if (path == null)
+            {
+                throw new ArgumentNullException("path");
+            }
+
             Children = new List<NavigationNode>();
             Entry = new NavigationEntry
             {
@@ -77,25 +89,15 @@ namespace FlightNode.Service.Navigation
         /// <returns>this</returns>
         public NavigationNode AddChild(NavigationNode child)
         {
+            if (child == null)
+            {
+                throw new ArgumentNullException("child");
+            }
+
             Children.Add(child);
             return this;
         }
 
     }
 
-    /// <summary>
-    /// Represents a single node in a navigation heirarchy 
-    /// </summary>
-    public class NavigationEntry
-    {
-        /// <summary>
-        /// Title to display on the screen
-        /// </summary>
-        public string Title { get; set; }
-
-        /// <summary>
-        /// Navigation path (e.g. anchor href value)
-        /// </summary>
-        public string Path { get; set; }
-    }
 }
