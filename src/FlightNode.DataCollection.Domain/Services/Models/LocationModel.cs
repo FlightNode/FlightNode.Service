@@ -1,4 +1,4 @@
-﻿namespace FlightNode.DataCollection.Domain.Services.Models
+﻿namespace FlightNode.DataCollection.Services.Models
 {
     /// <summary>
     /// Fully models a Location object.

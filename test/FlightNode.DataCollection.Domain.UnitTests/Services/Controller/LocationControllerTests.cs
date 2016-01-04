@@ -2,7 +2,7 @@
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Controllers;
-using FlightNode.DataCollection.Domain.Services.Models;
+using FlightNode.DataCollection.Services.Models;
 using Moq;
 using NLog;
 using System;
@@ -12,7 +12,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 using System.Web.Http.Results;
 using Xunit;
 

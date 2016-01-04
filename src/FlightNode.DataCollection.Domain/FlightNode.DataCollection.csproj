@@ -107,10 +107,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\Entities\Location.cs" />
+    <Compile Include="Domain\Entities\BirdSpecies.cs" />
+    <Compile Include="Domain\Entities\SurveyType.cs" />
     <Compile Include="Domain\Entities\ValidationHelper.cs" />
     <Compile Include="Domain\Entities\WorkLog.cs" />
     <Compile Include="Domain\Entities\WorkLogReportRecord.cs" />
     <Compile Include="Domain\Entities\WorkType.cs" />
+    <Compile Include="Domain\Interfaces\Persistence\ISurveyTypePersistence.cs" />
+    <Compile Include="Domain\Interfaces\Persistence\IBirdSpeciesPersistence.cs" />
+    <Compile Include="Domain\Managers\SurveyTypeManager.cs" />
+    <Compile Include="Domain\Managers\BirdSpeciesManager.cs" />
     <Compile Include="Infrastructure\Customization\CreateViewOperation.cs" />
     <Compile Include="Infrastructure\Customization\CustomSqlServerMigrationSqlGenerator.cs" />
     <Compile Include="Infrastructure\Customization\DropViewOperation.cs" />
@@ -126,22 +132,26 @@
     <Compile Include="Domain\Managers\WorkLogDomainManager.cs" />
     <Compile Include="Domain\Managers\WorkTypeDomainManager.cs" />
     <Compile Include="Domain\Managers\LocationDomainManager.cs" />
-    <Compile Include="Infrastructure\Migrations\201511081916586_Worklog.cs" />
-    <Compile Include="Infrastructure\Migrations\201511081916586_Worklog.Designer.cs">
+    <Compile Include="Migrations\201511081916586_Worklog.cs" />
+    <Compile Include="Migrations\201511081916586_Worklog.Designer.cs">
       <DependentUpon>201511081916586_Worklog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\Migrations\Configuration.cs" />
-    <Compile Include="Infrastructure\Migrations\201512070258005_DecSix.cs" />
-    <Compile Include="Infrastructure\Migrations\201512070258005_DecSix.Designer.cs">
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Migrations\201512070258005_DecSix.cs" />
+    <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
       <DependentUpon>201512070258005_DecSix.cs</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\Migrations\201512200248278_WorkLogReport.cs" />
-    <Compile Include="Infrastructure\Migrations\201512200248278_WorkLogReport.Designer.cs">
+    <Compile Include="Migrations\201512200248278_WorkLogReport.cs" />
+    <Compile Include="Migrations\201512200248278_WorkLogReport.Designer.cs">
       <DependentUpon>201512200248278_WorkLogReport.cs</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\Migrations\201512271815285_Decimal-Precision.cs" />
-    <Compile Include="Infrastructure\Migrations\201512271815285_Decimal-Precision.Designer.cs">
+    <Compile Include="Migrations\201512271815285_Decimal-Precision.cs" />
+    <Compile Include="Migrations\201512271815285_Decimal-Precision.Designer.cs">
       <DependentUpon>201512271815285_Decimal-Precision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601030352249_SpeciesSurveyType.cs" />
+    <Compile Include="Migrations\201601030352249_SpeciesSurveyType.Designer.cs">
+      <DependentUpon>201601030352249_SpeciesSurveyType.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -149,8 +159,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\Controllers\SurveyTypeController.cs" />
     <Compile Include="Services\Controllers\WorkLogController.cs" />
+    <Compile Include="Services\Controllers\BirdSpeciesController.cs" />
     <Compile Include="Services\Controllers\WorkTypesController.cs" />
+    <Compile Include="Services\Models\BirdSpeciesModel.cs" />
     <Compile Include="Services\Models\LocationModel.cs" />
     <Compile Include="Services\Models\SimpleListItem.cs" />
     <Compile Include="Services\Controllers\LocationsController.cs" />
@@ -182,17 +195,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Infrastructure\Migrations\201511081916586_Worklog.resx">
+    <EmbeddedResource Include="Migrations\201511081916586_Worklog.resx">
       <DependentUpon>201511081916586_Worklog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Infrastructure\Migrations\201512070258005_DecSix.resx">
+    <EmbeddedResource Include="Migrations\201512070258005_DecSix.resx">
       <DependentUpon>201512070258005_DecSix.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Infrastructure\Migrations\201512200248278_WorkLogReport.resx">
+    <EmbeddedResource Include="Migrations\201512200248278_WorkLogReport.resx">
       <DependentUpon>201512200248278_WorkLogReport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Infrastructure\Migrations\201512271815285_Decimal-Precision.resx">
+    <EmbeddedResource Include="Migrations\201512271815285_Decimal-Precision.resx">
       <DependentUpon>201512271815285_Decimal-Precision.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601030352249_SpeciesSurveyType.resx">
+      <DependentUpon>201601030352249_SpeciesSurveyType.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
