@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using FlightNode.Common.BaseClasses;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
-    public class SurveyType
+    public class SurveyType : IEntity
     {
         [Required]
         [MaxLength(100)]

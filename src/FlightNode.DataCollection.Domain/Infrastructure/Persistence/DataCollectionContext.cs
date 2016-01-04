@@ -7,11 +7,27 @@ using System.Data.Entity;
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
 
-	public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence
-	{
-		#region Collections used by persistence interfaces that inherit from IPersistenceBase
+	public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence, IBirdSpeciesPersistence, ISurveyTypePersistence
+    {
+        #region Collections used by persistence interfaces that inherit from IPersistenceBase
 
-		ICrudSet<Location> IPersistenceBase<Location>.Collection
+        ICrudSet<SurveyType> IPersistenceBase<SurveyType>.Collection
+        {
+            get
+            {
+                return new CrudSetDecorator<SurveyType>(this.SurveyTypes);
+            }
+        }
+
+        ICrudSet<BirdSpecies> IPersistenceBase<BirdSpecies>.Collection
+        {
+            get
+            {
+                return new CrudSetDecorator<BirdSpecies>(this.BirdSpecies);
+            }
+        }
+
+        ICrudSet<Location> IPersistenceBase<Location>.Collection
 		{
 			get
 			{
@@ -97,6 +113,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
             modelBuilder.Entity<SurveyType>().ToTable("SurveyType");
             modelBuilder.Entity<BirdSpecies>()
+                .ToTable("BirdSpecies")
                 .HasMany(x => x.SurveyTypes)
                 .WithMany(x => x.BirdSpecies)
                 .Map(m =>

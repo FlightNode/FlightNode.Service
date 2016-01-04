@@ -16,7 +16,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
                         CommonName = c.String(nullable: false, maxLength: 50),
                         Order = c.String(nullable: false, maxLength: 50),
                         Family = c.String(nullable: false, maxLength: 50),
-                        SubFamily = c.String(nullable: false, maxLength: 50),
+                        SubFamily = c.String(maxLength: 50),
                         Genus = c.String(nullable: false, maxLength: 50),
                         Species = c.String(nullable: false, maxLength: 50),
                     })
@@ -1893,12 +1893,12 @@ INSERT INTO dbo.SurveyType (Description) VALUES ('TERN Waterbird Foraging Survey
 
         public override void Down()
         {
-            DropForeignKey("dbo.SurveyType_BirdSpecies", "SurveyTypeId", "dbo.SurveyTypes");
+            DropForeignKey("dbo.SurveyType_BirdSpecies", "SurveyTypeId", "dbo.SurveyType");
             DropForeignKey("dbo.SurveyType_BirdSpecies", "BirdSpeciesId", "dbo.BirdSpecies");
             DropIndex("dbo.SurveyType_BirdSpecies", new[] { "SurveyTypeId" });
             DropIndex("dbo.SurveyType_BirdSpecies", new[] { "BirdSpeciesId" });
             DropTable("dbo.SurveyType_BirdSpecies");
-            DropTable("dbo.SurveyTypes");
+            DropTable("dbo.SurveyType");
             DropTable("dbo.BirdSpecies");
         }
     }

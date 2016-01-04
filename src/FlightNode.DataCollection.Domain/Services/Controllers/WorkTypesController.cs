@@ -1,6 +1,5 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
-using FlightNode.DataCollection.Domain.Services.Models;
 using FlightNode.DataCollection.Services.Models;
 using FligthNode.Common.Api.Controllers;
 using Flurl;
@@ -89,7 +88,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "description": "some location"
         /// }
         /// </example>
-        [Authorize]
+        [Authorize(Roles = "Administrator, Coordinator")]
         [HttpPost]
         public IHttpActionResult Post([FromBody]WorkTypeModel input)
         {
@@ -128,7 +127,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "id": 3
         /// }
         /// </example>
-        [Authorize]
+        [Authorize(Roles = "Administrator, Coordinator")]
         [HttpPut]
         public IHttpActionResult Put([FromBody]WorkTypeModel input)
         {

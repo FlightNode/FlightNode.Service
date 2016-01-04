@@ -1,13 +1,10 @@
-﻿using System;
+﻿using FlightNode.Common.BaseClasses;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
-    public class BirdSpecies
+    public class BirdSpecies : IEntity
     {
         public int Id { get; set; }
         
@@ -31,7 +28,6 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         [MaxLength(50)]
         [StringLength(50)]
-        [Required]
         public string SubFamily { get; set; }
 
         [MaxLength(50)]

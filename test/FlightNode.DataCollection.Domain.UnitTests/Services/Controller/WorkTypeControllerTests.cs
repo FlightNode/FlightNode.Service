@@ -2,7 +2,6 @@
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Controllers;
-using FlightNode.DataCollection.Domain.Services.Models;
 using FlightNode.DataCollection.Services.Models;
 using Moq;
 using NLog;
