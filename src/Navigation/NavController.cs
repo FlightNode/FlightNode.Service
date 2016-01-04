@@ -72,9 +72,14 @@ namespace FlightNode.Service.Navigation
             var users = new NavigationNode("Manage", "#/users");
 
             users.AddChild(new NavigationNode("Users", "#/users"));
+            users.AddChild(new NavigationNode());
+            users.AddChild(new NavigationNode("Volunteer Tracking", string.Empty));
             users.AddChild(new NavigationNode("Work Days", "#/workdays"));
             users.AddChild(new NavigationNode("Work Types", "#/worktypes"));
             users.AddChild(new NavigationNode("Locations", "#/locations"));
+            users.AddChild(new NavigationNode());
+            users.AddChild(new NavigationNode("Bird Surveys", string.Empty));
+            users.AddChild(new NavigationNode("Species Lists", "#/species"));
 
             return parent.AddChild(users);
         }
