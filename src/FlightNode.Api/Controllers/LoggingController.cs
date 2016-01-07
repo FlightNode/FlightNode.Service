@@ -1,26 +1,21 @@
-﻿using NLog;
-using System;
-using System.Collections.Concurrent;
+﻿using System;
 using System.Web.Http;
 using FlightNode.Common.Exceptions;
 using System.Web.Http.ModelBinding;
 using System.Linq;
+using log4net;
 
 namespace FligthNode.Common.Api.Controllers
 {
     public abstract class LoggingController : ApiController
     {
-        private ILogger _logger;
+        private ILog _logger;
 
-        public ILogger Logger
+        public ILog Logger
         {
             get
             {
-                if (_logger ==null)
-                {
-                    _logger = LogManager.GetLogger(GetType().FullName);
-                }
-                return _logger;
+                return _logger ?? (_logger = LogManager.GetLogger(GetType().FullName));
             }
             set
             {
@@ -51,7 +46,12 @@ namespace FligthNode.Common.Api.Controllers
 
         protected IHttpActionResult Handle(UserException ex)
         {
-            // No logging necessary when it was a user-induced error
+            // No *error* logging necessary when it was a user-induced error
+            // TODO: however, it might be a good idea to write this out to a low
+            // level log (lower than error or warning), so that we can turn on
+            // the logging for it when needed. But in that case, may want more 
+            // information about the issue, like which function was being hit.
+            // Will need to think about it more.
 
             return BadRequest(ex.Message);
         }
