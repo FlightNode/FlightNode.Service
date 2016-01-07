@@ -3,8 +3,8 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Controllers;
 using FlightNode.DataCollection.Services.Models;
+using log4net;
 using Moq;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,13 +23,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
         {
             protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
             protected Mock<IWorkLogDomainManager> MockDomainManager;
-            protected Mock<ILogger> MockLogger;
+            protected Mock<ILog> MockLogger;
             protected const string url = "http://some/where/";
 
             public Fixture()
             {
                 MockDomainManager = MockRepository.Create<IWorkLogDomainManager>();
-                MockLogger = MockRepository.Create<ILogger>();
+                MockLogger = MockRepository.Create<ILog>();
             }
 
             protected WorkLogsController BuildSystem()
