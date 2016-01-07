@@ -1,5 +1,6 @@
 ﻿using FlightNode.Common.Api.Filters;
 using FlightNode.Identity.App;
+using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
 using System.Linq;
 using System.Net.Http.Formatting;
@@ -17,7 +18,9 @@ namespace FligthNode.Identity.App
             
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            
+
+            //config.SuppressDefaultHostAuthentication();
+            //config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
         }
 
         private static HttpConfiguration ConfigureRoutes(HttpConfiguration config)
