@@ -1,11 +1,14 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
+using System;
+using System.Globalization;
 
 namespace FlightNode.DataCollection.Services.Models
 {
-
-    public class WorkLogReportModel
+    public class MyWorkLogModel
     {
         public int Id { get; set; }
+
+        public string WorkMonth { get; set; }
 
         public string WorkDate { get; set; }
 
@@ -13,39 +16,22 @@ namespace FlightNode.DataCollection.Services.Models
 
         public decimal TravelTimeHours { get; set; }
 
-        public int WorkTypeId { get; set; }
-
         public string WorkType { get; set; }
 
-        public int LocationId { get; set; }
-
         public string LocationName { get; set; }
+        
 
-        public decimal Longitude { get; set; }
-
-        public decimal Latitude { get; set; }
-
-        public int UserId { get; set; }
-
-        public string Person { get; set; }
-
-
-        public static WorkLogReportModel CreateFrom(WorkLogReportRecord input)
+        public static MyWorkLogModel CreateFrom(WorkLogReportRecord input)
         {
-            return new WorkLogReportModel
+            return new MyWorkLogModel
             {
                 Id = input.Id,
-                Latitude = input.Latitude,
-                LocationId = input.LocationId,
                 LocationName = input.LocationName,
-                Longitude = input.Longitude,
-                Person = input.Person,
                 TravelTimeHours = input.TravelTimeHours,
-                UserId = input.UserId,
                 WorkDate = input.WorkDate,
                 WorkHours = input.WorkHours,
                 WorkType = input.WorkType,
-                WorkTypeId = input.WorkTypeId
+                WorkMonth = DateTime.Parse(input.WorkDate).ToString("MMMM yyyy", CultureInfo.InvariantCulture)
             };
         }
     }

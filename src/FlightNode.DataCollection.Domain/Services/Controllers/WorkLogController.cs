@@ -6,6 +6,7 @@ using Flurl;
 using System;
 using System.Linq;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 
 namespace FlightNode.DataCollection.Domain.Services.Controllers
 {
@@ -72,27 +73,75 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var x = _domainManager.FindById(id);
 
-                var model = new WorkLogModel
-                {
-                    LocationId = x.LocationId,
-                    TravelTimeHours = x.TravelTimeHours,
-                    UserId = x.UserId,
-                    WorkDate = x.WorkDate,
-                    WorkHours = x.WorkHours,
-                    WorkTypeId = x.WorkTypeId,
-                    Id = x.Id
-                };
+                WorkLogModel model = Map(x);
 
                 return Ok(model);
             });
         }
 
-        [Authorize(Roles="Administrator,Coordinator,Lead")]
+        private static WorkLogModel Map(WorkLog x)
+        {
+            return new WorkLogModel
+            {
+                LocationId = x.LocationId,
+                TravelTimeHours = x.TravelTimeHours,
+                UserId = x.UserId,
+                WorkDate = x.WorkDate,
+                WorkHours = x.WorkHours,
+                WorkTypeId = x.WorkTypeId,
+                Id = x.Id
+            };
+        }
+
+
+        /// <summary>
+        /// Retrieves all of the work log entries only for the logged-in user.
+        /// </summary>
+        /// <returns>Action result containing information about the user's work log entries</returns>
+        /// <example>
+        /// GET: /api/v1/worklogs/my
+        /// </example>
+        [Authorize]
+        [Route("api/v1/worklogs/my")]
+        [HttpGet]
+        public IHttpActionResult GetMyLogs()
+        {
+            return WrapWithTryCatch(() =>
+            {
+                int userId = RetrieveCurrentUserId();
+
+                var data = _domainManager.GetForUser(userId);
+
+                var models = data.Select(MyWorkLogModel.CreateFrom).ToList();
+
+                return Ok(models);
+            });
+        }
+
+        private int RetrieveCurrentUserId()
+        {
+            return User.Identity.GetUserId<int>();
+        }
+
+        /// <summary>
+        /// Retrieves all work log entries for all users.
+        /// </summary>
+        /// <returns>Action result containing information about all work log entries</returns>
+        /// <example>
+        /// GET: /api/v1/worklogs/my
+        /// </example>
+        [Authorize(Roles = "Administrator,Coordinator")]
         [Route("api/v1/worklogs/export")]
         public IHttpActionResult GetExport()
         {
-            var data = _domainManager.GetReport();
-            return Ok(data);
+            return WrapWithTryCatch(() =>
+            {
+                var data = _domainManager.GetReport();
+
+                var models = data.Select(WorkLogReportModel.CreateFrom).ToList();
+
+                return Ok(models);
+            });
         }
 
         /// <summary>
