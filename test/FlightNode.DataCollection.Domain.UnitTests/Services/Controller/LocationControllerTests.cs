@@ -1,4 +1,5 @@
-﻿using FlightNode.Common.Exceptions;
+﻿using FlightNode.Common.Api.Models;
+using FlightNode.Common.Exceptions;
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Controllers;

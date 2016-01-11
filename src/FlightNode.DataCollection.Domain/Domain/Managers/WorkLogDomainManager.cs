@@ -9,6 +9,7 @@ namespace FlightNode.DataCollection.Domain.Managers
     public interface IWorkLogDomainManager : ICrudManager<WorkLog>
     {
         IEnumerable<WorkLogReportRecord> GetReport();
+        IEnumerable<WorkLogReportRecord> GetForUser(int userId);
     }
 
     public class WorkLogDomainManager : DomainManagerBase<WorkLog>, IWorkLogDomainManager
@@ -72,6 +73,11 @@ namespace FlightNode.DataCollection.Domain.Managers
             {
                 throw ServerException.UpdateFailed<WorkLog>("Changing the person on a work log entry is forbidden.", input.Id);
             }
+        }
+
+        public IEnumerable<WorkLogReportRecord> GetForUser(int userId)
+        {
+            return WorkLogPersistence.GetWorkLogReportRecords(userId);
         }
     }
 }
