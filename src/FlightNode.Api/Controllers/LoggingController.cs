@@ -89,5 +89,10 @@ namespace FligthNode.Common.Api.Controllers
         {
             return StatusCode(System.Net.HttpStatusCode.NoContent);
         }
+
+        protected internal virtual IHttpActionResult MethodNotAllowed()
+        {
+            return StatusCode(System.Net.HttpStatusCode.MethodNotAllowed);
+        }
     }
 }
