@@ -14,19 +14,8 @@ namespace FlightNode.Identity.App
 
             container = identity.ApiStartup.ConfigureDependencyInjection(container);
             container = dataCollection.ApiStartup.ConfigureDependencyInjection(container);
-            container = RegisterIDbFactory(container);
 
             return new UnityDependencyResolver(container);
-        }
-
-       
-        private static IUnityContainer RegisterIDbFactory(IUnityContainer container)
-        {
-            // TODO: might need to bring this back. Remove by end of October if not.
-            //var dbFactory = new DbFactory(Properties.Settings.Default.ConnectionString);
-            //container.RegisterInstance<IDbFactory>(dbFactory);
-
-            return container;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using FligthNode.Identity.App;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Linq;
 using log4net;
+using FligthNode.Service.App;
 
 namespace FlightNode.Service.App
 {
@@ -23,10 +23,10 @@ namespace FlightNode.Service.App
 
         protected void Application_Start()
         {
-            log4net.Config.XmlConfigurator.Configure();
-            Logger.Info("FlightNode application starting.");
+            //log4net.Config.XmlConfigurator.Configure();
+            //Logger.Info("FlightNode application starting from FlightNodeService.Application_Start.");
 
-            GlobalConfiguration.Configure(WebApiConfig.Register);
+            //GlobalConfiguration.Configure(WebApiConfig.Register);
         }
 
         protected void Application_BeginRequest()
