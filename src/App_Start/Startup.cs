@@ -37,7 +37,6 @@ namespace FlightNode.Service.App
             log4net.Config.XmlConfigurator.Configure();
             Logger.Info("FlightNode application starting from Startup.Configuration.");
 
-            //GlobalConfiguration.Configure(WebApiConfig.Register);
 
             app = identity.ApiStartup.Configure(app, tokenUrl);
             app = dataCollection.ApiStartup.Configure(app, tokenUrl);
