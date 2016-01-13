@@ -16,44 +16,13 @@ using System.Web.Http;
 using System.Web.Http.Results;
 using Xunit;
 
-namespace FlightNode.DataCollection.Domain.UnitTests.Services
+namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 {
     public class WorkLogControllerTests
     {
-        public class Fixture : IDisposable
+        public class Fixture : LoggingControllerBaseFixture<WorkLogsController, IWorkLogDomainManager>
         {
-            protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
-            protected Mock<IWorkLogDomainManager> MockDomainManager;
-            protected Mock<ILog> MockLogger;
-            protected const string url = "http://some/where/";
-
-            public Fixture()
-            {
-                MockDomainManager = MockRepository.Create<IWorkLogDomainManager>();
-                MockLogger = MockRepository.Create<ILog>();
-            }
-
-            protected WorkLogsController BuildSystem()
-            {
-                var controller = new WorkLogsController(MockDomainManager.Object);
-
-                controller.Logger = MockLogger.Object;
-
-                controller.Request = new HttpRequestMessage();
-                controller.Request.RequestUri = new Uri(url);
-
-                controller.Configuration = new HttpConfiguration();
-
-                return controller;
-            }
-
-            public void Dispose()
-            {
-                MockRepository.VerifyAll();
-            }
-
         }
-
 
         public class ArgumentTests : Fixture
         {
@@ -167,7 +136,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfInvalidOperation()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = new InvalidOperationException();
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -176,7 +145,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfServerError()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -185,6 +154,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
+                    ExpectToLogToDebug();
+
                     var e = new UserException("asdf");
                     Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
                 }
@@ -290,7 +261,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfInvalidOperation()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = new InvalidOperationException();
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -299,7 +270,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfServerError()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -308,6 +279,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
+                    ExpectToLogToDebug();
+
                     var e = new UserException("asdf");
                     Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
                 }
@@ -399,7 +372,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfInvalidOperation()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = new InvalidOperationException();
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -408,7 +381,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfServerError()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -417,6 +390,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
+                    ExpectToLogToDebug();
+
                     var e = new UserException("asdf");
                     Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
                 }
@@ -495,7 +470,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfInvalidOperation()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = new InvalidOperationException();
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -504,7 +479,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfServerError()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -513,6 +488,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
+                    ExpectToLogToDebug();
+
                     var e = new UserException("asdf");
                     Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
                 }
@@ -650,7 +627,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfInvalidOperation()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = new InvalidOperationException();
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -659,7 +636,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfServerError()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -668,6 +645,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
+                    ExpectToLogToDebug();
+
                     var e = new UserException("asdf");
                     Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
                 }
@@ -718,6 +697,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
                     MockDomainManager.Setup(x => x.Create(It.IsAny<WorkLog>()))
                                            .Throws(e);
+
+                    ExpectToLogToDebug();
 
                     return BuildSystem().Post(new WorkLogModel()) as InvalidModelStateResult;
                 }
@@ -844,7 +825,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfInvalidOperation()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = new InvalidOperationException();
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -853,7 +834,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfServerError()
                 {
-                    MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
+                    ExpectToLogToError();
 
                     var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
                     Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
@@ -862,6 +843,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
+                    ExpectToLogToDebug();
+
                     var e = new UserException("asdf");
                     Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
                 }
@@ -914,6 +897,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
                     MockDomainManager.Setup(x => x.Update(It.IsAny<WorkLog>()))
                                            .Throws(e);
+                    ExpectToLogToDebug();
 
                     return BuildSystem().Put(new WorkLogModel()) as InvalidModelStateResult;
                 }

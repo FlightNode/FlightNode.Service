@@ -107,6 +107,7 @@
     <Compile Include="Domain\Managers\WorkTypeDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\LocationDomainManagertests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Controller\LoggingControllerBaseFixture.cs" />
     <Compile Include="Services\Controller\WorkLogsControllerTests.cs" />
     <Compile Include="Services\Controller\WorkTypeControllerTests.cs" />
     <Compile Include="Services\Controller\LocationControllerTests.cs" />
