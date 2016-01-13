@@ -46,20 +46,15 @@ namespace FligthNode.Common.Api.Controllers
 
         protected IHttpActionResult Handle(UserException ex)
         {
-            // No *error* logging necessary when it was a user-induced error
-            // TODO: however, it might be a good idea to write this out to a low
-            // level log (lower than error or warning), so that we can turn on
-            // the logging for it when needed. But in that case, may want more 
-            // information about the issue, like which function was being hit.
-            // Will need to think about it more.
+            Logger.Debug(ex);
 
             return BadRequest(ex.Message);
         }
 
         protected IHttpActionResult Handle(DomainValidationException ex)
         {
-            // No logging necessary when it was a user-induced error
-            
+            Logger.Debug(ex);
+
             return BadRequest(ConvertToModelStateErrors(ex));
         }
 
