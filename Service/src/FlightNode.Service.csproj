@@ -278,19 +278,19 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FlightNode.Common\src\FlightNode.Api\FlightNode.Common.Api.csproj">
+    <ProjectReference Include="..\..\Common\src\FlightNode.Api\FlightNode.Common.Api.csproj">
       <Project>{35293658-9d86-44cc-bbe2-8674053633ab}</Project>
       <Name>FlightNode.Common.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\FlightNode.Common\src\FlightNode.Common\FlightNode.Common.csproj">
+    <ProjectReference Include="..\..\Common\src\FlightNode.Common\FlightNode.Common.csproj">
       <Project>{05902c28-0900-4902-9300-0540eedac9c1}</Project>
       <Name>FlightNode.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\FlightNode.DataCollection\src\FlightNode.DataCollection.Domain\FlightNode.DataCollection.csproj">
+    <ProjectReference Include="..\..\DataCollection\src\FlightNode.DataCollection.csproj">
       <Project>{060bf052-8fa5-4beb-95ae-a4da69bc7c54}</Project>
       <Name>FlightNode.DataCollection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\FlightNode.Identity\src\FlightNode.Identity\FlightNode.Identity.csproj">
+    <ProjectReference Include="..\..\Identity\src\FlightNode.Identity.csproj">
       <Project>{8efa7367-e1a8-4ca3-8f20-91ce6fe38f7f}</Project>
       <Name>FlightNode.Identity</Name>
     </ProjectReference>
