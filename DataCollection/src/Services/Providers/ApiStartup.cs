@@ -6,8 +6,10 @@ namespace FlightNode.DataCollection.Services.Providers
 {
     public static class ApiStartup
     {
-        public static IAppBuilder Configure(IAppBuilder app, string issuer)
+        public static IAppBuilder Configure(IAppBuilder app)
         {
+            // No action to take. Leaving this stub as a reminder that we *could*
+            // customize API startup for DataCollection, if needed.
 
             return app;
         }

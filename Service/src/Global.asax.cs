@@ -23,10 +23,10 @@ namespace FlightNode.Service.App
 
         protected void Application_Start()
         {
-            //log4net.Config.XmlConfigurator.Configure();
-            //Logger.Info("FlightNode application starting from FlightNodeService.Application_Start.");
-
-            //GlobalConfiguration.Configure(WebApiConfig.Register);
+            // This method is not required when running in full IIS - it will in fact cause
+            // WebApiConfig.Register to run twice. But, when running in IIS Express, we apparently
+            // need to enable CORS earlier in the setup, which this effectively accomplishes.
+            GlobalConfiguration.Configure(WebApiConfig.Register);
         }
 
         protected void Application_BeginRequest()

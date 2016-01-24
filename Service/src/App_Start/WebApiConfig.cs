@@ -19,7 +19,8 @@ namespace FligthNode.Service.App
         {
             if (_hasAlreadyRun)
             {
-                // Somehow this ends up being called twice, and I can't trace why
+                // This function runs twice when the application is executed through IIS Express.
+                // That is undesirable, so simply exit early if the function has run before.
                 return;
             }
 
@@ -36,10 +37,6 @@ namespace FligthNode.Service.App
             config.DependencyResolver = UnityConfig.RegisterComponents();
 
             SetupJsonFormatting(config);
-
-
-
-
         }
 
         private static void SetupJsonFormatting(HttpConfiguration config)

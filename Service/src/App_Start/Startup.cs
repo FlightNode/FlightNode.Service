@@ -30,23 +30,29 @@ namespace FlightNode.Service.App
 
         public void Configuration(IAppBuilder app)
         {
-            // Don't like this hard-coded value, need to determine a better solution
-            const string tokenUrl = "http://localhost:50323";
-
-
             log4net.Config.XmlConfigurator.Configure();
             Logger.Info("FlightNode application starting from Startup.Configuration.");
 
 
-            app = identity.ApiStartup.Configure(app, tokenUrl);
-            app = dataCollection.ApiStartup.Configure(app, tokenUrl);
+            app = identity.ApiStartup.Configure(app);
+            app = dataCollection.ApiStartup.Configure(app);
 
+            app= EnableWebApi(app);
 
+            app = EnableStaticWebServing(app);
+        }
+
+        private static IAppBuilder EnableWebApi(IAppBuilder app)
+        {
             HttpConfiguration config = new HttpConfiguration();
             WebApiConfig.Register(config);
             app.UseWebApi(config);
 
+            return app;
+        }
 
+        private static IAppBuilder EnableStaticWebServing(IAppBuilder app)
+        {
             var physicalFileSystem = new PhysicalFileSystem(@"./");
             var options = new FileServerOptions
             {
@@ -62,8 +68,9 @@ namespace FlightNode.Service.App
             };
 
             app.UseFileServer(options);
-        }
 
+            return app;
+        }
 
     }
 }
