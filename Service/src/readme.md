@@ -1,3 +1,1 @@
-﻿This is a stand-alone / reference implementation of the FlightNode.Identity API. 
-All identity management logic should be placed into the `FlightNode.Identity` 
-project rather than in this application.
+﻿This project starts up the web server, using controllers within the project and in other linked projects.
