@@ -50,6 +50,7 @@ namespace FlightNode.Service.Navigation
             else
             {
                 parent.AddChild(new NavigationNode("Login", "#/login"));
+                parent.AddChild(new NavigationNode("Create Account", "#/users/register"));
             }
 
             return Ok(parent);
