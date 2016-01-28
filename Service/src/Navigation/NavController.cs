@@ -37,6 +37,7 @@ namespace FlightNode.Service.Navigation
             if (claims.Any())
             {
                 parent.AddChild(new NavigationNode("Logout", "#/logout"));
+                parent.AddChild(new NavigationNode("My Account", "#/users/profile"));
 
                 if (claims.Any(x => HasRole(x, "Administrator")))
                 {
@@ -46,6 +47,8 @@ namespace FlightNode.Service.Navigation
                 {
                     parent = AddReporterTree(parent);
                 }
+
+
             }
             else
             {
