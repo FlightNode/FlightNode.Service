@@ -96,6 +96,7 @@
     <Compile Include="DependencyResolution\UnityDependencyScope.cs" />
     <Compile Include="Filters\NotImplExceptionFilter.cs" />
     <Compile Include="Filters\UnhandledExceptionFilter.cs" />
+    <Compile Include="Filters\LoggingExceptionHandler.cs" />
     <Compile Include="Models\SimpleListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
