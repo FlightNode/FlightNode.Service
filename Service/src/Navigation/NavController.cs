@@ -93,6 +93,7 @@ namespace FlightNode.Service.Navigation
             var collection = new NavigationNode("Reporting", "");
 
             collection.AddChild(new NavigationNode("Work Logs", "#/workdays/mylist"));
+            collection.AddChild(new NavigationNode("Report Census Data", "#/censusdata/create"));
 
             return parent.AddChild(collection);
         }
