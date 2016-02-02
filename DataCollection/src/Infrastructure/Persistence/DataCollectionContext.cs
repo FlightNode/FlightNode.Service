@@ -6,8 +6,8 @@ using System.Data.Entity;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
-
-	public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence, IBirdSpeciesPersistence, ISurveyTypePersistence
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence, IBirdSpeciesPersistence, ISurveyTypePersistence
 	{
 		#region Collections used by persistence interfaces that inherit from IPersistenceBase
 
