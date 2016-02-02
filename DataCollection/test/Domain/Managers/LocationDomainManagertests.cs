@@ -84,6 +84,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             private const int RECORD_COUNT = 1;
             private Location item = new Location
             {
+                SiteCode = "code1",
+                SiteName = "name1",
                 Description = "this is a valid description",
                 Latitude = 0m,
                 Longitude = 0m,
@@ -134,6 +136,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 private Location item = new Location
                 {
+                    SiteCode = "code1",
+                    SiteName = "name1",
                     Description = "this is a valid description",
                     Latitude = 0m,
                     Longitude = 0m,
@@ -172,6 +176,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
 
                 [Fact]
+                public void ConfirmSiteCodeCannotBeNull()
+                {
+                    item.SiteCode = null;
+
+                    RunNegativeTest("SiteCode");
+                }
+
+                [Fact]
+                public void ConfirmSiteNameCannotBeNull()
+                {
+                    item.SiteName = null;
+
+                    RunNegativeTest("SiteName");
+                }
+
+                [Fact]
                 public void ConfirmDescriptionIsRequired()
                 {
                     item.Description = string.Empty;
@@ -180,11 +200,44 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
 
                 [Fact]
+                public void ConfirmSiteCodeIsRequired()
+                {
+                    item.SiteCode = string.Empty;
+
+                    RunNegativeTest("SiteCode");
+                }
+
+                [Fact]
+                public void ConfirmSiteNameIsRequired()
+                {
+                    item.SiteName = string.Empty;
+
+                    RunNegativeTest("SiteName");
+                }
+
+
+                [Fact]
                 public void ConfirmDescriptionRejectsGreaterThan100()
                 {
                     item.Description = "a".PadLeft(101, '0');
 
                     RunNegativeTest("Description");
+                }
+
+                [Fact]
+                public void ConfirmSiteCodeRejectsGreaterThan100()
+                {
+                    item.SiteCode = "a".PadLeft(101, '0');
+
+                    RunNegativeTest("SiteCode");
+                }
+
+                [Fact]
+                public void ConfirmSiteNameRejectsGreaterThan100()
+                {
+                    item.SiteName = "a".PadLeft(101, '0');
+
+                    RunNegativeTest("SiteName");
                 }
 
                 [Fact]
@@ -231,6 +284,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     RunNegativeTest("Longitude");
                 }
+
                 [Fact]
                 public void ConfirmLongitudeAcceptsNeg180()
                 {
@@ -293,6 +347,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             private const int RECORD_COUNT = 1;
             private Location item = new Location
             {
+                SiteCode = "code1",
+                SiteName = "name1",
                 Description = "this is a valid description",
                 Latitude = 0m,
                 Longitude = 0m,
@@ -304,7 +360,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected void BypassEntryMethod()
             {
-                DomainManagerBase<Location>.SetModifiedState = (IPersistenceBase<Location> persistenceLayer, Location input) => 
+                DomainManagerBase<Location>.SetModifiedState = (IPersistenceBase<Location> persistenceLayer, Location input) =>
                 {
                     SetModifiedWasCalled = true;
                 };
@@ -330,6 +386,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 private Location item = new Location
                 {
+                    SiteCode = "code1",
+                    SiteName = "name1",
                     Description = "this is a valid description",
                     Latitude = 0m,
                     Longitude = 0m,
@@ -369,6 +427,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
 
                 [Fact]
+                public void ConfirmSiteCodeCannotBeNull()
+                {
+                    item.SiteCode = null;
+
+                    RunNegativeTest("SiteCode");
+                }
+
+                [Fact]
+                public void ConfirmSiteNameCannotBeNull()
+                {
+                    item.SiteName = null;
+
+                    RunNegativeTest("SiteName");
+                }
+
+                [Fact]
                 public void ConfirmDescriptionIsRequired()
                 {
                     item.Description = string.Empty;
@@ -377,11 +451,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
 
                 [Fact]
-                public void ConfirmDescriptionMaxLength100()
+                public void ConfirmSiteCodeIsRequired()
                 {
-                    item.Description = "a".PadLeft(101, '0');
+                    item.SiteCode = string.Empty;
 
-                    RunNegativeTest("Description");
+                    RunNegativeTest("SiteCode");
+                }
+
+                [Fact]
+                public void ConfirmSiteNameIsRequired()
+                {
+                    item.SiteName = string.Empty;
+
+                    RunNegativeTest("SiteName");
                 }
 
                 [Fact]
@@ -390,6 +472,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     item.Description = "a".PadLeft(101, '0');
 
                     RunNegativeTest("Description");
+                }
+
+                [Fact]
+                public void ConfirmSiteCodeRejectsGreaterThan100()
+                {
+                    item.SiteCode = "a".PadLeft(101, '0');
+
+                    RunNegativeTest("SiteCode");
+                }
+
+                [Fact]
+                public void ConfirmSiteNameRejectsGreaterThan100()
+                {
+                    item.SiteName = "a".PadLeft(101, '0');
+
+                    RunNegativeTest("SiteName");
                 }
 
                 [Fact]

@@ -47,6 +47,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             private string description = "somewhere";
             private decimal longitude = 89.3m;
             private decimal latitude = -34.0m;
+            private string siteCode = "code1";
+            private string siteName = "name1";
 
             [Fact]
             public void ConfirmGetMapsDescription()
@@ -54,6 +56,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 Assert.Equal(description, RunPositiveTest().Description);
             }
 
+            [Fact]
+            public void ConfirmGetMapsSiteCode()
+            {
+                Assert.Equal(siteCode, RunPositiveTest().SiteCode);
+            }
+
+            [Fact]
+            public void ConfirmGetMapsSiteName()
+            {
+                Assert.Equal(siteName, RunPositiveTest().SiteName);
+            }
 
             [Fact]
             public void ConfirmGetMapsId()
@@ -79,6 +92,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 // Arrange 
                 var record = new Location
                 {
+                    SiteCode = siteCode,
+                    SiteName = siteName,
                     Description = description,
                     Latitude = latitude,
                     Longitude = longitude,
@@ -148,6 +163,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             private string description = "somewhere";
             private decimal longitude = 89.3m;
             private decimal latitude = -34.0m;
+            private string siteCode = "code1";
+            private string siteName = "name1";
 
             [Fact]
             public void ConfirmGetMapsDescription()
@@ -155,6 +172,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 Assert.Equal(description, RunPositiveTest().First().Description);
             }
 
+            [Fact]
+            public void ConfirmGetMapsSiteCode()
+            {
+                Assert.Equal(siteCode, RunPositiveTest().First().SiteCode);
+            }
+
+            [Fact]
+            public void ConfirmGetMapsSiteName()
+            {
+                Assert.Equal(siteName, RunPositiveTest().First().SiteName);
+            }
 
             [Fact]
             public void ConfirmGetMapsId()
@@ -182,6 +210,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     new Location
                     {
+                        SiteCode=siteCode,
+                        SiteName=siteName,
                         Description = description,
                         Latitude = latitude,
                         Longitude= longitude,
@@ -250,12 +280,28 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             private string description = "somewhere";
             private decimal longitude = 89.3m;
             private decimal latitude = -34.0m;
+            private string siteCode = "code1";
+            private string siteName = "name1";
 
             [Fact]
             public void ConfirmMapsDescription()
             {
                 RunPositiveTest();
                 MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Description == description)));
+            }
+
+            [Fact]
+            public void ConfirmMapsSiteCode()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.SiteCode == siteCode)));
+            }
+
+            [Fact]
+            public void ConfirmMapSiteName()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.SiteName == siteName)));
             }
 
             [Fact]
@@ -296,6 +342,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 // Arrange 
                 var record = new LocationModel
                 {
+                    SiteCode = siteCode,
+                    SiteName = siteName,
                     Description = description,
                     Latitude = latitude,
                     Longitude = longitude
@@ -371,7 +419,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 private const string field1 = "fieeeeeld";
                 private const string message2 = "as8df7a89psdfp";
                 private const string field2 = "sdk;kl;hl;";
-                
+
 
                 [Fact]
                 public void ConfirmSendsField1InModelState()
@@ -424,12 +472,28 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             private string description = "somewhere";
             private decimal longitude = 89.3m;
             private decimal latitude = -34.0m;
+            private string siteCode = "code1";
+            private string siteName = "name1";
 
             [Fact]
             public void ConfirmMapsDescription()
             {
                 RunPositiveTest();
                 MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Description == description)));
+            }
+
+            [Fact]
+            public void ConfirmMapsSiteCode()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.SiteCode == siteCode)));
+            }
+
+            [Fact]
+            public void ConfirmMapsSiteName()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.SiteName == siteName)));
             }
 
             [Fact]
@@ -469,6 +533,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 // Arrange 
                 var record = new LocationModel
                 {
+                    SiteCode = siteCode,
+                    SiteName = siteName,
                     Description = description,
                     Latitude = latitude,
                     Longitude = longitude,

@@ -22,5 +22,15 @@ namespace FlightNode.DataCollection.Domain.Entities
         public virtual List<WorkLog> WorkLogs { get; set; }
 
         public int Id { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        [StringLength(100)]
+        public string SiteCode { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        [StringLength(100)]
+        public string SiteName { get; set; }
     }
 }
