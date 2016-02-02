@@ -3,8 +3,9 @@ using System.Data.Entity.Migrations;
 
 namespace FlightNode.DataCollection.Domain.Migrations
 {
-	
-	public partial class WorkLogReport : DbMigration
+
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public partial class WorkLogReport : DbMigration
 	{
 		public override void Up()
 		{

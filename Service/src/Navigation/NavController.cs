@@ -36,66 +36,86 @@ namespace FlightNode.Service.Navigation
 
             if (claims.Any())
             {
-                parent.AddChild(new NavigationNode("Logout", "#/logout"));
-                parent.AddChild(new NavigationNode("My Account", "#/users/profile"));
-
-                if (claims.Any(x => HasRole(x, "Administrator")))
-                {
-                    parent = AddAdministrativeTree(parent);
-                }
-                if (claims.Any(x => HasRole(x, "Reporter")))
-                {
-                    parent = AddReporterTree(parent);
-                }
-
-
+                parent = AddTreeForAllUsers(parent);
+                parent = AddAdministrativeTree(claims, parent);
+                parent = AddReporterTree(claims, parent);
             }
             else
             {
-                parent.AddChild(new NavigationNode("Login", "#/login"));
-                parent.AddChild(new NavigationNode("Create Account", "#/users/register"));
+                parent = NavigationForAnonymousUsers(parent);
             }
 
             return Ok(parent);
         }
 
-        private static bool HasRole(Claim x, string roleName)
+        private static NavigationNode AddTreeForAllUsers(NavigationNode parent)
         {
-            return x.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" && 
-                   x.Value == roleName;
+            parent.AddChild(new NavigationNode("Logout", "#/logout"));
+            parent.AddChild(new NavigationNode("My Account", "#/users/profile"));
+
+            return parent;
         }
 
-        private NavigationNode AddAdministrativeTree(NavigationNode parent)
+        private static NavigationNode NavigationForAnonymousUsers(NavigationNode parent)
         {
-            // When the application is multi-project aware, there will be a need
-            // to separate Coordinator and Administrator privileges. Right now,
-            // the following make sense for a Coordinator as much as an Admin -
-            // except that a coordinator should only be able to create users
-            // at a "lower" level.
+            parent.AddChild(new NavigationNode("Login", "#/login"));
+            parent.AddChild(new NavigationNode("Create Account", "#/users/register"));
 
-            var users = new NavigationNode("Manage", "#/users");
-
-            users.AddChild(new NavigationNode("Users", "#/users"));
-            users.AddChild(new NavigationNode());
-            users.AddChild(new NavigationNode("Volunteer Tracking", string.Empty));
-            users.AddChild(new NavigationNode("Work Days", "#/workdays"));
-            users.AddChild(new NavigationNode("Work Types", "#/worktypes"));
-            users.AddChild(new NavigationNode("Locations", "#/locations"));
-            users.AddChild(new NavigationNode());
-            users.AddChild(new NavigationNode("Bird Surveys", string.Empty));
-            users.AddChild(new NavigationNode("Species Lists", "#/species"));
-
-            return parent.AddChild(users);
+            return parent;
         }
 
-        private NavigationNode AddReporterTree(NavigationNode parent)
-        {
-            var collection = new NavigationNode("Reporting", "");
 
+        private NavigationNode AddAdministrativeTree(List<Claim> claims, NavigationNode parent)
+        {
+            if (claims.Any(x => HasRole(x, "Administrator")))
+            {
+                // When the application is multi-project aware, there will be a need
+                // to separate Coordinator and Administrator privileges. Right now,
+                // the following make sense for a Coordinator as much as an Admin -
+                // except that a coordinator should only be able to create users
+                // at a "lower" level.
+
+                var users = new NavigationNode("Manage", "#/users");
+
+                users.AddChild(new NavigationNode("Users", "#/users"));
+                users.AddChild(new NavigationNode("Pending Users", "#/users/pending"));
+                users.AddChild(new NavigationNode());
+                users.AddChild(new NavigationNode("Volunteer Tracking", string.Empty));
+                users.AddChild(new NavigationNode("Work Days", "#/workdays"));
+                users.AddChild(new NavigationNode("Work Types", "#/worktypes"));
+                users.AddChild(new NavigationNode("Locations", "#/locations"));
+                users.AddChild(new NavigationNode());
+                users.AddChild(new NavigationNode("Bird Surveys", string.Empty));
+                users.AddChild(new NavigationNode("Species Lists", "#/species"));
+
+                parent.AddChild(users);
+            }
+            return parent;
+        }
+
+        private NavigationNode AddReporterTree(List<Claim> claims, NavigationNode parent)
+        {
+            if (claims.Any(x => HasRole(x, "Reporter")))
+            {
+                var collection = new NavigationNode("Reporting", "");
+
+                collection.AddChild(new NavigationNode("Work Logs", "#/workdays/mylist"));
+
+                parent.AddChild(collection);
+            }
+            return parent;
+        }
+
+<<<<<<< HEAD
             collection.AddChild(new NavigationNode("Work Logs", "#/workdays/mylist"));
             collection.AddChild(new NavigationNode("Report Census Data", "#/censusdata/create"));
+=======
+>>>>>>> 9f069dc5f4a21df00a3869fb447a3d16563626a6
 
-            return parent.AddChild(collection);
+        private static bool HasRole(Claim x, string roleName)
+        {
+            return x.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" &&
+                   x.Value == roleName;
         }
     }
 }

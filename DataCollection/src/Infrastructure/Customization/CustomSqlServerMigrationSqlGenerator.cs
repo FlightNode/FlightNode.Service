@@ -4,6 +4,7 @@ using System.Data.Entity.SqlServer;
 
 namespace FlightNode.DataCollection.Infrastructure.Customization
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class CustomSqlServerMigrationSqlGenerator : SqlServerMigrationSqlGenerator
     {
         protected override void Generate(MigrationOperation migrationOperation)
