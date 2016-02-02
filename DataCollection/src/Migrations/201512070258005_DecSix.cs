@@ -1,7 +1,8 @@
 namespace FlightNode.DataCollection.Domain.Migrations
 {
     using System.Data.Entity.Migrations;
-    
+
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class DecSix : DbMigration
     {
         public override void Up()

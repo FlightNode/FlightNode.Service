@@ -2,6 +2,7 @@
 
 namespace FlightNode.DataCollection.Infrastructure.Customization
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class DropViewOperation : MigrationOperation
     {
         public DropViewOperation(string viewName)

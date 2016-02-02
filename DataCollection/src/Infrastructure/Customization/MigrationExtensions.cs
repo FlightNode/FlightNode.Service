@@ -3,6 +3,7 @@ using System.Data.Entity.Migrations.Infrastructure;
 
 namespace FlightNode.DataCollection.Infrastructure.Customization
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public static class MigrationExtensions
     {
         public static void CreateView(this DbMigration migration, string viewName, string viewQueryString)
