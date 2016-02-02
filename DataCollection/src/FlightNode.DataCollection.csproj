@@ -146,6 +146,10 @@
     <Compile Include="Migrations\201511081916586_Worklog.Designer.cs">
       <DependentUpon>201511081916586_Worklog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.cs" />
+    <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.Designer.cs">
+      <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
@@ -219,6 +223,9 @@
     <EmbeddedResource Include="Migrations\201601030352249_SpeciesSurveyType.resx">
       <DependentUpon>201601030352249_SpeciesSurveyType.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.resx">
+      <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

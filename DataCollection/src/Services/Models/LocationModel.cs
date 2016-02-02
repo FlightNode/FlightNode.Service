@@ -24,5 +24,15 @@
         /// Full longitude value.
         /// </summary>
         public decimal Longitude { get; set; }
+
+        /// <summary>
+        /// SiteCode of the location.
+        /// </summary>
+        public string SiteCode { get; set; }
+
+        /// <summary>
+        /// SiteName of the location.
+        /// </summary>
+        public string SiteName { get; set; }
     }
 }

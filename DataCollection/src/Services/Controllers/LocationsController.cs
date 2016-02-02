@@ -54,7 +54,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                     Description = x.Description,
                     Id = x.Id,
                     Latitude = x.Latitude,
-                    Longitude = x.Longitude
+                    Longitude = x.Longitude,
+                    SiteCode = x.SiteCode,
+                    SiteName = x.SiteName,
                 });
 
                 return Ok(models);
@@ -84,7 +86,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                     Description = x.Description,
                     Id = x.Id,
                     Latitude = x.Latitude,
-                    Longitude = x.Longitude
+                    Longitude = x.Longitude,
+                    SiteCode = x.SiteCode,
+                    SiteName = x.SiteName,
                 };
 
                 return Ok(model);
@@ -122,7 +126,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                 {
                     Description = input.Description,
                     Latitude = input.Latitude,
-                    Longitude = input.Longitude
+                    Longitude = input.Longitude,
+                    SiteCode = input.SiteCode,
+                    SiteName = input.SiteName,
                 };
 
                 location = _domainManager.Create(location);
@@ -169,10 +175,12 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                     Description = input.Description,
                     Latitude = input.Latitude,
                     Longitude = input.Longitude,
+                    SiteCode = input.SiteCode,
+                    SiteName = input.SiteName,
                     Id = input.Id
                 };
 
-                _domainManager.Update(location);                
+                _domainManager.Update(location);
 
                 return NoContent();
             });
