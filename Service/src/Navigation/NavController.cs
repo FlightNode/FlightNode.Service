@@ -101,11 +101,12 @@ namespace FlightNode.Service.Navigation
 
                 collection.AddChild(new NavigationNode("Work Logs", "#/workdays/mylist"));
 
+                collection.AddChild(new NavigationNode("Report Census Data", "#/censusdata/create"));
+
                 parent.AddChild(collection);
             }
             return parent;
         }
-
 
         private static bool HasRole(Claim x, string roleName)
         {
