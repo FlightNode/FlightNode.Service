@@ -1,4 +1,5 @@
 ﻿using FlightNode.Common.BaseClasses;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FlightNode.DataCollection.Domain.Entities
@@ -17,6 +18,6 @@ namespace FlightNode.DataCollection.Domain.Entities
         [StringLength(150)]
         public string Result { get; set; }
 
-        public virtual SurveyCompleted SurveyCompleted { get; set; }
+        public Guid SurveyIdentifier { get; set; }
     }
 }

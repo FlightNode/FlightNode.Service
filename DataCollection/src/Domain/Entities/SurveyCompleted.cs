@@ -22,9 +22,6 @@ namespace FlightNode.DataCollection.Domain.Entities
         public DateTime EndDate { get; set; }
 
         [Required]
-        public virtual ICollection<Observer> Observers { get; set; }
-
-        [Required]
         public int Assessment { get; set; }
 
         [Required]
@@ -46,5 +43,7 @@ namespace FlightNode.DataCollection.Domain.Entities
         public virtual ICollection<Observation> Observations { get; set; }
 
         public SurveyType SurveyType { get; set; }
+
+        public int SubmittedBy { get; set; }
     }
 }

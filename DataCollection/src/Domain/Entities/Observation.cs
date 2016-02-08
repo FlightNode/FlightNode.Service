@@ -1,7 +1,12 @@
-﻿namespace FlightNode.DataCollection.Domain.Entities
+﻿using FlightNode.Common.BaseClasses;
+using System;
+
+namespace FlightNode.DataCollection.Domain.Entities
 {
-    public class Observation
+    public class Observation : IEntity
     {
+        public int Id { get; set; }
+
         public BirdSpecies BirdSpecies { get; set; }
 
         public bool NestPresent { get; set; }
@@ -23,6 +28,6 @@
 
         public int Bin3 { get; set; }
 
-        public SurveyCompleted SurveyCompleted { get; set; }
+        public Guid SurveyIdentifier { get; set; }
     }
 }
