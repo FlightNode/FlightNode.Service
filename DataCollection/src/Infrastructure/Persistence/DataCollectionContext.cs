@@ -134,13 +134,36 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 				   m.MapLeftKey("BirdSpeciesId");
 				   m.MapRightKey("SurveyTypeId");
 				   m.ToTable("SurveyType_BirdSpecies");
-			   });                          
+			   });
 
 
-		}
+            modelBuilder.Entity<SurveyCompleted>()
+                .ToTable("SurveyCompleted")
+                .HasMany(x => x.Observations)
+                .WithOptional(x => x.SurveyCompleted);
 
 
-		public static DataCollectionContext Create()
+            modelBuilder.Entity<SurveyCompleted>()
+                .HasMany(x => x.Observers)
+                .WithOptional(x => x.SurveyCompleted);
+
+            modelBuilder.Entity<SurveyCompleted>()
+                .HasMany(x => x.Disturbances)
+                .WithOptional(x => x.SurveyCompleted);
+
+
+            modelBuilder.Entity<DisturbanceType>()
+                .ToTable("DisturbanceType");
+
+            modelBuilder.Entity<Disturbance>()
+                .ToTable("Disturbance")
+                .HasRequired(x => x.DisturbanceType)
+                .WithMany(x=>x.Disturbances);
+
+        }
+
+
+        public static DataCollectionContext Create()
 		{
 			return new DataCollectionContext();
 		}

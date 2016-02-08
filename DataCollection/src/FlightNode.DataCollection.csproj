@@ -116,8 +116,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Entities\Disturbance.cs" />
+    <Compile Include="Domain\Entities\DisturbanceType.cs" />
     <Compile Include="Domain\Entities\Location.cs" />
     <Compile Include="Domain\Entities\BirdSpecies.cs" />
+    <Compile Include="Domain\Entities\Observation.cs" />
+    <Compile Include="Domain\Entities\Observer.cs" />
+    <Compile Include="Domain\Entities\SurveyCompleted.cs" />
     <Compile Include="Domain\Entities\SurveyType.cs" />
     <Compile Include="Domain\Entities\ValidationHelper.cs" />
     <Compile Include="Domain\Entities\WorkLog.cs" />
@@ -149,6 +154,10 @@
     <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.cs" />
     <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.Designer.cs">
       <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602080256251_SurveyCompleted.cs" />
+    <Compile Include="Migrations\201602080256251_SurveyCompleted.Designer.cs">
+      <DependentUpon>201602080256251_SurveyCompleted.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
@@ -198,6 +207,10 @@
       <Project>{05902c28-0900-4902-9300-0540eedac9c1}</Project>
       <Name>FlightNode.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Identity\src\FlightNode.Identity.csproj">
+      <Project>{8efa7367-e1a8-4ca3-8f20-91ce6fe38f7f}</Project>
+      <Name>FlightNode.Identity</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -226,6 +239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.resx">
       <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602080256251_SurveyCompleted.resx">
+      <DependentUpon>201602080256251_SurveyCompleted.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
