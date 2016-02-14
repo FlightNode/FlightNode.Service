@@ -200,7 +200,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// GET: /api/v1/birdspecies/GetBirdSpeciesBySurveyTypeId/1
         /// </example>
         // [Authorize]
-        [Route("api/v1/birdspecies/GetBirdSpeciesBySurveyTypeId/{surveyTypeId}")]
+        [Route("api/v1/birdspecies/surveytype/{surveyTypeId}")]
         public IHttpActionResult GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
         {
             return WrapWithTryCatch(() =>
