@@ -190,6 +190,9 @@
     <Compile Include="Services\Models\LocationModel.cs" />
     <Compile Include="Services\Controllers\LocationsController.cs" />
     <Compile Include="Services\Models\MyWorkLogModel.cs" />
+    <Compile Include="Services\Models\Rookery\DisturbanceModel.cs" />
+    <Compile Include="Services\Models\Rookery\ObservationModel.cs" />
+    <Compile Include="Services\Models\Rookery\RookeryCensusModel.cs" />
     <Compile Include="Services\Models\WorkLogModel.cs" />
     <Compile Include="Services\Models\WorkLogReportModel.cs" />
     <Compile Include="Services\Models\WorkTypeModel.cs" />
