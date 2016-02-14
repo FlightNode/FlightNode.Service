@@ -91,7 +91,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         #region Specialized Queries for IBirdSpeciesPersistence
 
-        public IEnumerable<BirdSpecies> FindBirdSpeciesBySurveyTypeId(int surveyTypeId)
+        public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
         {
             var returnVal = new List<BirdSpecies>();
             var surveyType = SurveyTypes.Include(survey => survey.BirdSpecies).FirstOrDefault(surveyItem => surveyItem.Id == surveyTypeId);

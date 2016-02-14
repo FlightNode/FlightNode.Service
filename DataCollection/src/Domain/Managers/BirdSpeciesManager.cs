@@ -33,7 +33,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
         {
-            var retVal = BirdSpeciesPersistence.FindBirdSpeciesBySurveyTypeId(surveyTypeId);
+            var retVal = BirdSpeciesPersistence.GetBirdSpeciesBySurveyTypeId(surveyTypeId);
             return retVal;
         }
 

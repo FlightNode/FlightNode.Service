@@ -5,6 +5,6 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
 {
     public interface IBirdSpeciesPersistence : IPersistenceBase<BirdSpecies>
     {
-        IEnumerable<BirdSpecies> FindBirdSpeciesBySurveyTypeId(int surveyTypeId);
+        IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId);
     }
 }
