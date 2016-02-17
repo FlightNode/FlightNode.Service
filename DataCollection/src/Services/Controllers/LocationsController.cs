@@ -124,7 +124,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var location = new Location
                 {
-                    SiteName = input.Description,
+                    SiteName = input.SiteName,
                     Latitude = input.Latitude,
                     Longitude = input.Longitude,
                     SiteCode = input.SiteCode,
