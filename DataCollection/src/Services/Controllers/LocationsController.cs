@@ -51,7 +51,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
                 var models = locations.Select(x => new LocationModel
                 {
-                    Description = x.Description,
+                    Description = x.SiteName,
                     Id = x.Id,
                     Latitude = x.Latitude,
                     Longitude = x.Longitude,
@@ -83,7 +83,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
                 var model = new LocationModel
                 {
-                    Description = x.Description,
+                    Description = x.SiteName,
                     Id = x.Id,
                     Latitude = x.Latitude,
                     Longitude = x.Longitude,
@@ -103,7 +103,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// POST: /api/v1/locations
         /// {
-        ///   "description": "some location",
+        ///   "siteName": "some location",
         ///   "longitude": 34.02356,
         ///   "latitude": 73.47885
         /// }
@@ -124,11 +124,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var location = new Location
                 {
-                    Description = input.Description,
+                    SiteName = input.Description,
                     Latitude = input.Latitude,
                     Longitude = input.Longitude,
                     SiteCode = input.SiteCode,
-                    SiteName = input.SiteName,
                 };
 
                 location = _domainManager.Create(location);
@@ -150,7 +149,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// PUT: /api/v1/locations/123
         /// {
-        ///   "description": "some location",
+        ///   "siteName": "some location",
         ///   "longitude": 34.02356,
         ///   "latitude": 73.47885,
         ///   "id": 123
@@ -172,7 +171,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var location = new Location
                 {
-                    Description = input.Description,
                     Latitude = input.Latitude,
                     Longitude = input.Longitude,
                     SiteCode = input.SiteCode,
@@ -208,7 +206,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
                 var models = locations.Select(x => new SimpleListItem
                 {
-                    Value = x.Description,
+                    Value = x.SiteName,
                     Id = x.Id
                 });
 

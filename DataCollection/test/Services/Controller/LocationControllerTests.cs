@@ -94,7 +94,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     SiteCode = siteCode,
                     SiteName = siteName,
-                    Description = description,
                     Latitude = latitude,
                     Longitude = longitude,
                     Id = id,
@@ -212,7 +211,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     {
                         SiteCode=siteCode,
                         SiteName=siteName,
-                        Description = description,
                         Latitude = latitude,
                         Longitude= longitude,
                         Id = id,
@@ -287,7 +285,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             public void ConfirmMapsDescription()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Description == description)));
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.SiteName == description)));
             }
 
             [Fact]
@@ -479,7 +477,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             public void ConfirmMapsDescription()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Description == description)));
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.SiteName == description)));
             }
 
             [Fact]
@@ -693,12 +691,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     new Location
                     {
-                        Description = description1,
+                        SiteName = description1,
                         Id = id1
                     },
                     new Location
                     {
-                        Description = description2,
+                        SiteName = description2,
                         Id = id2
                     }
                 };

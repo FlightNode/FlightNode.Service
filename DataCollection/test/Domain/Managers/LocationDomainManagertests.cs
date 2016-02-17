@@ -86,7 +86,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 SiteCode = "code1",
                 SiteName = "name1",
-                Description = "this is a valid description",
                 Latitude = 0m,
                 Longitude = 0m,
                 Id = 0,
@@ -138,7 +137,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     SiteCode = "code1",
                     SiteName = "name1",
-                    Description = "this is a valid description",
                     Latitude = 0m,
                     Longitude = 0m,
                     Id = 0,
@@ -170,7 +168,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionCannotBeNull()
                 {
-                    item.Description = null;
+                    item.SiteName = null;
 
                     RunNegativeTest("Description");
                 }
@@ -194,7 +192,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionIsRequired()
                 {
-                    item.Description = string.Empty;
+                    item.SiteName = string.Empty;
 
                     RunNegativeTest("Description");
                 }
@@ -219,7 +217,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionRejectsGreaterThan100()
                 {
-                    item.Description = "a".PadLeft(101, '0');
+                    item.SiteName = "a".PadLeft(101, '0');
 
                     RunNegativeTest("Description");
                 }
@@ -349,7 +347,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 SiteCode = "code1",
                 SiteName = "name1",
-                Description = "this is a valid description",
                 Latitude = 0m,
                 Longitude = 0m,
                 Id = 0,
@@ -388,7 +385,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     SiteCode = "code1",
                     SiteName = "name1",
-                    Description = "this is a valid description",
                     Latitude = 0m,
                     Longitude = 0m,
                     Id = 0,
@@ -421,7 +417,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionCannotBeNull()
                 {
-                    item.Description = null;
+                    item.SiteName = null;
 
                     RunNegativeTest("Description");
                 }
@@ -445,7 +441,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionIsRequired()
                 {
-                    item.Description = string.Empty;
+                    item.SiteName = string.Empty;
 
                     RunNegativeTest("Description");
                 }
@@ -469,7 +465,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionRejectsGreaterThan100()
                 {
-                    item.Description = "a".PadLeft(101, '0');
+                    item.SiteName = "a".PadLeft(101, '0');
 
                     RunNegativeTest("Description");
                 }

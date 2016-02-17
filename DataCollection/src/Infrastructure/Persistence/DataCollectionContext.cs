@@ -3,8 +3,6 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System;
-using System.Threading.Tasks;
 using System.Linq;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
@@ -57,6 +55,24 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         }
         #endregion
 
+        #region Specialized Queries for IBirdSpeciesPersistence
+
+        public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
+        {
+            var returnVal = new List<BirdSpecies>();
+            var surveyType = SurveyTypes.Include(survey => survey.BirdSpecies).FirstOrDefault(surveyItem => surveyItem.Id == surveyTypeId);
+
+            if (surveyType != null)
+            {
+                if (surveyType.BirdSpecies != null)
+                {
+                    returnVal = surveyType.BirdSpecies.ToList();
+                }
+            }
+            return returnVal;
+        }
+        #endregion
+
         #region Specialized Queries for IWorkLogPersistence
 
         public IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords()
@@ -89,24 +105,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         #endregion
 
-        #region Specialized Queries for IBirdSpeciesPersistence
-
-        public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
-        {
-            var returnVal = new List<BirdSpecies>();
-            var surveyType = SurveyTypes.Include(survey => survey.BirdSpecies).FirstOrDefault(surveyItem => surveyItem.Id == surveyTypeId);
-
-            if (surveyType != null)
-            {
-                if (surveyType.BirdSpecies != null)
-                {
-                    returnVal = surveyType.BirdSpecies.ToList();
-                }
-            }
-            return returnVal;
-        }
-        #endregion
-
 
         #region DbSets used by EF to generate the database migrations
 
@@ -119,6 +117,16 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DbSet<BirdSpecies> BirdSpecies { get; set; }
 
         public DbSet<SurveyType> SurveyTypes { get; set; }
+
+        public DbSet<SurveyCompleted> SurveysCompleted { get; set; }
+
+        public DbSet<Disturbance> Disturbances { get; set; }
+
+        public DbSet<DisturbanceType> DisturbanceType { get; set; }
+
+        public DbSet<Observation> Observations { get; set; }
+
+        public DbSet<Observer> Observers { get; set; }
 
         #endregion
 
@@ -150,12 +158,27 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 .HasMany(x => x.SurveyTypes)
                 .WithMany(x => x.BirdSpecies)
                 .Map(m =>
-               {
-                   m.MapLeftKey("BirdSpeciesId");
-                   m.MapRightKey("SurveyTypeId");
-                   m.ToTable("SurveyType_BirdSpecies");
-               });
+                {
+                    m.MapLeftKey("BirdSpeciesId");
+                    m.MapRightKey("SurveyTypeId");
+                    m.ToTable("SurveyType_BirdSpecies");
+                });
 
+            modelBuilder.Entity<DisturbanceType>()
+                .ToTable("DisturbanceTypes");
+
+            modelBuilder.Entity<Disturbance>()
+                .ToTable("Disturbances")
+                .HasRequired(x => x.DisturbanceType)
+                .WithMany(x => x.Disturbances);
+
+            modelBuilder.Entity<SurveyCompleted>().ToTable("SurveyCompleted");
+
+            // Observer has a foreign key to User, but User is in in the 
+            // Identity project. Identity should not have a reference to 
+            // the DataCollection project; User cannot have a navigation
+            // property back to Observer; and therefore we must manually
+            // add the foreign key relationship in the migration script
 
         }
 
@@ -164,6 +187,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             return new DataCollectionContext();
         }
+
 
     }
 }

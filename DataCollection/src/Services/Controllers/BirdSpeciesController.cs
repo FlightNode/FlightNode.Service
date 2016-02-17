@@ -173,7 +173,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/birdspecies/simple
         /// </example>
-        //[Authorize]
+        [Authorize]
         [Route("api/v1/birdspecies/simple")]
         public IHttpActionResult GetSimpleList()
         {
@@ -199,7 +199,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/birdspecies/GetBirdSpeciesBySurveyTypeId/1
         /// </example>
-        // [Authorize]
+        [Authorize(Roles = "Administrator,Coordinator")]
         [Route("api/v1/birdspecies/surveytype/{surveyTypeId}")]
         public IHttpActionResult GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
         {
