@@ -86,6 +86,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 SiteCode = "code1",
                 SiteName = "name1",
+                County = "United States",
+                City = "Texas",
                 Latitude = 0m,
                 Longitude = 0m,
                 Id = 0,
@@ -137,6 +139,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     SiteCode = "code1",
                     SiteName = "name1",
+                    County = "United States",
+                    City = "Texas",
                     Latitude = 0m,
                     Longitude = 0m,
                     Id = 0,
@@ -347,6 +351,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 SiteCode = "code1",
                 SiteName = "name1",
+                County = "United States",
+                City = "Texas",
                 Latitude = 0m,
                 Longitude = 0m,
                 Id = 0,
@@ -385,6 +391,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     SiteCode = "code1",
                     SiteName = "name1",
+                    County = "United States",
+                    City = "Texas",
                     Latitude = 0m,
                     Longitude = 0m,
                     Id = 0,
