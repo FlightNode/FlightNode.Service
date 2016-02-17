@@ -116,8 +116,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Entities\Disturbance.cs" />
+    <Compile Include="Domain\Entities\DisturbanceType.cs" />
     <Compile Include="Domain\Entities\Location.cs" />
     <Compile Include="Domain\Entities\BirdSpecies.cs" />
+    <Compile Include="Domain\Entities\Observation.cs" />
+    <Compile Include="Domain\Entities\Observer.cs" />
+    <Compile Include="Domain\Entities\SurveyCompleted.cs" />
     <Compile Include="Domain\Entities\SurveyType.cs" />
     <Compile Include="Domain\Entities\ValidationHelper.cs" />
     <Compile Include="Domain\Entities\WorkLog.cs" />
@@ -145,6 +150,14 @@
     <Compile Include="Migrations\201511081916586_Worklog.cs" />
     <Compile Include="Migrations\201511081916586_Worklog.Designer.cs">
       <DependentUpon>201511081916586_Worklog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.cs" />
+    <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.Designer.cs">
+      <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602080256251_SurveyCompleted.cs" />
+    <Compile Include="Migrations\201602080256251_SurveyCompleted.Designer.cs">
+      <DependentUpon>201602080256251_SurveyCompleted.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
@@ -177,6 +190,9 @@
     <Compile Include="Services\Models\LocationModel.cs" />
     <Compile Include="Services\Controllers\LocationsController.cs" />
     <Compile Include="Services\Models\MyWorkLogModel.cs" />
+    <Compile Include="Services\Models\Rookery\DisturbanceModel.cs" />
+    <Compile Include="Services\Models\Rookery\ObservationModel.cs" />
+    <Compile Include="Services\Models\Rookery\RookeryCensusModel.cs" />
     <Compile Include="Services\Models\WorkLogModel.cs" />
     <Compile Include="Services\Models\WorkLogReportModel.cs" />
     <Compile Include="Services\Models\WorkTypeModel.cs" />
@@ -193,6 +209,10 @@
     <ProjectReference Include="..\..\Common\src\FlightNode.Common\FlightNode.Common.csproj">
       <Project>{05902c28-0900-4902-9300-0540eedac9c1}</Project>
       <Name>FlightNode.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Identity\src\FlightNode.Identity.csproj">
+      <Project>{8efa7367-e1a8-4ca3-8f20-91ce6fe38f7f}</Project>
+      <Name>FlightNode.Identity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +239,12 @@
     <EmbeddedResource Include="Migrations\201601030352249_SpeciesSurveyType.resx">
       <DependentUpon>201601030352249_SpeciesSurveyType.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.resx">
+      <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602080256251_SurveyCompleted.resx">
+      <DependentUpon>201602080256251_SurveyCompleted.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

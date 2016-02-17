@@ -30,20 +30,20 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         }
 
         /// <summary>
-        /// Retrieves all Work Type representations.
+        /// Retrieves all bird species representations.
         /// </summary>
         /// <returns>Action result containing an enumeration of work types</returns>
         /// <example>
         /// GET: /api/v1/birdspecies
         /// </example>
-        [Authorize]
+        //[Authorize]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>
             {
-                var locations = _domainManager.FindAll();
+                var birds = _domainManager.FindAll();
 
-                var models = locations.Select(x => Map(x));
+                var models = birds.Select(x => Map(x));
 
                 return base.Ok(models);
             });
@@ -65,14 +65,14 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         }
 
         /// <summary>
-        /// Retrieves a specific work type representation.
+        /// Retrieves a specific bird species representation.
         /// </summary>
         /// <param name="id">Unique identifier for the work type resource</param>
-        /// <returns>Action result containing a representation of the requested work types</returns>
+        /// <returns>Action result containing a representation of the requested bird species</returns>
         /// <example>
         /// GET: /api/v1/birdspecies/123
         /// </example>
-        [Authorize]
+       // [Authorize]
         public IHttpActionResult Get(int id)
         {
             return WrapWithTryCatch(() =>
@@ -86,9 +86,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         }
 
         /// <summary>
-        /// Creates a new work type resource.
+        /// Creates a new bird species resource.
         /// </summary>
-        /// <param name="input">Complete parameters of the work type resource</param>
+        /// <param name="input">Complete parameters of the bird species resource</param>
         /// <returns>Action result containing the new resource's permanent URL</returns>
         /// <example>
         /// POST: /api/v1/birdspecies
@@ -96,7 +96,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "description": "some location"
         /// }
         /// </example>
-        [Authorize(Roles="Administrator,Coordinator")]
+        [Authorize(Roles = "Administrator,Coordinator")]
         [HttpPost]
         public IHttpActionResult Post([FromBody]BirdSpeciesModel input)
         {
@@ -136,9 +136,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         }
 
         /// <summary>
-        /// Updates an existing work type resource.
+        /// Updates an existing bird species resource.
         /// </summary>
-        /// <param name="input">Complete parameters of the work type resource</param>
+        /// <param name="input">Complete parameters of the bird species resource</param>
         /// <returns>Action result with status code 204 "no content"</returns>
         /// <example>
         /// PUT: /api/v1/birdspecies/123
@@ -160,14 +160,14 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var location = Map(input);
 
-                _domainManager.Update(location);                
+                _domainManager.Update(location);
 
                 return NoContent();
             });
         }
 
         /// <summary>
-        /// Retrieves a simplified list representation of all work type resources.
+        /// Retrieves a simplified list representation of all bird species resources.
         /// </summary>
         /// <returns>Action result containing an enumeration of <see cref="SimpleListItem"/></returns>
         /// <example>
@@ -191,5 +191,26 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             });
         }
 
+        /// <summary>
+        /// Retrieves a list of bird species representation for a given survey type.
+        /// </summary>
+        /// <param name="surveyTypeId">Unique identifier for the survey type resource</param>
+        /// <returns>Action result containing a representation of the requested bird species</returns>
+        /// <example>
+        /// GET: /api/v1/birdspecies/GetBirdSpeciesBySurveyTypeId/1
+        /// </example>
+        [Authorize(Roles = "Administrator,Coordinator")]
+        [Route("api/v1/birdspecies/surveytype/{surveyTypeId}")]
+        public IHttpActionResult GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
+        {
+            return WrapWithTryCatch(() =>
+            {
+                var birds = _domainManager.GetBirdSpeciesBySurveyTypeId(surveyTypeId);
+
+                var models = birds.Select(x => Map(x));
+
+                return base.Ok(models);
+            });
+        }
     }
 }

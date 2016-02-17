@@ -42,7 +42,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <remarks>
         /// Only Administrators and Project Coordinators may access this endpoint.
         /// </remarks>
-        [Authorize(Roles = "Administrator, Coordinator")]
+        //[Authorize(Roles = "Administrator, Coordinator")]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>
@@ -51,10 +51,12 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
                 var models = locations.Select(x => new LocationModel
                 {
-                    Description = x.Description,
+                    Description = x.SiteName,
                     Id = x.Id,
                     Latitude = x.Latitude,
-                    Longitude = x.Longitude
+                    Longitude = x.Longitude,
+                    SiteCode = x.SiteCode,
+                    SiteName = x.SiteName,
                 });
 
                 return Ok(models);
@@ -72,7 +74,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <remarks>
         /// Only Administrators and Project Coordinators may access this endpoint.
         /// </remarks>
-        [Authorize(Roles = "Administrator, Coordinator")]
+       // [Authorize(Roles = "Administrator, Coordinator")]
         public IHttpActionResult Get(int id)
         {
             return WrapWithTryCatch(() =>
@@ -81,10 +83,12 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
                 var model = new LocationModel
                 {
-                    Description = x.Description,
+                    Description = x.SiteName,
                     Id = x.Id,
                     Latitude = x.Latitude,
-                    Longitude = x.Longitude
+                    Longitude = x.Longitude,
+                    SiteCode = x.SiteCode,
+                    SiteName = x.SiteName,
                 };
 
                 return Ok(model);
@@ -99,7 +103,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// POST: /api/v1/locations
         /// {
-        ///   "description": "some location",
+        ///   "siteName": "some location",
         ///   "longitude": 34.02356,
         ///   "latitude": 73.47885
         /// }
@@ -120,9 +124,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var location = new Location
                 {
-                    Description = input.Description,
+                    SiteName = input.Description,
                     Latitude = input.Latitude,
-                    Longitude = input.Longitude
+                    Longitude = input.Longitude,
+                    SiteCode = input.SiteCode,
                 };
 
                 location = _domainManager.Create(location);
@@ -144,7 +149,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// PUT: /api/v1/locations/123
         /// {
-        ///   "description": "some location",
+        ///   "siteName": "some location",
         ///   "longitude": 34.02356,
         ///   "latitude": 73.47885,
         ///   "id": 123
@@ -166,13 +171,14 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var location = new Location
                 {
-                    Description = input.Description,
                     Latitude = input.Latitude,
                     Longitude = input.Longitude,
+                    SiteCode = input.SiteCode,
+                    SiteName = input.SiteName,
                     Id = input.Id
                 };
 
-                _domainManager.Update(location);                
+                _domainManager.Update(location);
 
                 return NoContent();
             });
@@ -200,7 +206,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
                 var models = locations.Select(x => new SimpleListItem
                 {
-                    Value = x.Description,
+                    Value = x.SiteName,
                     Id = x.Id
                 });
 
