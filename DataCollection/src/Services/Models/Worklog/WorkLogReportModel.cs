@@ -1,6 +1,6 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 
-namespace FlightNode.DataCollection.Services.Models
+namespace FlightNode.DataCollection.Services.Models.WorkLog
 {
 
     public class WorkLogReportModel

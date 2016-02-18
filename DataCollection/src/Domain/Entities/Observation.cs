@@ -1,5 +1,6 @@
 ﻿using FlightNode.Common.BaseClasses;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
@@ -7,6 +8,9 @@ namespace FlightNode.DataCollection.Domain.Entities
     {
         public int Id { get; set; }
 
+        public int BirdSpeciesId { get; set; }
+
+        [ForeignKey("BirdSpeciesId")]
         public BirdSpecies BirdSpecies { get; set; }
 
         public bool NestPresent { get; set; }
@@ -15,19 +19,29 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public bool FledglingPresent { get; set; }
 
-        // Some surveys methodologies use exact counts
-        public int RawCount { get; set; }
-
-        // While others use bins that could be a count per distance or a
-        // range of numbers. The exact meaning of the following fields
-        // will depend on the survey type
-
+        /// <summary>
+        /// Foraging survey: count of Adults.
+        /// </summary>
         public int Bin1 { get; set; }
 
+        /// <summary>
+        /// Foraging survey: count of juveniles.
+        /// </summary>
         public int Bin2 { get; set; }
 
+        /// <summary>
+        /// Foraging survey: does not use.
+        /// </summary>
         public int Bin3 { get; set; }
 
         public Guid SurveyIdentifier { get; set; }
+
+        public int PrimaryActivityId { get; set; }
+
+        public int SecondaryActivityId { get; set; }
+
+        public int HabitatTypeId { get; set; }
+
+        public int FeedingSuccessRate { get; set; }
     }
 }

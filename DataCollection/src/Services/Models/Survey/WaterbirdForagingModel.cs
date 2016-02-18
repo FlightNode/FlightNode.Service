@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FlightNode.DataCollection.Services.Models.Rookery
 {
-    public class RookeryCensusModel
+    public class WaterbirdForagingModel 
     {
-        public Guid SurveyIdentifer { get; set; }
+        public int Id { get; set; }
+
+        public Guid? SurveyIdentifer { get; set; }
 
         public int Step { get; set; }
 
         public int LocationId { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public int SiteTypeId { get; set; }
 
         public int TideInfoId { get; set; }
 
         public int WeatherInfoId { get; set; }
+
+        public int Temperature { get; set; }
+
+        public int WindSpeed { get; set; }
 
         public List<int> Observers { get; private set; }
 
@@ -34,11 +37,15 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public string DisturbanceComments { get; set; }
 
-        public List<DisturbanceModel> Disturbances { get; set; }
+        public List<DisturbanceModel> Disturbances { get; private set; }
 
-        public List<ObservationModel> Observations { get; set; }
+        public List<ObservationModel> Observations { get; private set; }
 
-        public RookeryCensusModel()
+        public int SurveyId { get; set; }
+
+        public DateTime? TimeOfLowTide { get; set; }
+
+        public WaterbirdForagingModel()
         {
             SurveyIdentifer = Guid.Empty;
             Observers = new List<int>();

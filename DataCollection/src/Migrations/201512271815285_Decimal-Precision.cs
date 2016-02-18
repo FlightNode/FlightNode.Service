@@ -1,6 +1,5 @@
 namespace FlightNode.DataCollection.Domain.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
 
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

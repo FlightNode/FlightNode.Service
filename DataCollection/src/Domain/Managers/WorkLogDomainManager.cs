@@ -1,8 +1,8 @@
 ﻿using FlightNode.Common.Exceptions;
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {

@@ -5,10 +5,7 @@ using FlightNode.DataCollection.Domain.Managers;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
@@ -55,7 +52,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmCreateDoesNotAcceptNullArgument()
             {
-                // need to move this to another class, maybe in a renamed constructor class.
                 Assert.Throws<ArgumentNullException>(() => BuildSystem().Create(null));
             }
 
@@ -77,20 +73,25 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     .Returns(FakeSet);
             }
 
+            protected Location BuildDefault()
+            {
+                return new Location
+                {
+                    SiteCode = "code1",
+                    SiteName = "name1",
+                    Latitude = 0m,
+                    Longitude = 0m,
+                    Id = 0,
+                    WorkLogs = null,
+                    City = "city",
+                    County = "county"
+                };
+            }
         }
 
         public class Create : CreateFakeSet
         {
             private const int RECORD_COUNT = 1;
-            private Location item = new Location
-            {
-                SiteCode = "code1",
-                SiteName = "name1",
-                Latitude = 0m,
-                Longitude = 0m,
-                Id = 0,
-                WorkLogs = null
-            };
 
 
             [Fact]
@@ -98,6 +99,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
 
                 // Arrange
+                var item = BuildDefault();
                 var id = 34234;
                 base.SetupLocationsCollection();
                 base.LocationPersistenceMock.Setup(x => x.SaveChanges())
@@ -117,6 +119,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
 
                 // Arrange
+                var item = BuildDefault();
                 var id = 34234;
                 base.SetupLocationsCollection();
                 base.LocationPersistenceMock.Setup(x => x.SaveChanges())
@@ -133,17 +136,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public class Validation : CreateFakeSet
             {
-                private Location item = new Location
-                {
-                    SiteCode = "code1",
-                    SiteName = "name1",
-                    Latitude = 0m,
-                    Longitude = 0m,
-                    Id = 0,
-                    WorkLogs = null
-                };
 
-                private void RunNegativeTest(string memberName)
+                private void RunNegativeTest(Location item, string memberName)
                 {
                     try
                     {
@@ -156,7 +150,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     }
                 }
 
-                private void RunPositiveTest()
+                private void RunPositiveTest(Location item)
                 {
                     base.SetupLocationsCollection();
                     LocationPersistenceMock.Setup(x => x.SaveChanges())
@@ -166,136 +160,165 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
 
                 [Fact]
-                public void ConfirmDescriptionCannotBeNull()
+                public void ConfirmCityCannotBeNull()
                 {
-                    item.SiteName = null;
+                    var item = BuildDefault();
+                    item.City = null;
 
-                    RunNegativeTest("Description");
+                    RunNegativeTest(item, "City");
                 }
+
+                [Fact]
+                public void ConfirmCityCanBeBlank()
+                {
+                    var item = BuildDefault();
+                    item.City = string.Empty;
+
+                    RunPositiveTest(item);
+                }
+
+                [Fact]
+                public void ConfirmCountyCannotBeNull()
+                {
+                    var item = BuildDefault();
+                    item.County = null;
+
+                    RunNegativeTest(item, "County");
+                }
+
+                [Fact]
+                public void ConfirmCountyCanBeBlank()
+                {
+                    var item = BuildDefault();
+                    item.County = string.Empty;
+
+                    RunPositiveTest(item);
+                }
+
 
                 [Fact]
                 public void ConfirmSiteCodeCannotBeNull()
                 {
+                    var item = BuildDefault();
                     item.SiteCode = null;
 
-                    RunNegativeTest("SiteCode");
+                    RunNegativeTest(item, "SiteCode");
                 }
 
                 [Fact]
                 public void ConfirmSiteNameCannotBeNull()
                 {
+                    var item = BuildDefault();
                     item.SiteName = null;
 
-                    RunNegativeTest("SiteName");
+                    RunNegativeTest(item, "SiteName");
                 }
-
-                [Fact]
-                public void ConfirmDescriptionIsRequired()
-                {
-                    item.SiteName = string.Empty;
-
-                    RunNegativeTest("Description");
-                }
-
+                
                 [Fact]
                 public void ConfirmSiteCodeIsRequired()
                 {
+                    var item = BuildDefault();
                     item.SiteCode = string.Empty;
 
-                    RunNegativeTest("SiteCode");
+                    RunNegativeTest(item, "SiteCode");
                 }
 
                 [Fact]
                 public void ConfirmSiteNameIsRequired()
                 {
+                    var item = BuildDefault();
                     item.SiteName = string.Empty;
 
-                    RunNegativeTest("SiteName");
+                    RunNegativeTest(item, "SiteName");
                 }
 
 
-                [Fact]
-                public void ConfirmDescriptionRejectsGreaterThan100()
-                {
-                    item.SiteName = "a".PadLeft(101, '0');
-
-                    RunNegativeTest("Description");
-                }
+         
 
                 [Fact]
                 public void ConfirmSiteCodeRejectsGreaterThan100()
                 {
+                    var item = BuildDefault();
                     item.SiteCode = "a".PadLeft(101, '0');
 
-                    RunNegativeTest("SiteCode");
+                    RunNegativeTest(item, "SiteCode");
                 }
 
                 [Fact]
                 public void ConfirmSiteNameRejectsGreaterThan100()
                 {
+                    var item = BuildDefault();
                     item.SiteName = "a".PadLeft(101, '0');
 
-                    RunNegativeTest("SiteName");
+                    RunNegativeTest(item, "SiteName");
                 }
 
                 [Fact]
                 public void ConfirmLatitudeRejectsGreaterThan90()
                 {
+                    var item = BuildDefault();
                     item.Latitude = 90.1m;
 
-                    RunNegativeTest("Latitude");
+                    RunNegativeTest(item, "Latitude");
                 }
 
                 [Fact]
                 public void ConfirmLatitudeAccepts90()
                 {
+                    var item = BuildDefault();
                     item.Latitude = 90.0m;
-                    RunPositiveTest();
+                    RunPositiveTest(item);
                 }
 
                 [Fact]
                 public void ConfirmLatitudeRejectsLessThanNeg90()
                 {
+                    var item = BuildDefault();
                     item.Latitude = -90.1m;
 
-                    RunNegativeTest("Latitude");
+                    RunNegativeTest(item, "Latitude");
                 }
 
                 [Fact]
                 public void ConfirmLatitudeAcceptsNeg90()
                 {
+                    var item = BuildDefault();
                     item.Latitude = -90.0m;
-                    RunPositiveTest();
+                    RunPositiveTest(item);
                 }
 
                 [Fact]
                 public void ConfirmLongitudeAccepts180()
                 {
+                    var item = BuildDefault();
                     item.Longitude = 180.0m;
-                    RunPositiveTest();
+                    RunPositiveTest(item);
                 }
 
                 [Fact]
                 public void ConfirmLongitudeRejectsGreaterThan180()
                 {
+                    var item = BuildDefault();
                     item.Longitude = 182.1m;
 
-                    RunNegativeTest("Longitude");
+                    RunNegativeTest(item, "Longitude");
                 }
 
                 [Fact]
                 public void ConfirmLongitudeAcceptsNeg180()
                 {
+                    var item = BuildDefault();
                     item.Longitude = -180.0m;
-                    RunPositiveTest();
+                    RunPositiveTest(item);
                 }
 
                 [Fact]
                 public void ConfirmLongitudeRejectsGreaterThanNeg180()
                 {
+                    var item = BuildDefault();
                     item.Longitude = -180.1m;
 
-                    RunNegativeTest("Longitude");
+                    RunNegativeTest(item, "Longitude");
                 }
 
 
@@ -343,15 +366,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         public class Update : CreateFakeSet
         {
             private const int RECORD_COUNT = 1;
-            private Location item = new Location
-            {
-                SiteCode = "code1",
-                SiteName = "name1",
-                Latitude = 0m,
-                Longitude = 0m,
-                Id = 0,
-                WorkLogs = null
-            };
 
             protected bool SetModifiedWasCalled = false;
 
@@ -368,6 +382,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
 
                 // Arrange
+                var item = BuildDefault();
                 base.SetupLocationsCollection();
                 BypassEntryMethod();
                 base.LocationPersistenceMock.Setup(x => x.SaveChanges())
@@ -381,17 +396,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public class Validation : Update
             {
-                private Location item = new Location
-                {
-                    SiteCode = "code1",
-                    SiteName = "name1",
-                    Latitude = 0m,
-                    Longitude = 0m,
-                    Id = 0,
-                    WorkLogs = null
-                };
 
-                private void RunPositiveTest()
+                private void RunPositiveTest(Location item)
                 {
                     base.SetupLocationsCollection();
                     BypassEntryMethod();
@@ -401,7 +407,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     BuildSystem().Update(item);
                 }
 
-                private void RunNegativeTest(string memberName)
+                private void RunNegativeTest(Location item, string memberName)
                 {
                     try
                     {
@@ -413,136 +419,128 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                         Assert.True(de.ValidationResults.Any(x => x.MemberNames.Any(y => y == memberName)));
                     }
                 }
-
-                [Fact]
-                public void ConfirmDescriptionCannotBeNull()
-                {
-                    item.SiteName = null;
-
-                    RunNegativeTest("Description");
-                }
+                
 
                 [Fact]
                 public void ConfirmSiteCodeCannotBeNull()
                 {
+                    var item = BuildDefault();
                     item.SiteCode = null;
 
-                    RunNegativeTest("SiteCode");
+                    RunNegativeTest(item, "SiteCode");
                 }
 
                 [Fact]
                 public void ConfirmSiteNameCannotBeNull()
                 {
+                    var item = BuildDefault();
                     item.SiteName = null;
 
-                    RunNegativeTest("SiteName");
+                    RunNegativeTest(item, "SiteName");
                 }
-
-                [Fact]
-                public void ConfirmDescriptionIsRequired()
-                {
-                    item.SiteName = string.Empty;
-
-                    RunNegativeTest("Description");
-                }
-
+                
                 [Fact]
                 public void ConfirmSiteCodeIsRequired()
                 {
+                    var item = BuildDefault();
                     item.SiteCode = string.Empty;
 
-                    RunNegativeTest("SiteCode");
+                    RunNegativeTest(item, "SiteCode");
                 }
 
                 [Fact]
                 public void ConfirmSiteNameIsRequired()
                 {
+                    var item = BuildDefault();
                     item.SiteName = string.Empty;
 
-                    RunNegativeTest("SiteName");
+                    RunNegativeTest(item, "SiteName");
                 }
-
-                [Fact]
-                public void ConfirmDescriptionRejectsGreaterThan100()
-                {
-                    item.SiteName = "a".PadLeft(101, '0');
-
-                    RunNegativeTest("Description");
-                }
+                
 
                 [Fact]
                 public void ConfirmSiteCodeRejectsGreaterThan100()
                 {
+                    var item = BuildDefault();
                     item.SiteCode = "a".PadLeft(101, '0');
 
-                    RunNegativeTest("SiteCode");
+                    RunNegativeTest(item, "SiteCode");
                 }
 
                 [Fact]
                 public void ConfirmSiteNameRejectsGreaterThan100()
                 {
+                    var item = BuildDefault();
                     item.SiteName = "a".PadLeft(101, '0');
 
-                    RunNegativeTest("SiteName");
+                    RunNegativeTest(item, "SiteName");
                 }
 
                 [Fact]
                 public void ConfirmLatitudeRejectsGreaterThan90()
                 {
+                    var item = BuildDefault();
                     item.Latitude = 90.1m;
 
-                    RunNegativeTest("Latitude");
+                    RunNegativeTest(item, "Latitude");
                 }
 
                 [Fact]
                 public void ConfirmLatitudeAccepts90()
                 {
+                    var item = BuildDefault();
                     item.Latitude = 90.0m;
-                    RunPositiveTest();
+                    RunPositiveTest(item);
                 }
 
                 [Fact]
                 public void ConfirmLatitudeRejectsLessThanNeg90()
                 {
+                    var item = BuildDefault();
                     item.Latitude = -90.1m;
 
-                    RunNegativeTest("Latitude");
+                    RunNegativeTest(item, "Latitude");
                 }
 
                 [Fact]
                 public void ConfirmLatitudeAcceptsNeg90()
                 {
+                    var item = BuildDefault();
                     item.Latitude = -90.0m;
-                    RunPositiveTest();
+                    RunPositiveTest(item);
                 }
 
                 [Fact]
                 public void ConfirmLongitudeAccepts180()
                 {
+                    var item = BuildDefault();
                     item.Longitude = 180.0m;
-                    RunPositiveTest();
+                    RunPositiveTest(item);
                 }
 
                 [Fact]
                 public void ConfirmLongitudeRejectsGreaterThan180()
                 {
+                    var item = BuildDefault();
                     item.Longitude = 180.1m;
 
-                    RunNegativeTest("Longitude");
+                    RunNegativeTest(item, "Longitude");
                 }
                 [Fact]
                 public void ConfirmLongitudeAcceptsNeg180()
                 {
+                    var item = BuildDefault();
                     item.Longitude = -180.0m;
-                    RunPositiveTest();
+                    RunPositiveTest(item);
                 }
 
                 [Fact]
                 public void ConfirmLongitudeRejectsGreaterThanNeg180()
                 {
+                    var item = BuildDefault();
                     item.Longitude = -180.1m;
 
-                    RunNegativeTest("Longitude");
+                    RunNegativeTest(item, "Longitude");
                 }
             }
         }

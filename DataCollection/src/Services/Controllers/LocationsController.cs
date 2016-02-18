@@ -49,15 +49,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var locations = _domainManager.FindAll();
 
-                var models = locations.Select(x => new LocationModel
-                {
-                    Description = x.SiteName,
-                    Id = x.Id,
-                    Latitude = x.Latitude,
-                    Longitude = x.Longitude,
-                    SiteCode = x.SiteCode,
-                    SiteName = x.SiteName,
-                });
+                var models = locations.Select(Map);
 
                 return Ok(models);
             });
@@ -81,18 +73,24 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var x = _domainManager.FindById(id);
 
-                var model = new LocationModel
-                {
-                    Description = x.SiteName,
-                    Id = x.Id,
-                    Latitude = x.Latitude,
-                    Longitude = x.Longitude,
-                    SiteCode = x.SiteCode,
-                    SiteName = x.SiteName,
-                };
+                var model = Map(x);
 
                 return Ok(model);
             });
+        }
+
+        private static LocationModel Map(Location x)
+        {
+            return new LocationModel
+            {
+                Id = x.Id,
+                Latitude = x.Latitude,
+                Longitude = x.Longitude,
+                SiteCode = x.SiteCode,
+                SiteName = x.SiteName,
+                City = x.City,
+                County = x.County
+            };
         }
 
         /// <summary>
@@ -122,13 +120,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                var location = new Location
-                {
-                    SiteName = input.Description,
-                    Latitude = input.Latitude,
-                    Longitude = input.Longitude,
-                    SiteCode = input.SiteCode,
-                };
+                var location = Map(input);
 
                 location = _domainManager.Create(location);
 
@@ -139,6 +131,20 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
                 return Created(locationHeader, location);
             });
+        }
+
+        private static Location Map(LocationModel input)
+        {
+            return new Location
+            {
+                SiteName = input.SiteName,
+                Latitude = input.Latitude,
+                Longitude = input.Longitude,
+                SiteCode = input.SiteCode,
+                Id = input.Id,
+                City = input.City,
+                County = input.County
+            };
         }
 
         /// <summary>
@@ -169,14 +175,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                var location = new Location
-                {
-                    Latitude = input.Latitude,
-                    Longitude = input.Longitude,
-                    SiteCode = input.SiteCode,
-                    SiteName = input.SiteName,
-                    Id = input.Id
-                };
+                var location = Map(input);
 
                 _domainManager.Update(location);
 

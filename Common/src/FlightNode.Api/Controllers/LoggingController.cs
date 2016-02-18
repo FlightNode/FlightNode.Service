@@ -4,6 +4,8 @@ using FlightNode.Common.Exceptions;
 using System.Web.Http.ModelBinding;
 using System.Linq;
 using log4net;
+using FlightNode.Common.BaseClasses;
+using Flurl;
 
 namespace FligthNode.Common.Api.Controllers
 {
@@ -88,6 +90,18 @@ namespace FligthNode.Common.Api.Controllers
         protected internal virtual IHttpActionResult MethodNotAllowed()
         {
             return StatusCode(System.Net.HttpStatusCode.MethodNotAllowed);
+        }
+
+
+
+        protected IHttpActionResult Created<TModel>(TModel input, string id)
+        {
+            var locationHeader = this.Request
+                .RequestUri
+                .ToString()
+                .AppendPathSegment(id);
+
+            return Created(locationHeader, input);
         }
     }
 }
