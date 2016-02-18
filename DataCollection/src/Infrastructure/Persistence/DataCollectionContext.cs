@@ -166,6 +166,10 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         public DbSet<Observer> Observers { get; set; }
 
+        public DbSet<Tide> Tides { get; set; }
+
+        public DbSet<Weather> Weather { get; set; }
+
         #endregion
 
 
