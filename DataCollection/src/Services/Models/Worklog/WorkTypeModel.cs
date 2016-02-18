@@ -1,5 +1,5 @@
 ﻿
-namespace FlightNode.DataCollection.Services.Models
+namespace FlightNode.DataCollection.Services.Models.WorkLog
 {
     public class WorkTypeModel
     {

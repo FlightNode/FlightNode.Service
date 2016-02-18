@@ -16,6 +16,7 @@ using System.Web.Http.Results;
 using Xunit;
 using FlightNode.Common.Api.Models;
 using FlightNode.DataCollection.Domain.UnitTests.Services.Controller;
+using FlightNode.DataCollection.Services.Models.WorkLog;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services
 {
