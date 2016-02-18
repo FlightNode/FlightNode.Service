@@ -40,7 +40,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         {
             if (input == null)
             {
-                throw new ArgumentNullException("input");
+                return BadRequest("null input");
             }
 
             return WrapWithTryCatch(() =>
@@ -68,15 +68,15 @@ namespace FlightNode.DataCollection.Services.Controllers
                 throw new ArgumentNullException("input");
             }
 
-            if (input.SurveyIdentifer == null ||
-                input.SurveyIdentifer == Guid.Empty)
+            if (input.SurveyIdentifier == null ||
+                input.SurveyIdentifier == Guid.Empty)
             {
                 return BadRequest("Invalid Survey Identifier");
             }
 
             return WrapWithTryCatch(() =>
             {
-                SurveyPending entity = Map(input, input.SurveyIdentifer.Value);
+                SurveyPending entity = Map(input, input.SurveyIdentifier.Value);
 
                 _domainManager.Update(entity, input.Step);
 

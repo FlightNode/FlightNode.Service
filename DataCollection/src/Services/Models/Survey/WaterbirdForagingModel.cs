@@ -7,7 +7,7 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
     {
         public int Id { get; set; }
 
-        public Guid? SurveyIdentifer { get; set; }
+        public Guid? SurveyIdentifier { get; set; }
 
         public int Step { get; set; }
 
@@ -47,7 +47,7 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public WaterbirdForagingModel()
         {
-            SurveyIdentifer = Guid.Empty;
+            SurveyIdentifier = Guid.Empty;
             Observers = new List<int>();
             Observations = new List<ObservationModel>();
             Disturbances = new List<DisturbanceModel>();

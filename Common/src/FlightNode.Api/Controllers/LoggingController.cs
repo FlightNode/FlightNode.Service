@@ -4,7 +4,6 @@ using FlightNode.Common.Exceptions;
 using System.Web.Http.ModelBinding;
 using System.Linq;
 using log4net;
-using FlightNode.Common.BaseClasses;
 using Flurl;
 
 namespace FligthNode.Common.Api.Controllers

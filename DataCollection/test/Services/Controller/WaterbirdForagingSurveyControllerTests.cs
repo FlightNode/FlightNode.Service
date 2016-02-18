@@ -4,6 +4,7 @@ using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Controllers;
 using FlightNode.DataCollection.Services.Models.Rookery;
 using Moq;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Net;
@@ -368,6 +369,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     // Arrange
                     WaterbirdForagingModel input = CreateDefautInput();
 
+
+                    JObject obj = JObject.FromObject(input);
+                    var a = obj.ToString();
+
                     MockDomainManager.Setup(x => x.NewIdentifier())
                         .Returns(IDENTIFIER);
 
@@ -425,6 +430,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                     var e = new UserException("asdf");
                     Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
+                }
+
+                [Fact]
+                public void NullInputShouldBeTreatedAsABadRequest()
+                {
+
+                    var result = BuildSystem().Post(null).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+
+                    Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
                 }
             }
         }
@@ -651,7 +665,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     //
                     // Arrange
                     WaterbirdForagingModel input = CreateDefautInput();
-                    input.SurveyIdentifer = IDENTIFIER;
+                    input.SurveyIdentifier = IDENTIFIER;
 
                     MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>(), It.Is<int>(y => y == STEP)));
 
@@ -678,7 +692,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
 
                     var input = CreateDefautInput();
-                    input.SurveyIdentifer = IDENTIFIER;
+                    input.SurveyIdentifier = IDENTIFIER;
 
                     return BuildSystem().Put(input).ExecuteAsync(new System.Threading.CancellationToken()).Result;
                 }
@@ -690,7 +704,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     //
                     // Arrange
                     WaterbirdForagingModel input = CreateDefautInput();
-                    input.SurveyIdentifer = null;
+                    input.SurveyIdentifier = null;
                     
                     //
                     // Act
@@ -708,7 +722,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     //
                     // Arrange
                     WaterbirdForagingModel input = CreateDefautInput();
-                    input.SurveyIdentifer = Guid.Empty;
+                    input.SurveyIdentifier = Guid.Empty;
 
                     //
                     // Act
