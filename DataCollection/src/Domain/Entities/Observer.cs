@@ -1,6 +1,4 @@
-﻿using FlightNode.Identity.Domain.Entities;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {

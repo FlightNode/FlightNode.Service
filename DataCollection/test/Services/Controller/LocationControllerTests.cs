@@ -3,9 +3,7 @@ using FlightNode.Common.Exceptions;
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Controllers;
-using FlightNode.DataCollection.Domain.UnitTests.Services.Controller;
 using FlightNode.DataCollection.Services.Models;
-using log4net;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,7 +11,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using System.Web.Http.Results;
 using Xunit;
 
@@ -23,6 +20,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
     {
         public class Fixture : LoggingControllerBaseFixture<LocationsController, ILocationDomainManager>
         {
+            protected const int ID = 123;
+            protected const decimal LONGITUDE = 89.3m;
+            protected const decimal LATITUDE = -34.0m;
+            protected const string SITE_CODE = "code1";
+            protected const string SITE_NAME = "name1";
+            protected const string CITY = "city";
+            protected const string COUNTY = "county";
         }
 
 
@@ -43,67 +47,78 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
         public class Get : Fixture
         {
-            private int id = 123;
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
-            private string siteCode = "code1";
-            private string siteName = "name1";
+
+
+            [Fact]
+            public void ConfirmGetMapsCity()
+            {
+                Assert.Equal(CITY, RunPositiveTest().City);
+            }
+
+            [Fact]
+            public void ConfirmGetMapsCounty()
+            {
+                Assert.Equal(COUNTY, RunPositiveTest().County);
+            }
 
             [Fact]
             public void ConfirmGetMapsSiteCode()
             {
-                Assert.Equal(siteCode, RunPositiveTest().SiteCode);
+                Assert.Equal(SITE_CODE, RunPositiveTest().SiteCode);
             }
 
             [Fact]
             public void ConfirmGetMapsSiteName()
             {
-                Assert.Equal(siteName, RunPositiveTest().SiteName);
+                Assert.Equal(SITE_NAME, RunPositiveTest().SiteName);
             }
 
             [Fact]
             public void ConfirmGetMapsId()
             {
-                Assert.Equal(id, RunPositiveTest().Id);
+                Assert.Equal(ID, RunPositiveTest().Id);
             }
 
             [Fact]
             public void ConfirmGetMapsLongitude()
             {
-                Assert.Equal(longitude, RunPositiveTest().Longitude);
+                Assert.Equal(LONGITUDE, RunPositiveTest().Longitude);
             }
 
             [Fact]
             public void ConfirmMapsLatitude()
             {
-                Assert.Equal(latitude, RunPositiveTest().Latitude);
+                Assert.Equal(LATITUDE, RunPositiveTest().Latitude);
             }
+
 
             private LocationModel RunPositiveTest()
             {
                 // Arrange 
                 var record = new Location
                 {
-                    SiteCode = siteCode,
-                    SiteName = siteName,
-                    Latitude = latitude,
-                    Longitude = longitude,
-                    Id = id,
-                    WorkLogs = null
+                    SiteCode = SITE_CODE,
+                    SiteName = SITE_NAME,
+                    Latitude = LATITUDE,
+                    Longitude = LONGITUDE,
+                    Id = ID,
+                    WorkLogs = null,
+                    City = CITY,
+                    County = COUNTY
                 };
 
-                MockDomainManager.Setup(x => x.FindById(It.Is<int>(y => y == id)))
+                MockDomainManager.Setup(x => x.FindById(It.Is<int>(y => y == ID)))
                     .Returns(record);
 
 
                 // Act
-                var result = BuildSystem().Get(id);
+                var result = BuildSystem().Get(ID);
 
-                var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                HttpResponseMessage message = ExecuteHttpAction(result);
 
                 Assert.Equal(HttpStatusCode.OK, message.StatusCode);
 
-                return message.Content.ReadAsAsync<LocationModel>().Result;
+                return ReadResult<LocationModel>(message);
             }
 
             public class ExceptionHandling : Fixture
@@ -150,40 +165,47 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
         public class Get_All : Fixture
         {
-            private int id = 123;
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
-            private string siteCode = "code1";
-            private string siteName = "name1";
+
+            [Fact]
+            public void ConfirmGetMapsCity()
+            {
+                Assert.Equal(CITY, RunPositiveTest().First().City);
+            }
+
+            [Fact]
+            public void ConfirmGetMapsCounty()
+            {
+                Assert.Equal(COUNTY, RunPositiveTest().First().County);
+            }
 
             [Fact]
             public void ConfirmGetMapsSiteCode()
             {
-                Assert.Equal(siteCode, RunPositiveTest().First().SiteCode);
+                Assert.Equal(SITE_CODE, RunPositiveTest().First().SiteCode);
             }
 
             [Fact]
             public void ConfirmGetMapsSiteName()
             {
-                Assert.Equal(siteName, RunPositiveTest().First().SiteName);
+                Assert.Equal(SITE_NAME, RunPositiveTest().First().SiteName);
             }
 
             [Fact]
             public void ConfirmGetMapsId()
             {
-                Assert.Equal(id, RunPositiveTest().First().Id);
+                Assert.Equal(ID, RunPositiveTest().First().Id);
             }
 
             [Fact]
             public void ConfirmGetMapsLongitude()
             {
-                Assert.Equal(longitude, RunPositiveTest().First().Longitude);
+                Assert.Equal(LONGITUDE, RunPositiveTest().First().Longitude);
             }
 
             [Fact]
             public void ConfirmMapsLatitude()
             {
-                Assert.Equal(latitude, RunPositiveTest().First().Latitude);
+                Assert.Equal(LATITUDE, RunPositiveTest().First().Latitude);
             }
 
 
@@ -194,12 +216,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     new Location
                     {
-                        SiteCode=siteCode,
-                        SiteName=siteName,
-                        Latitude = latitude,
-                        Longitude= longitude,
-                        Id = id,
-                        WorkLogs = null
+                        SiteCode=SITE_CODE,
+                        SiteName=SITE_NAME,
+                        Latitude = LATITUDE,
+                        Longitude= LONGITUDE,
+                        Id = ID,
+                        WorkLogs = null,
+                        City = CITY,
+                        County = COUNTY
                     }
                 };
 
@@ -259,44 +283,53 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
         public class Post : Fixture
         {
-            private int id = 123;
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
-            private string siteCode = "code1";
-            private string siteName = "name1";
+            [Fact]
+            public void ConfirmMapsCity()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.City  == CITY)));
+            }
+
+            [Fact]
+            public void ConfirmMapCounty()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.County == COUNTY)));
+            }
+
 
             [Fact]
             public void ConfirmMapsSiteCode()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.SiteCode == siteCode)));
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.SiteCode == SITE_CODE)));
             }
 
             [Fact]
             public void ConfirmMapSiteName()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.SiteName == siteName)));
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.SiteName == SITE_NAME)));
             }
 
             [Fact]
             public void ConfirmMapsLongitude()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Longitude == longitude)));
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Longitude == LONGITUDE)));
             }
 
             [Fact]
             public void ConfirmMapsLatitude()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Latitude == latitude)));
+                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.Latitude == LATITUDE)));
             }
 
             [Fact]
             public void ConfirmUpdatesLocationHeader()
             {
-                var expected = "http://some/where/" + id.ToString();
+                var expected = "http://some/where/" + ID.ToString();
 
                 Assert.Equal(expected, RunPositiveTest().Headers.Location.ToString());
             }
@@ -317,17 +350,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 // Arrange 
                 var record = new LocationModel
                 {
-                    SiteCode = siteCode,
-                    SiteName = siteName,
-                    Latitude = latitude,
-                    Longitude = longitude
+                    SiteCode = SITE_CODE,
+                    SiteName = SITE_NAME,
+                    Latitude = LATITUDE,
+                    Longitude = LONGITUDE,
+                    City = CITY,
+                    County = COUNTY
                 };
 
                 MockDomainManager.Setup(x => x.Create(It.IsAny<Location>()))
                 .Returns((Location actual) =>
                 {
                     // inject an ID value so we can confirm that it is passed in the response
-                    actual.Id = id;
+                    actual.Id = ID;
                     return actual;
                 });
 
@@ -442,45 +477,54 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
         public class Put : Fixture
         {
-            private int id = 123;
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
-            private string siteCode = "code1";
-            private string siteName = "name1";
+
+            [Fact]
+            public void ConfirmMapsCity()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.City == CITY)));
+            }
+
+            [Fact]
+            public void ConfirmMapCounty()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.County == COUNTY)));
+            }
 
             [Fact]
             public void ConfirmMapsSiteCode()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.SiteCode == siteCode)));
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.SiteCode == SITE_CODE)));
             }
 
             [Fact]
             public void ConfirmMapsSiteName()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.SiteName == siteName)));
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.SiteName == SITE_NAME)));
             }
 
             [Fact]
             public void ConfirmMapsLongitude()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Longitude == longitude)));
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Longitude == LONGITUDE)));
             }
 
             [Fact]
             public void ConfirmMapsLatitude()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Latitude == latitude)));
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Latitude == LATITUDE)));
             }
 
             [Fact]
             public void ConfirmMapsLocationId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Id == id)));
+                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.Id == ID)));
             }
 
             [Fact]
@@ -499,11 +543,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 // Arrange 
                 var record = new LocationModel
                 {
-                    SiteCode = siteCode,
-                    SiteName = siteName,
-                    Latitude = latitude,
-                    Longitude = longitude,
-                    Id = id
+                    SiteCode = SITE_CODE,
+                    SiteName = SITE_NAME,
+                    Latitude = LATITUDE,
+                    Longitude = LONGITUDE,
+                    Id = ID,
+                    City = CITY,
+                    County = COUNTY
                 };
 
                 MockDomainManager.Setup(x => x.Update(It.IsAny<Location>()))
@@ -624,8 +670,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         {
             private const int id1 = 123;
             private const int id2 = 52334;
-            private const string siteName1 = "somewhere";
-            private const string siteName2 = "else";
+            private const string description1 = "somewhere";
+            private const string description2 = "else";
 
             [Fact]
             public void ConfirmReturnsOKStatus()
@@ -636,13 +682,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             [Fact]
             public void ConfirmReturnsFirstItem()
             {
-                Assert.Equal(siteName1, GetTestResults().FirstOrDefault(x => x.Id == id1).Value);
+                Assert.Equal(description1, GetTestResults().FirstOrDefault(x => x.Id == id1).Value);
             }
 
             [Fact]
             public void ConfirmReturnsSecondItem()
             {
-                Assert.Equal(siteName2, GetTestResults().FirstOrDefault(x => x.Id == id2).Value);
+                Assert.Equal(description2, GetTestResults().FirstOrDefault(x => x.Id == id2).Value);
             }
 
             private List<SimpleListItem> GetTestResults()
@@ -658,12 +704,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     new Location
                     {
-                        SiteName = siteName1,
+                        SiteName = description1,
                         Id = id1
                     },
                     new Location
                     {
-                        SiteName = siteName2,
+                        SiteName = description2,
                         Id = id2
                     }
                 };

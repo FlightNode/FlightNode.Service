@@ -3,7 +3,7 @@ using FlightNode.DataCollection.Infrastructure.Customization;
 namespace FlightNode.DataCollection.Domain.Migrations
 {
     using System.Data.Entity.Migrations;
-    
+
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public sealed class Configuration : DbMigrationsConfiguration<FlightNode.DataCollection.Infrastructure.Persistence.DataCollectionContext>
     {

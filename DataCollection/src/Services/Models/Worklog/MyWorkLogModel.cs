@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace FlightNode.DataCollection.Services.Models
+namespace FlightNode.DataCollection.Services.Models.WorkLog
 {
     public class MyWorkLogModel
     {

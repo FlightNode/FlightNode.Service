@@ -3,7 +3,6 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Models;
 using FligthNode.Common.Api.Controllers;
-using Flurl;
 using System;
 using System.Linq;
 using System.Web.Http;
@@ -107,18 +106,16 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                BirdSpecies BirdSpecies = Map(input);
+                BirdSpecies species = Map(input);
 
-                BirdSpecies = _domainManager.Create(BirdSpecies);
+                species = _domainManager.Create(species);
 
-                var locationHeader = this.Request
-                    .RequestUri
-                    .ToString()
-                    .AppendPathSegment(BirdSpecies.Id.ToString());
+                input.Id = species.Id;
 
-                return Created(locationHeader, BirdSpecies);
+                return Created(input, species.Id.ToString());
             });
         }
+
 
         private static BirdSpecies Map(BirdSpeciesModel input)
         {

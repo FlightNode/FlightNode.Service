@@ -1,6 +1,7 @@
 ﻿using FlightNode.Common.BaseClasses;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
@@ -8,6 +9,9 @@ namespace FlightNode.DataCollection.Domain.Entities
     {
         public int Id { get; set; }
 
+        public int DisturbanceTypeId { get; set; }
+
+        [ForeignKey("DisturbanceTypeId")]
         public DisturbanceType DisturbanceType { get; set; }
         
         public int Quantity { get; set; }

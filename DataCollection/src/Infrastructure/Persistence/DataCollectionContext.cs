@@ -8,7 +8,7 @@ using System.Linq;
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence, IBirdSpeciesPersistence, ISurveyTypePersistence
+    public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence, IBirdSpeciesPersistence, ISurveyTypePersistence, ISurveyPersistence
     {
         #region Collections used by persistence interfaces that inherit from IPersistenceBase
 
@@ -53,6 +53,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 return new CrudSetDecorator<WorkType>(this.WorkTypes);
             }
         }
+
         #endregion
 
         #region Specialized Queries for IBirdSpeciesPersistence
@@ -72,6 +73,41 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             return returnVal;
         }
         #endregion
+
+        #region ISurveyPersistence
+
+        ICrudSet<SurveyPending> ISurveyPersistence.SurveysPending
+        {
+            get
+            {
+                return new CrudSetDecorator<SurveyPending>(this.SurveysPending);
+            }
+        }
+        
+        ICrudSet<SurveyCompleted> ISurveyPersistence.SurveysCompleted
+        {
+            get
+            {
+                return new CrudSetDecorator<SurveyCompleted>(this.SurveysCompleted);
+            }
+        }
+
+        ICrudSet<Disturbance> ISurveyPersistence.Disturbances
+        {
+            get
+            {
+                return new CrudSetDecorator<Disturbance>(this.Disturbances);
+            }
+        }
+        ICrudSet<Observation> ISurveyPersistence.Observations
+        {
+            get
+            {
+                return new CrudSetDecorator<Observation>(this.Observations);
+            }
+        }
+        #endregion
+
 
         #region Specialized Queries for IWorkLogPersistence
 
@@ -106,7 +142,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         #endregion
 
 
-        #region DbSets used by EF to generate the database migrations
+        #region EF DbSets 
 
         public DbSet<Location> Locations { get; set; }
 
@@ -119,6 +155,8 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DbSet<SurveyType> SurveyTypes { get; set; }
 
         public DbSet<SurveyCompleted> SurveysCompleted { get; set; }
+
+        public DbSet<SurveyPending> SurveysPending { get; set; }
 
         public DbSet<Disturbance> Disturbances { get; set; }
 
@@ -158,11 +196,11 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 .HasMany(x => x.SurveyTypes)
                 .WithMany(x => x.BirdSpecies)
                 .Map(m =>
-                {
-                    m.MapLeftKey("BirdSpeciesId");
-                    m.MapRightKey("SurveyTypeId");
-                    m.ToTable("SurveyType_BirdSpecies");
-                });
+               {
+                   m.MapLeftKey("BirdSpeciesId");
+                   m.MapRightKey("SurveyTypeId");
+                   m.ToTable("SurveyType_BirdSpecies");
+               });
 
             modelBuilder.Entity<DisturbanceType>()
                 .ToTable("DisturbanceTypes");
@@ -180,6 +218,10 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             // property back to Observer; and therefore we must manually
             // add the foreign key relationship in the migration script
 
+            modelBuilder.Entity<Weather>().ToTable("Weather");
+            modelBuilder.Entity<Tide>().ToTable("Tides");
+
+            modelBuilder.Entity<SurveyPending>().ToTable("SurveyPending");
         }
 
 

@@ -27,14 +27,14 @@ namespace FlightNode.DataCollection.Domain.Entities
         [MaxLength(10)]
         [StringLength(10)]
         public string SiteCode { get; set; }
-        
 
-        [Required]
+
+        [Required(AllowEmptyStrings = true)]
         [MaxLength(100)]
         [StringLength(100)]
         public string County { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         [MaxLength(100)]
         [StringLength(100)]
         public string City { get; set; }

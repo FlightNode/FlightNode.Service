@@ -1,5 +1,6 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Services.Models;
+using FlightNode.DataCollection.Services.Models.WorkLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
