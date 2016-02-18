@@ -83,8 +83,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     Longitude = 0m,
                     Id = 0,
                     WorkLogs = null,
-                    City = "city",
-                    County = "county"
+                    County = "United States",
+                    City = "Texas"
                 };
             }
         }

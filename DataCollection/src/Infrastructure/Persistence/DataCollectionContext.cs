@@ -3,10 +3,10 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
-
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence, IBirdSpeciesPersistence, ISurveyTypePersistence, ISurveyPersistence
     {
@@ -54,6 +54,24 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             }
         }
 
+        #endregion
+
+        #region Specialized Queries for IBirdSpeciesPersistence
+
+        public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
+        {
+            var returnVal = new List<BirdSpecies>();
+            var surveyType = SurveyTypes.Include(survey => survey.BirdSpecies).FirstOrDefault(surveyItem => surveyItem.Id == surveyTypeId);
+
+            if (surveyType != null)
+            {
+                if (surveyType.BirdSpecies != null)
+                {
+                    returnVal = surveyType.BirdSpecies.ToList();
+                }
+            }
+            return returnVal;
+        }
         #endregion
 
         #region ISurveyPersistence
