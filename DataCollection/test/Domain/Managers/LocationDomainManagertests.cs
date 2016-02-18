@@ -86,6 +86,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 SiteCode = "code1",
                 SiteName = "name1",
+                County = "United States",
+                City = "Texas",
                 Latitude = 0m,
                 Longitude = 0m,
                 Id = 0,
@@ -137,6 +139,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     SiteCode = "code1",
                     SiteName = "name1",
+                    County = "United States",
+                    City = "Texas",
                     Latitude = 0m,
                     Longitude = 0m,
                     Id = 0,
@@ -165,13 +169,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     BuildSystem().Create(item);
                 }
 
-                [Fact]
-                public void ConfirmDescriptionCannotBeNull()
-                {
-                    item.SiteName = null;
+                //[Fact]
+                //public void ConfirmDescriptionCannotBeNull()
+                //{
+                //    item.SiteName = null;
 
-                    RunNegativeTest("Description");
-                }
+                //    RunNegativeTest("Description");
+                //}
 
                 [Fact]
                 public void ConfirmSiteCodeCannotBeNull()
@@ -189,13 +193,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     RunNegativeTest("SiteName");
                 }
 
-                [Fact]
-                public void ConfirmDescriptionIsRequired()
-                {
-                    item.SiteName = string.Empty;
+                //[Fact]
+                //public void ConfirmDescriptionIsRequired()
+                //{
+                //    item.SiteName = string.Empty;
 
-                    RunNegativeTest("Description");
-                }
+                //    RunNegativeTest("Description");
+                //}
 
                 [Fact]
                 public void ConfirmSiteCodeIsRequired()
@@ -214,13 +218,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
 
 
-                [Fact]
-                public void ConfirmDescriptionRejectsGreaterThan100()
-                {
-                    item.SiteName = "a".PadLeft(101, '0');
+                //[Fact]
+                //public void ConfirmDescriptionRejectsGreaterThan100()
+                //{
+                //    item.SiteName = "a".PadLeft(101, '0');
 
-                    RunNegativeTest("Description");
-                }
+                //    RunNegativeTest("Description");
+                //}
 
                 [Fact]
                 public void ConfirmSiteCodeRejectsGreaterThan100()
@@ -347,6 +351,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 SiteCode = "code1",
                 SiteName = "name1",
+                County = "United States",
+                City = "Texas",
                 Latitude = 0m,
                 Longitude = 0m,
                 Id = 0,
@@ -385,6 +391,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     SiteCode = "code1",
                     SiteName = "name1",
+                    County = "United States",
+                    City = "Texas",
                     Latitude = 0m,
                     Longitude = 0m,
                     Id = 0,
@@ -414,13 +422,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     }
                 }
 
-                [Fact]
-                public void ConfirmDescriptionCannotBeNull()
-                {
-                    item.SiteName = null;
+                //[Fact]
+                //public void ConfirmDescriptionCannotBeNull()
+                //{
+                //    item.SiteName = null;
 
-                    RunNegativeTest("Description");
-                }
+                //    RunNegativeTest("Description");
+                //}
 
                 [Fact]
                 public void ConfirmSiteCodeCannotBeNull()
@@ -438,13 +446,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     RunNegativeTest("SiteName");
                 }
 
-                [Fact]
-                public void ConfirmDescriptionIsRequired()
-                {
-                    item.SiteName = string.Empty;
+                //[Fact]
+                //public void ConfirmDescriptionIsRequired()
+                //{
+                //    item.SiteName = string.Empty;
 
-                    RunNegativeTest("Description");
-                }
+                //    RunNegativeTest("Description");
+                //}
 
                 [Fact]
                 public void ConfirmSiteCodeIsRequired()
@@ -462,13 +470,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     RunNegativeTest("SiteName");
                 }
 
-                [Fact]
-                public void ConfirmDescriptionRejectsGreaterThan100()
-                {
-                    item.SiteName = "a".PadLeft(101, '0');
+                //[Fact]
+                //public void ConfirmDescriptionRejectsGreaterThan100()
+                //{
+                //    item.SiteName = "a".PadLeft(101, '0');
 
-                    RunNegativeTest("Description");
-                }
+                //    RunNegativeTest("Description");
+                //}
 
                 [Fact]
                 public void ConfirmSiteCodeRejectsGreaterThan100()

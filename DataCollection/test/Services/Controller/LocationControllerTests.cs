@@ -44,17 +44,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         public class Get : Fixture
         {
             private int id = 123;
-            private string description = "somewhere";
             private decimal longitude = 89.3m;
             private decimal latitude = -34.0m;
             private string siteCode = "code1";
             private string siteName = "name1";
-
-            [Fact]
-            public void ConfirmGetMapsDescription()
-            {
-                Assert.Equal(description, RunPositiveTest().Description);
-            }
 
             [Fact]
             public void ConfirmGetMapsSiteCode()
@@ -85,7 +78,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             {
                 Assert.Equal(latitude, RunPositiveTest().Latitude);
             }
-
 
             private LocationModel RunPositiveTest()
             {
@@ -159,17 +151,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         public class Get_All : Fixture
         {
             private int id = 123;
-            private string description = "somewhere";
             private decimal longitude = 89.3m;
             private decimal latitude = -34.0m;
             private string siteCode = "code1";
             private string siteName = "name1";
-
-            [Fact]
-            public void ConfirmGetMapsDescription()
-            {
-                Assert.Equal(description, RunPositiveTest().First().Description);
-            }
 
             [Fact]
             public void ConfirmGetMapsSiteCode()
@@ -275,18 +260,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         public class Post : Fixture
         {
             private int id = 123;
-            private string description = "somewhere";
             private decimal longitude = 89.3m;
             private decimal latitude = -34.0m;
             private string siteCode = "code1";
             private string siteName = "name1";
-
-            [Fact]
-            public void ConfirmMapsDescription()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<Location>(y => y.SiteName == description)));
-            }
 
             [Fact]
             public void ConfirmMapsSiteCode()
@@ -342,7 +319,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     SiteCode = siteCode,
                     SiteName = siteName,
-                    Description = description,
                     Latitude = latitude,
                     Longitude = longitude
                 };
@@ -467,18 +443,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         public class Put : Fixture
         {
             private int id = 123;
-            private string description = "somewhere";
             private decimal longitude = 89.3m;
             private decimal latitude = -34.0m;
             private string siteCode = "code1";
             private string siteName = "name1";
-
-            [Fact]
-            public void ConfirmMapsDescription()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<Location>(y => y.SiteName == description)));
-            }
 
             [Fact]
             public void ConfirmMapsSiteCode()
@@ -533,7 +501,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     SiteCode = siteCode,
                     SiteName = siteName,
-                    Description = description,
                     Latitude = latitude,
                     Longitude = longitude,
                     Id = id
@@ -657,8 +624,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         {
             private const int id1 = 123;
             private const int id2 = 52334;
-            private const string description1 = "somewhere";
-            private const string description2 = "else";
+            private const string siteName1 = "somewhere";
+            private const string siteName2 = "else";
 
             [Fact]
             public void ConfirmReturnsOKStatus()
@@ -669,13 +636,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             [Fact]
             public void ConfirmReturnsFirstItem()
             {
-                Assert.Equal(description1, GetTestResults().FirstOrDefault(x => x.Id == id1).Value);
+                Assert.Equal(siteName1, GetTestResults().FirstOrDefault(x => x.Id == id1).Value);
             }
 
             [Fact]
             public void ConfirmReturnsSecondItem()
             {
-                Assert.Equal(description2, GetTestResults().FirstOrDefault(x => x.Id == id2).Value);
+                Assert.Equal(siteName2, GetTestResults().FirstOrDefault(x => x.Id == id2).Value);
             }
 
             private List<SimpleListItem> GetTestResults()
@@ -691,12 +658,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     new Location
                     {
-                        SiteName = description1,
+                        SiteName = siteName1,
                         Id = id1
                     },
                     new Location
                     {
-                        SiteName = description2,
+                        SiteName = siteName2,
                         Id = id2
                     }
                 };

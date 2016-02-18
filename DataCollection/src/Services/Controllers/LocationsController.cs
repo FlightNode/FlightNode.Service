@@ -42,7 +42,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <remarks>
         /// Only Administrators and Project Coordinators may access this endpoint.
         /// </remarks>
-        [Authorize(Roles = "Administrator, Coordinator")]
+        //[Authorize(Roles = "Administrator, Coordinator")]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>
@@ -74,7 +74,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <remarks>
         /// Only Administrators and Project Coordinators may access this endpoint.
         /// </remarks>
-        [Authorize(Roles = "Administrator, Coordinator")]
+       // [Authorize(Roles = "Administrator, Coordinator")]
         public IHttpActionResult Get(int id)
         {
             return WrapWithTryCatch(() =>
@@ -124,7 +124,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var location = new Location
                 {
-                    SiteName = input.Description,
+                    SiteName = input.SiteName,
                     Latitude = input.Latitude,
                     Longitude = input.Longitude,
                     SiteCode = input.SiteCode,
