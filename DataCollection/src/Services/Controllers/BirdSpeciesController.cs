@@ -204,7 +204,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var birds = _domainManager.GetBirdSpeciesBySurveyTypeId(surveyTypeId);
 
-                var models = birds.Select(x => Map(x));
+                var models = birds?.Select(x => Map(x));
 
                 return base.Ok(models);
             });

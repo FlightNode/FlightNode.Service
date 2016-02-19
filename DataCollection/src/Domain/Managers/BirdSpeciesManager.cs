@@ -1,6 +1,8 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
+using FlightNode.DataCollection.Infrastructure.Persistence;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
@@ -33,9 +35,12 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
         {
-            var retVal = BirdSpeciesPersistence.GetBirdSpeciesBySurveyTypeId(surveyTypeId);
-            return retVal;
-        }
+            var ctx = DataCollectionContext.Create();
+            var returnVal = new List<BirdSpecies>();
+            var surveyType = ctx.SurveyTypes.Include("BirdSpecies").FirstOrDefault(surveyItem => surveyItem.Id == surveyTypeId);
+            returnVal = surveyType?.BirdSpecies?.ToList();
 
+            return returnVal;
+        }
     }
 }
