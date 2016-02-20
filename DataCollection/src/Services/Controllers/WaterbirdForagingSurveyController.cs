@@ -17,14 +17,14 @@ namespace FlightNode.DataCollection.Services.Controllers
         private readonly IWaterbirdForagingManager _domainManager;
 
         /// <summary>
-        /// Creates a new instance of <see cref="LocationsController"/>.
+        /// Creates a new instance of <see cref="WaterbirdForagingSurveyController"/>.
         /// </summary>
         /// <param name="domainManager">An instance of <see cref="IWorkLogDomainManager"/></param>
         public WaterbirdForagingSurveyController(IWaterbirdForagingManager domainManager)
         {
             if (domainManager == null)
             {
-                throw new ArgumentNullException("domainManager");
+                throw new ArgumentNullException(nameof(domainManager));
             }
 
             _domainManager = domainManager;
@@ -50,8 +50,11 @@ namespace FlightNode.DataCollection.Services.Controllers
                 SurveyPending entity = Map(input, identifier);
 
                 input.SurveyId = _domainManager.Create(entity);
+                input.SurveyIdentifier = identifier;
 
-                return Created(input, identifier.ToString());
+                var output = Created(input, identifier.ToString());
+
+                return output;
             });
         }
 
@@ -65,7 +68,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         {
             if (input == null)
             {
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
             }
 
             if (input.SurveyIdentifier == null ||
@@ -107,7 +110,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 SubmittedBy = RetrieveCurrentUserId()
             };
 
-            foreach(var o in input.Observations)
+            foreach (var o in input.Observations)
             {
                 entity.Add(new Observation
                 {
@@ -122,7 +125,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 });
             }
 
-            foreach(var d in input.Disturbances)
+            foreach (var d in input.Disturbances)
             {
                 entity.Add(new Disturbance
                 {
@@ -134,7 +137,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 });
             }
 
-            foreach(var u in input.Observers)
+            foreach (var u in input.Observers)
             {
                 entity.Add(u);
             }

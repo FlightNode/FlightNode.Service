@@ -22,7 +22,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         {
             if (domainManager == null)
             {
-                throw new ArgumentNullException("domainManager");
+                throw new ArgumentNullException(nameof(domainManager));
             }
 
             _domainManager = domainManager;
