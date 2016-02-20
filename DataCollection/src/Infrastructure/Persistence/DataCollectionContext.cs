@@ -3,8 +3,6 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
@@ -53,15 +51,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             {
                 return new CrudSetDecorator<WorkType>(this.WorkTypes);
             }
-        }
-
-        #endregion
-
-        #region Specialized Queries for IBirdSpeciesPersistence
-
-        public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
@@ -170,6 +159,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             this.Configuration.LazyLoadingEnabled = false;
             this.Configuration.ProxyCreationEnabled = false;
+
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
