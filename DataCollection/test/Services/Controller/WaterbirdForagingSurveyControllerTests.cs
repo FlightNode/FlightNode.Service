@@ -3,12 +3,14 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Controllers;
 using FlightNode.DataCollection.Services.Models.Rookery;
+using FligthNode.Common.Api.Controllers;
 using Moq;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Security.Principal;
 using Xunit;
 
@@ -45,9 +47,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             protected const int VANTAGE_POINT = 18;
             protected const int WEATHER = 19;
             protected const int WIND = 20;
-
-            protected Mock<IPrincipal> MockPrincipal;
-            protected Mock<IIdentity> MockIdentity;
+            protected const int SURVEY_ID = 21;
+            protected const int OBSERVATION_ID = 22;
+            protected const int DISTURBANCE_ID = 23;
+            
 
 
             protected WaterbirdForagingModel CreateDefautInput()
@@ -67,14 +70,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     VantagePointInfoId = VANTAGE_POINT,
                     WeatherInfoId = WEATHER,
                     WindSpeed = WIND,
-                    TimeOfLowTide = LOW_TIDE
+                    TimeOfLowTide = LOW_TIDE,
+                    SurveyId = SURVEY_ID
                 };
                 input.Disturbances.Add(new DisturbanceModel
                 {
                     Behavior = DISTURBED_BEHAVIOR,
                     DisturbanceTypeId = DISTURBED_TYPE_ID,
                     DurationMinutes = DISTURBED_DURATION,
-                    Quantity = DISTURBED_QUANTITY
+                    Quantity = DISTURBED_QUANTITY,
+                    DisturbanceId = DISTURBANCE_ID
                 });
                 input.Observations.Add(new ObservationModel
                 {
@@ -84,7 +89,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     HabitatId = HABITAT_ID,
                     Juveniles = JUVENILES,
                     PrimaryActivityId = PRIMARY_ACTIVITY_ID,
-                    SecondaryActivityId = SECONDARY_ACTIVITY_ID
+                    SecondaryActivityId = SECONDARY_ACTIVITY_ID,
+                    ObservationId = OBSERVATION_ID
                 });
                 input.Observers.Add(OBSERVER_ID);
                 return input;
@@ -220,6 +226,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 }
 
                 [Fact]
+                public void MapsDisturbanceId()
+                {
+                    RunPositiveTest();
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => DISTURBANCE_ID == y.Disturbances.First().Id)));
+                }
+
+                [Fact]
                 public void MapsDisturbanceDuration()
                 {
                     RunPositiveTest();
@@ -252,6 +265,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     RunPositiveTest();
                     MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => IDENTIFIER == y.Observations.First().SurveyIdentifier)));
+                }
+
+                [Fact]
+                public void MapsObservationId()
+                {
+                    RunPositiveTest();
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => OBSERVATION_ID == y.Observations.First().Id)));
                 }
 
                 [Fact]
@@ -311,33 +331,43 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => SurveyType.TERN_FORAGING == y.SurveyTypeId)));
                 }
 
+
+
+                public override void Dispose()
+                {
+                    // Restore delegate extension method to default behavior
+                    ExtensionDelegate.Init();
+
+                    base.Dispose();
+                }
+
                 [Fact]
                 public void MapsCurrentUserAsSubmittedBy()
                 {
                     // Arrange
-                    MockPrincipal = MockRepository.Create<IPrincipal>();
-                    MockIdentity = MockRepository.Create<IIdentity>();
-                    MockPrincipal.SetupGet(x => x.Identity)
-                        .Returns(MockIdentity.Object);
-
 
                     MockDomainManager.Setup(x => x.NewIdentifier())
                         .Returns(IDENTIFIER);
 
+                    // mock the lookup of userid
+                    const int userId = 13;
+                    ExtensionDelegate.LookupUserIdDelegate = (LoggingController c) =>
+                    {
+                        return userId;
+                    };
+
+
                     MockDomainManager.Setup(x => x.Create(It.IsAny<SurveyPending>()))
-                        .Returns(1);
+                        .Callback((SurveyPending actual) => Assert.Equal(userId, actual.SubmittedBy))
+                        .Returns((SurveyPending actual)=>actual);
 
                     var system = BuildSystem();
-
-
-                    system.User = MockPrincipal.Object;
 
                     //
                     // Act
                     var result = ExecuteHttpAction(system.Post(new WaterbirdForagingModel()));
-
-                    // Assert
-                    MockPrincipal.VerifyAll();
+                    
+                    // no asserts necessary
                 }
 
 
@@ -377,7 +407,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                         .Returns(IDENTIFIER);
 
                     MockDomainManager.Setup(x => x.Create(It.IsAny<SurveyPending>()))
-                        .Returns(1);
+                        .Returns((SurveyPending actual) => actual);
 
 
                     var system = BuildSystem();
@@ -448,6 +478,45 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
             public class HappyPath : Put
             {
+
+                public override void Dispose()
+                {
+                    // Restore delegate extension method to default behavior
+                    ExtensionDelegate.Init();
+
+                    base.Dispose();
+                }
+
+                [Fact]
+                public void MapsCurrentUserAsSubmittedBy()
+                {
+                    // Arrange
+                    const int userId = 23423;
+
+                    // mock the lookup of userid
+                    ExtensionDelegate.LookupUserIdDelegate = (LoggingController c) =>
+                    {
+                        return userId;
+                    };
+
+
+                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>(), It.IsAny<int>()))
+                        .Callback((SurveyPending actual, int astep) =>
+                        {
+                            Assert.Equal(userId, actual.SubmittedBy);
+                        });
+
+                    var system = BuildSystem();
+                   
+
+                    WaterbirdForagingModel input = CreateDefautInput();
+
+                    //
+                    // Act
+                    var result = ExecuteHttpAction(system.Put(IDENTIFIER, input));
+
+                    // no more asserts required
+                }
 
                 [Fact]
                 public void MapsAccessPoint()
@@ -557,6 +626,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 }
 
                 [Fact]
+                public void MapsDisturbanceId()
+                {
+                    RunPositiveTest();
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBANCE_ID == y.Disturbances.First().Id), It.Is<int>(y => y == STEP)));
+                }
+
+                [Fact]
                 public void MapsDisturbanceDuration()
                 {
                     RunPositiveTest();
@@ -589,6 +665,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     RunPositiveTest();
                     MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => IDENTIFIER == y.Observations.First().SurveyIdentifier), It.Is<int>(y => y == STEP)));
+                }
+
+                [Fact]
+                public void MapsObservationId()
+                {
+                    RunPositiveTest();
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => OBSERVATION_ID == y.Observations.First().Id), It.Is<int>(y => y == STEP)));
                 }
 
                 [Fact]
@@ -648,6 +731,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyType.TERN_FORAGING == y.SurveyTypeId), It.Is<int>(y => y == STEP)));
                 }
 
+                [Fact]
+                public void MapsSurveyd()
+                {
+                    RunPositiveTest();
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SURVEY_ID == y.Id), It.Is<int>(y => y == STEP)));
+                }
+
 
                 [Fact]
                 public void RespondsWithNoContent()
@@ -674,7 +764,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                     //
                     // Act
-                    var result = ExecuteHttpAction(system.Put(input));
+                    var result = ExecuteHttpAction(system.Put(IDENTIFIER, input));
 
                     return result;
                 }
@@ -694,25 +784,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     var input = CreateDefautInput();
                     input.SurveyIdentifier = IDENTIFIER;
 
-                    return BuildSystem().Put(input).ExecuteAsync(new System.Threading.CancellationToken()).Result;
-                }
-
-                [Fact]
-                public void MissingIdentifierGeneratesBadRequest()
-                {
-
-                    //
-                    // Arrange
-                    WaterbirdForagingModel input = CreateDefautInput();
-                    input.SurveyIdentifier = null;
-                    
-                    //
-                    // Act
-                    var result = ExecuteHttpAction(BuildSystem().Put(input));
-
-                    //
-                    // Assert
-                    Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+                    return BuildSystem().Put(IDENTIFIER, input).ExecuteAsync(new System.Threading.CancellationToken()).Result;
                 }
 
                 [Fact]
@@ -722,11 +794,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     //
                     // Arrange
                     WaterbirdForagingModel input = CreateDefautInput();
-                    input.SurveyIdentifier = Guid.Empty;
-
+                    
                     //
                     // Act
-                    var result = ExecuteHttpAction(BuildSystem().Put(input));
+                    var result = ExecuteHttpAction(BuildSystem().Put(Guid.Empty,input));
 
                     //
                     // Assert

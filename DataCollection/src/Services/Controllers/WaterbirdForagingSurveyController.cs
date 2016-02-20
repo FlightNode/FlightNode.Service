@@ -36,6 +36,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public IHttpActionResult Post([FromBody]WaterbirdForagingModel input)
         {
             if (input == null)
@@ -49,10 +50,68 @@ namespace FlightNode.DataCollection.Services.Controllers
 
                 SurveyPending entity = Map(input, identifier);
 
-                input.SurveyId = _domainManager.Create(entity);
+                entity = _domainManager.Create(entity);
 
-                return Created(input, identifier.ToString());
+                var result = Map(entity);
+
+                return Created(result, identifier.ToString());
             });
+        }
+
+        private object Map(SurveyPending input)
+        {
+            var entity = new WaterbirdForagingModel
+            {
+                AccessPointInfoId = input.AccessPointId,
+                SiteTypeId = input.AssessmentId,
+                DisturbanceComments = input.DisturbanceComments,
+                EndDate = input.EndDate,
+                SurveyComments = input.GeneralComments,
+                LocationId = input.LocationId,
+                StartDate = input.StartDate,
+                Temperature = input.StartTemperature,
+                SurveyIdentifier = input.SurveyIdentifier,
+                TideInfoId = input.TideId,
+                TimeOfLowTide = input.TimeOfLowTide,
+                VantagePointInfoId = input.VantagePointId,
+                WeatherInfoId = input.WeatherId,
+                WindSpeed = input.WindSpeedId,
+                SurveyId = input.Id
+            };
+
+            foreach (var o in input.Observations)
+            {
+                entity.Add(new ObservationModel
+                {
+                    Adults = o.Bin1,
+                    Juveniles = o.Bin2,
+                    BirdSpeciesId = o.BirdSpeciesId,
+                    FeedingId = o.FeedingSuccessRate,
+                    HabitatId = o.HabitatTypeId,
+                    PrimaryActivityId = o.PrimaryActivityId,
+                    SecondaryActivityId = o.SecondaryActivityId,
+                    ObservationId = o.Id
+                });
+            }
+
+            foreach (var d in input.Disturbances)
+            {
+                entity.Add(new DisturbanceModel
+                {
+                    DisturbanceTypeId = d.DisturbanceTypeId,
+                    DurationMinutes = d.DurationMinutes,
+                    Quantity = d.Quantity,
+                    Behavior = d.Result,
+                    DisturbanceId  = d.Id
+                });
+            }
+
+            foreach (var u in input.Observers)
+            {
+                entity.Add(u);
+            }
+
+            return entity;
         }
 
         /// <summary>
@@ -61,22 +120,23 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>
         /// <returns></returns>
         [HttpPut]
-        public IHttpActionResult Put([FromBody]WaterbirdForagingModel input)
+        [Route("api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}")]
+        [Authorize]
+        public IHttpActionResult Put(Guid surveyIdentifier, [FromBody]WaterbirdForagingModel input)
         {
             if (input == null)
             {
                 throw new ArgumentNullException("input");
             }
 
-            if (input.SurveyIdentifier == null ||
-                input.SurveyIdentifier == Guid.Empty)
+            if (surveyIdentifier == Guid.Empty)
             {
                 return BadRequest("Invalid Survey Identifier");
             }
 
             return WrapWithTryCatch(() =>
             {
-                SurveyPending entity = Map(input, input.SurveyIdentifier.Value);
+                SurveyPending entity = Map(input, surveyIdentifier);
 
                 _domainManager.Update(entity, input.Step);
 
@@ -104,10 +164,11 @@ namespace FlightNode.DataCollection.Services.Controllers
                 VantagePointId = input.VantagePointInfoId,
                 WeatherId = input.WeatherInfoId,
                 WindSpeedId = input.WindSpeed,
-                SubmittedBy = RetrieveCurrentUserId()
+                SubmittedBy = this.LookupUserId(),
+                Id = input.SurveyId
             };
 
-            foreach(var o in input.Observations)
+            foreach (var o in input.Observations)
             {
                 entity.Add(new Observation
                 {
@@ -119,10 +180,11 @@ namespace FlightNode.DataCollection.Services.Controllers
                     PrimaryActivityId = o.PrimaryActivityId,
                     SecondaryActivityId = o.SecondaryActivityId,
                     SurveyIdentifier = identifier,
+                    Id = o.ObservationId
                 });
             }
 
-            foreach(var d in input.Disturbances)
+            foreach (var d in input.Disturbances)
             {
                 entity.Add(new Disturbance
                 {
@@ -130,11 +192,12 @@ namespace FlightNode.DataCollection.Services.Controllers
                     DurationMinutes = d.DurationMinutes,
                     Quantity = d.Quantity,
                     Result = d.Behavior,
-                    SurveyIdentifier = identifier
+                    SurveyIdentifier = identifier,
+                    Id = d.DisturbanceId
                 });
             }
 
-            foreach(var u in input.Observers)
+            foreach (var u in input.Observers)
             {
                 entity.Add(u);
             }

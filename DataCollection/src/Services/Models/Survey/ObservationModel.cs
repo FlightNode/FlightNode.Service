@@ -15,5 +15,7 @@
         public int HabitatId { get; set; }
 
         public int FeedingId { get; set; }
+
+        public int ObservationId { get; set; }
     }
 }

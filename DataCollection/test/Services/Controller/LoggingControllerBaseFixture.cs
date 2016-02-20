@@ -36,7 +36,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             return controller;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             MockRepository.VerifyAll();
         }

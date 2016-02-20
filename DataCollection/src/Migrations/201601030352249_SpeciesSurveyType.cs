@@ -1885,10 +1885,10 @@ INSERT INTO dbo.BirdSpecies (CommonAlphaCode, CommonName, [Order], Family, SubFa
             Sql(inserts);
 
             inserts = @"
-SET IDENITY_INSERT dbo.SurveyType ON
+SET IDENTITY_INSERT dbo.SurveyType ON
 INSERT INTO dbo.SurveyType (Id, Description) VALUES (1, 'TERN Rookery Survey');
 INSERT INTO dbo.SurveyType (Id, Description) VALUES (2, 'TERN Waterbird Foraging Survey');
-SET IDENITY_INSERT dbo.SurveyType OFF
+SET IDENTITY_INSERT dbo.SurveyType OFF
 ";
             Sql(inserts);
         }

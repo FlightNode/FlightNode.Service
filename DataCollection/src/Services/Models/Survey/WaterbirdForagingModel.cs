@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using FlightNode.DataCollection.Domain.Entities;
 
 namespace FlightNode.DataCollection.Services.Models.Rookery
 {
     public class WaterbirdForagingModel 
     {
-        public int Id { get; set; }
 
         public Guid? SurveyIdentifier { get; set; }
 
@@ -17,21 +17,21 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public DateTime? EndDate { get; set; }
 
-        public int SiteTypeId { get; set; }
+        public int? SiteTypeId { get; set; }
 
-        public int TideInfoId { get; set; }
+        public int? TideInfoId { get; set; }
 
-        public int WeatherInfoId { get; set; }
+        public int? WeatherInfoId { get; set; }
 
-        public int Temperature { get; set; }
+        public int? Temperature { get; set; }
 
-        public int WindSpeed { get; set; }
+        public int? WindSpeed { get; set; }
 
         public List<int> Observers { get; private set; }
 
-        public int VantagePointInfoId { get; set; }
+        public int? VantagePointInfoId { get; set; }
 
-        public int AccessPointInfoId { get; set; }
+        public int? AccessPointInfoId { get; set; }
 
         public string SurveyComments { get; set; }
 
@@ -51,6 +51,24 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
             Observers = new List<int>();
             Observations = new List<ObservationModel>();
             Disturbances = new List<DisturbanceModel>();
+        }
+
+        public WaterbirdForagingModel Add(ObservationModel observation)
+        {
+            Observations.Add(observation);
+            return this;
+        }
+
+        public WaterbirdForagingModel Add(DisturbanceModel disturbanceModel)
+        {
+            Disturbances.Add(disturbanceModel);
+            return this;
+        }
+
+        public WaterbirdForagingModel Add(int u)
+        {
+            Observers.Add(u);
+            return this;
         }
     }
 }

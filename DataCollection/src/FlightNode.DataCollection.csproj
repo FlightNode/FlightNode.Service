@@ -196,6 +196,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\Controllers\ExtensionDelegate.cs" />
     <Compile Include="Services\Controllers\SurveyTypeController.cs" />
     <Compile Include="Services\Controllers\WaterbirdForagingSurveyController.cs" />
     <Compile Include="Services\Controllers\WorkLogController.cs" />

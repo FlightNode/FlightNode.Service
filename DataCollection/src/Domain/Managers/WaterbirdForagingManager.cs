@@ -6,7 +6,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 {
     public interface IWaterbirdForagingManager
     {
-        int Create(SurveyPending waterbirdForagingModel);
+        SurveyPending Create(SurveyPending waterbirdForagingModel);
         Guid NewIdentifier();
         void Update(SurveyPending entity, int step);
     }
@@ -37,7 +37,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// </summary>
         /// <param name="survey">Pending waterbird foraging survey.</param>
         /// <returns>Survey ID</returns>
-        public int Create(SurveyPending survey)
+        public SurveyPending Create(SurveyPending survey)
         {
             if (survey == null)
             {
@@ -53,7 +53,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             _persistence.SaveChanges();
 
-            return survey.Id;
+            return survey;
         }
 
         private void LoadEntitiesIntoPersistenceLayer(SurveyPending survey)
@@ -98,27 +98,30 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         private void SwitchToCompletedSurvey(SurveyPending survey)
         {
-            _persistence.SurveysPending.Remove(survey);
-
             var completed = survey.ToSurveyCompleted();
-
             _persistence.SurveysCompleted.Add(completed);
+
+            _persistence.SurveysPending.Remove(survey);
+            _persistence.SaveChanges();
         }
 
         private void LoadModifiedEntitiesIntoPersistenceLayer(SurveyPending survey)
         {
             _persistence.SurveysPending.Add(survey);
             SetModifiedState(_persistence, survey);
+            _persistence.SaveChanges();
 
             survey.Observations.ForEach(x =>
             {
                 _persistence.Observations.Add(x);
                 SetModifiedState(_persistence, x);
+                _persistence.SaveChanges();
             });
             survey.Disturbances.ForEach(x =>
             {
                 _persistence.Disturbances.Add(x);
                 SetModifiedState(_persistence, x);
+                _persistence.SaveChanges();
             });
         }
 
