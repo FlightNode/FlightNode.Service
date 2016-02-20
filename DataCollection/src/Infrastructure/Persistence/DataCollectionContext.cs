@@ -151,6 +151,17 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         public DbSet<Weather> Weather { get; set; }
 
+        public DbSet<HabitatType> HabitatTypes { get; set; }
+
+        public DbSet<AccessPoint> AccessPoints { get; set; }
+
+        public DbSet<SiteAssessment> SiteAssessments { get; set; }
+
+        public DbSet<VantagePoint> VantagePoints { get; set; }
+
+        public DbSet<FeedingSuccessRate> FeedingSuccessRates { get; set; }
+
+        public DbSet<SurveyActivity> SurveyActivities { get; set; }
         #endregion
 
 
@@ -208,6 +219,13 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             modelBuilder.Entity<Tide>().ToTable("Tides");
 
             modelBuilder.Entity<SurveyPending>().ToTable("SurveyPending");
+
+            modelBuilder.Entity<HabitatType>().ToTable("HabitatTypes");
+            modelBuilder.Entity<SurveyActivity>().ToTable("SurveyActivities");
+            modelBuilder.Entity<SiteAssessment>().ToTable("SiteAssessments");
+            modelBuilder.Entity<VantagePoint>().ToTable("VantagePoints");
+            modelBuilder.Entity<AccessPoint>().ToTable("AccessPoints");
+            modelBuilder.Entity<FeedingSuccessRate>().ToTable("FeedingSuccessRates");
         }
 
 

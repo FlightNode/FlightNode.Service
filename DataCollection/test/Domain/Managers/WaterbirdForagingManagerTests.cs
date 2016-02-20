@@ -72,83 +72,122 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public class Create : Fixture
         {
+            protected const int SURVEY_ID = 23;
+            protected const int OBSERVATION_ID = 234;
+            protected const int DISTURBANCE_ID = 4643;
 
-            [Fact]
-            public void HappyPathSavesAllData()
+
+            public class HappyPath : Create
             {
-                //
-                // Arrange
-                const int id = 3233;
 
-                var input = new SurveyPending();
-                var observation = new Observation();
-                input.Observations.Add(observation);
-                var disturb = new Disturbance();
-                input.Disturbances.Add(disturb);
+                [Fact]
+                public void SaveReturnsTheNewSurveyId()
+                {
+                    var result = RunTest();
 
-
-                // Mocks
-                SetupCrudSets();
-                DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                    .Callback((Disturbance actual) => Assert.Same(disturb, actual))
-                    .Returns(disturb);
-                ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                    .Callback((Observation actual) => Assert.Same(observation, actual))
-                    .Returns(observation);
-                SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                    .Callback((SurveyPending actual) =>
-                    {
-                        input.Id = id;
-                        Assert.Same(input, actual);
-                    })
-                    .Returns(input);
-                SurveyPersistenceMock.Setup(x => x.SaveChanges())
-                    .Returns(1);
+                    Assert.Equal(SURVEY_ID, result.Id);
+                }
 
 
-                //
-                // Act
-                var result = BuildSystem().Create(input);
+                [Fact]
+                public void SaveReturnsTheNewObservationId()
+                {
+                    var result = RunTest();
 
-                //
-                // Assert
-                Assert.Equal(id, result);
+                    Assert.Equal(OBSERVATION_ID, result.Observations.First().Id);
+                }
+
+
+                [Fact]
+                public void SaveReturnsTheNewDisturbanceId()
+                {
+                    var result = RunTest();
+
+                    Assert.Equal(DISTURBANCE_ID, result.Disturbances.First().Id);
+                }
+
+                private SurveyPending RunTest()
+                {
+                    //
+                    // Arrange
+                    var input = new SurveyPending();
+                    var observation = new Observation();
+                    input.Observations.Add(observation);
+                    var disturb = new Disturbance();
+                    input.Disturbances.Add(disturb);
+
+
+                    // Mocks
+                    SetupCrudSets();
+                    DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
+                        .Callback((Disturbance actual) =>
+                        {
+                            actual.Id = DISTURBANCE_ID;
+                            Assert.Same(disturb, actual);
+                        })
+                        .Returns((Disturbance actual) => actual);
+                    ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
+                        .Callback((Observation actual) =>
+                        {
+                            actual.Id = OBSERVATION_ID;
+                            Assert.Same(observation, actual);
+                        })
+                        .Returns((Observation actual) => actual);
+                    SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
+                        .Callback((SurveyPending actual) =>
+                        {
+                            actual.Id = SURVEY_ID;
+                            Assert.Same(input, actual);
+                        })
+                        .Returns((SurveyPending actual) => actual);
+                    SurveyPersistenceMock.Setup(x => x.SaveChanges())
+                        .Returns(1);
+
+
+                    //
+                    // Act
+                    var result = BuildSystem().Create(input);
+                    return result;
+                }
             }
 
-            [Fact]
-            public void RejectsNullArgument()
+            public class ErrorHandling : Create
             {
-                Assert.Throws<ArgumentNullException>(() => BuildSystem().Create(null));
-            }
+                [Fact]
+                public void RejectsNullArgument()
+                {
+                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Create(null));
+                }
 
-            [Fact]
-            public void IgnoresExceptions()
-            {
+                [Fact]
+                public void IgnoresExceptions()
+                {
 
-                //
-                // Arrange
-                var input = new SurveyPending();
-                var observation = new Observation();
-                input.Observations.Add(observation);
-                var disturb = new Disturbance();
-                input.Disturbances.Add(disturb);
-
-
-                // Mocks
-                SetupCrudSets();
-                DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                    .Returns(disturb);
-                ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                    .Returns(observation);
-                SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                    .Returns(input);
-                SurveyPersistenceMock.Setup(x => x.SaveChanges())
-                    .Throws<InvalidOperationException>();
+                    //
+                    // Arrange
+                    var input = new SurveyPending();
+                    var observation = new Observation();
+                    input.Observations.Add(observation);
+                    var disturb = new Disturbance();
+                    input.Disturbances.Add(disturb);
 
 
-                //
-                // Act & Assert
-                Assert.Throws< InvalidOperationException>(() =>BuildSystem().Create(input));
+                    // Mocks
+                    SetupCrudSets();
+                    DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
+                        .Returns(disturb);
+                    ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
+                        .Returns(observation);
+                    SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
+                        .Returns(input);
+                    SurveyPersistenceMock.Setup(x => x.SaveChanges())
+                        .Throws<InvalidOperationException>();
+
+
+                    //
+                    // Act & Assert
+                    Assert.Throws<InvalidOperationException>(() => BuildSystem().Create(input));
+                }
             }
 
             public class Validation : Create
@@ -420,15 +459,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
 
                     // Mocks
-                    SetupCrudSets();
 
-                    DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                        .Returns(disturb);
-                    ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                        .Returns(observation);
+                    SurveyPendingSet = MockRepository.Create<ICrudSet<SurveyPending>>();
+                    SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
+                        .Returns(SurveyPendingSet.Object);
                     SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                        .Returns(input);
-                    SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Throws<InvalidOperationException>();
 
 

@@ -2,6 +2,7 @@ using FlightNode.DataCollection.Infrastructure.Customization;
 using System.Data.Entity.Migrations;
 using FlightNode.DataCollection.Infrastructure.Persistence;
 using FlightNode.DataCollection.Domain.Entities;
+using System;
 
 namespace FlightNode.DataCollection.Domain.Migrations
 {
@@ -21,6 +22,63 @@ namespace FlightNode.DataCollection.Domain.Migrations
             LoadDisturbanceTypesForWaterbirdForaging(context);
             LoadTidesForWaterbirdForaging(context);
             LoadWeatherForWaterbirdForaging(context);
+            LoadHabitatTypes(context);
+            LoadFeedingSuccessRates(context);
+            LoadActivityTypes(context);
+            LoadSiteAssessments(context);
+            LoadVantagePoints(context);
+            LoadAccessPoints(context);
+        }
+
+        private void LoadAccessPoints(DataCollectionContext context)
+        {
+            context.AccessPoints.AddOrUpdate(new AccessPoint { Description = "On Foot" });
+            context.AccessPoints.AddOrUpdate(new AccessPoint { Description = "Vessel (motor)" });
+            context.AccessPoints.AddOrUpdate(new AccessPoint { Description = "Kayak/Canoe" });
+        }
+
+        private void LoadVantagePoints(DataCollectionContext context)
+        {
+            context.VantagePoints.AddOrUpdate(new VantagePoint { Description = "On-Site Visit" });
+            context.VantagePoints.AddOrUpdate(new VantagePoint { Description = "View from Adjacent Area by Vehicle/Boat/Foot" });
+        }
+
+        private void LoadSiteAssessments(DataCollectionContext context)
+        {
+            context.SiteAssessments.AddOrUpdate(new SiteAssessment { Description = "New Site" });
+            context.SiteAssessments.AddOrUpdate(new SiteAssessment { Description = "Previously Submitted Site" });
+            context.SiteAssessments.AddOrUpdate(new SiteAssessment { Description = "Unknown" });
+        }
+
+        private void LoadActivityTypes(DataCollectionContext context)
+        {
+            context.SurveyActivities.AddOrUpdate(new SurveyActivity { Description = "Feeding" });
+            context.SurveyActivities.AddOrUpdate(new SurveyActivity { Description = "Preening" });
+            context.SurveyActivities.AddOrUpdate(new SurveyActivity { Description = "Loafing" });
+            context.SurveyActivities.AddOrUpdate(new SurveyActivity { Description = "Fly Over" });
+        }
+
+        private void LoadFeedingSuccessRates(DataCollectionContext context)
+        {
+            context.FeedingSuccessRates.AddOrUpdate(new FeedingSuccessRate { Description = "0-25% capture/strikes low success" });
+            context.FeedingSuccessRates.AddOrUpdate(new FeedingSuccessRate { Description = "25-50% capture/strikes medium success" });
+            context.FeedingSuccessRates.AddOrUpdate(new FeedingSuccessRate { Description = "50-75% capture/strikes high success" });
+        }
+
+        private void LoadHabitatTypes(DataCollectionContext context)
+        {
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Open Water Below Knee" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Open Water Above Knee" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Manmade (ditch, culvert, etc.)" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Forest" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Stream" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Low Marsh" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "High Marsh" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Scrub-Shrub" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Tall Grass" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "OpenWater" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Mudflat" });
+            context.HabitatTypes.AddOrUpdate(new HabitatType { Description = "Pond" });
         }
 
         private void LoadWeatherForWaterbirdForaging(DataCollectionContext context)
