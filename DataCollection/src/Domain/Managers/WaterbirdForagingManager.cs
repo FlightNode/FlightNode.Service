@@ -113,14 +113,24 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             survey.Observations.ForEach(x =>
             {
+
                 _persistence.Observations.Add(x);
-                SetModifiedState(_persistence, x);
+                //Set the state to Modified only if the object is already created.
+                if (x.Id > 0)
+                {
+                    SetModifiedState(_persistence, x);
+                }
+
                 _persistence.SaveChanges();
             });
             survey.Disturbances.ForEach(x =>
             {
                 _persistence.Disturbances.Add(x);
-                SetModifiedState(_persistence, x);
+                //Set the state to Modified only if the object is already created.
+                if (x.Id > 0)
+                {
+                    SetModifiedState(_persistence, x);
+                }
                 _persistence.SaveChanges();
             });
         }

@@ -50,11 +50,11 @@ namespace FlightNode.DataCollection.Services.Controllers
 
                 SurveyPending entity = Map(input, identifier);
 
-                entity = _domainManager.Create(entity);                // input.SurveyIdentifier = identifier;
+                entity = _domainManager.Create(entity);
 
                 var result = Map(entity);
 
-                return Created(input, identifier.ToString());
+                return Created(result, identifier.ToString());
             });
         }
 
@@ -139,6 +139,8 @@ namespace FlightNode.DataCollection.Services.Controllers
                 SurveyPending entity = Map(input, surveyIdentifier);
 
                 _domainManager.Update(entity, input.Step);
+
+                var result = Map(entity);
 
                 return NoContent();
             });
