@@ -261,7 +261,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(3, modifiedWasCalled);
+                    Assert.Equal(1, modifiedWasCalled);
                 }
 
                 [Fact]
@@ -287,7 +287,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(3, modifiedWasCalled);
+                    Assert.Equal(1, modifiedWasCalled);
                 }
 
                 [Fact]
@@ -313,7 +313,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(3, modifiedWasCalled);
+                    Assert.Equal(1, modifiedWasCalled);
                 }
 
                 [Fact]
@@ -329,9 +329,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     input.StartDate = DateTime.MinValue;
                     input.EndDate = DateTime.MaxValue;
 
-                    var observation = new Observation();
+                    var observation = new Observation { Id = 1 };   // causes an update 
                     input.Observations.Add(observation);
-                    var disturb = new Disturbance();
+                    var disturb = new Disturbance { Id = 2 };   // causes an update 
                     input.Disturbances.Add(disturb);
 
 
@@ -351,6 +351,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // bypass the EF update process
                     var modifiedWasCalled = 0;
+                    const int expectedModifications = 3; // observation, disturbance, survey
 
                     WaterbirdForagingManager.SetModifiedState = (ISurveyPersistence persistenceLayer, object i) =>
                     {
@@ -383,9 +384,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(3, modifiedWasCalled);
+                    Assert.Equal(expectedModifications, modifiedWasCalled);
 
                 }
+
+
 
                 private void RunTest(int step)
                 {
