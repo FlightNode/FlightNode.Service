@@ -9,7 +9,7 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
         ICrudSet<SurveyPending> SurveysPending { get; }
         ICrudSet<Disturbance> Disturbances { get; }
         ICrudSet<Observation> Observations { get; }
-
+        ICrudSet<Location> Locations { get; }
         int SaveChanges();
         DbEntityEntry Entry(object entity);
     }

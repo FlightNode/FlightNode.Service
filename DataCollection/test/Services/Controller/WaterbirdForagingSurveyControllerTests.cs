@@ -3,15 +3,15 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Controllers;
 using FlightNode.DataCollection.Services.Models.Rookery;
+using FlightNode.DataCollection.Services.Models.Survey;
 using FligthNode.Common.Api.Controllers;
 using Moq;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
-using System.Security.Principal;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
@@ -50,8 +50,54 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             protected const int SURVEY_ID = 21;
             protected const int OBSERVATION_ID = 22;
             protected const int DISTURBANCE_ID = 23;
-            
+            protected const string LOCATION_NAME = "Charlie's Pasture";
 
+            protected ISurvey BuildDefaultSurvey(int step = 1)
+            {
+                var domainResult = new SurveyPending();
+                domainResult.AccessPointId = ACCESS_POINT;
+                domainResult.AssessmentId = SITE_TYPE_ID;
+                domainResult.DisturbanceComments = DISTURBED;
+                domainResult.Disturbances.Add(new Disturbance
+                {
+                    Id = DISTURBANCE_ID,
+                    DisturbanceTypeId = DISTURBED_TYPE_ID,
+                    DurationMinutes = DISTURBED_DURATION,
+                    Quantity = DISTURBED_QUANTITY,
+                    Result = DISTURBED_BEHAVIOR,
+                    SurveyIdentifier = IDENTIFIER
+                });
+                domainResult.EndDate = END_DATE;
+                domainResult.GeneralComments = SURVEY_COMMENTS;
+                domainResult.Id =SURVEY_ID;
+                domainResult.LocationId = LOCATION_ID;
+                domainResult.Observations.Add(new Observation
+                {
+                    Id = OBSERVATION_ID,
+                    Bin1 = ADULTS,
+                    Bin2 = JUVENILES,
+                    BirdSpeciesId = SPECIES_ID,
+                    FeedingSuccessRate = FEEDING_ID,
+                    HabitatTypeId = HABITAT_ID,
+                    PrimaryActivityId = PRIMARY_ACTIVITY_ID,
+                    SecondaryActivityId = SECONDARY_ACTIVITY_ID,
+                    SurveyIdentifier = IDENTIFIER
+                });
+                domainResult.Observers.Add(OBSERVER_ID);
+                domainResult.StartDate = START_DATE;
+                domainResult.StartTemperature = TEMPERATURE;
+                domainResult.SubmittedBy = 14;
+                domainResult.SurveyIdentifier = IDENTIFIER;
+                domainResult.SurveyTypeId = 15;
+                domainResult.TideId =TIDE;
+                domainResult.TimeOfLowTide = LOW_TIDE;
+                domainResult.VantagePointId = VANTAGE_POINT;
+                domainResult.WeatherId = WEATHER;
+                domainResult.WindSpeed = WIND;
+                domainResult.LocationName = LOCATION_NAME;
+                domainResult.Step = step;
+                return domainResult;
+            }
 
             protected WaterbirdForagingModel CreateDefautInput()
             {
@@ -110,6 +156,514 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             public void RejectsNullArgument()
             {
                 Assert.Throws<ArgumentNullException>(() => new WaterbirdForagingSurveyController(null));
+            }
+        }
+
+        public class GetSpecificItem : Fixture
+        {
+            [Fact]
+            public void MapsAccessPointId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.AccessPointId, result.AccessPointInfoId);
+            }
+
+            [Fact]
+            public void MapsAssessmentId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.AssessmentId, result.SiteTypeId);
+            }
+
+            [Fact]
+            public void MapsDisturbanceComments()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.DisturbanceComments, result.DisturbanceComments);
+            }
+
+            [Fact]
+            public void MapsDisturbance_Id()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Disturbances.First().Id, result.Disturbances.First().DisturbanceId);
+            }
+
+            [Fact]
+            public void MapsDisturbance_DisturbanceTypeId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Disturbances.First().DisturbanceTypeId, result.Disturbances.First().DisturbanceTypeId);
+            }
+
+            [Fact]
+            public void MapsDisturbance_Result()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Disturbances.First().Result, result.Disturbances.First().Behavior);
+            }
+
+
+            [Fact]
+            public void MapsDisturbance_DurationMinutes()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Disturbances.First().DurationMinutes, result.Disturbances.First().DurationMinutes);
+            }
+
+            [Fact]
+            public void MapsDisturbance_Quantity()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Disturbances.First().Quantity, result.Disturbances.First().Quantity);
+            }
+
+            [Fact]
+            public void MapsEndDate()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.EndDate, result.EndDate);
+            }
+
+            [Fact]
+            public void MapsLocationId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.LocationId, result.LocationId);
+            }
+
+            [Fact]
+            public void MapsObservation_Adults()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observations.First().Bin1, result.Observations.First().Adults);
+            }
+
+            [Fact]
+            public void MapsObservation_Juveniles()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observations.First().Bin2, result.Observations.First().Juveniles);
+            }
+
+            [Fact]
+            public void MapsObservation_BirdSpeciesId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observations.First().BirdSpeciesId, result.Observations.First().BirdSpeciesId);
+            }
+
+            [Fact]
+            public void MapsObservation_FeedingId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observations.First().FeedingSuccessRate, result.Observations.First().FeedingId);
+            }
+
+
+
+            [Fact]
+            public void MapsObservation_HabitatId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observations.First().HabitatTypeId, result.Observations.First().HabitatId);
+            }
+
+            [Fact]
+            public void MapsObservation_ObservationId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observations.First().Id, result.Observations.First().ObservationId);
+            }
+
+            [Fact]
+            public void MapsObservation_PrimaryActivityId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observations.First().PrimaryActivityId, result.Observations.First().PrimaryActivityId);
+            }
+
+            [Fact]
+            public void MapsObservation_SecondaryActivityId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observations.First().SecondaryActivityId, result.Observations.First().SecondaryActivityId);
+            }
+
+            [Fact]
+            public void MapsObservers()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Observers.First(), result.Observers.First());
+            }
+
+            [Fact]
+            public void MapsStartDate()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.StartDate, result.StartDate);
+            }
+
+            [Fact]
+            public void MapsStep()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Step, result.Step);
+            }
+
+            [Fact]
+            public void MapsSurveyComments()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.GeneralComments, result.SurveyComments);
+            }
+
+            [Fact]
+            public void MapsSurveyId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.Id, result.SurveyId);
+            }
+
+            [Fact]
+            public void MapsSurveyIdentifier()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.SurveyIdentifier, result.SurveyIdentifier);
+            }
+
+            [Fact]
+            public void MapsTemperature()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.StartTemperature, result.Temperature);
+            }
+
+            [Fact]
+            public void MapsTideInfoId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.TideId, result.TideInfoId);
+            }
+
+            [Fact]
+            public void MapsTimeOfLowTide()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.TimeOfLowTide, result.TimeOfLowTide);
+            }
+
+            [Fact]
+            public void MapsVantagePointInfoId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.VantagePointId, result.VantagePointInfoId);
+            }
+
+            [Fact]
+            public void MapsWeatherInfoId()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.WeatherId, result.WeatherInfoId);
+            }
+
+            [Fact]
+            public void MapsWindSpeed()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.WindSpeed, result.WindSpeed);
+            }
+
+            private WaterbirdForagingModel RunHappyPath(ISurvey domain)
+            {
+                SetupMockResult(domain);
+
+                var result = RunTest()
+                                .Content
+                                .ReadAsAsync<WaterbirdForagingModel>()
+                                .Result;
+                return result;
+            }
+
+            [Fact]
+            public void TreatsExceptionsAsServerError()
+            {
+
+                MockDomainManager.Setup(x => x.FindBySurveyId(It.Is<Guid>(y => y == IDENTIFIER)))
+                    .Throws<InvalidOperationException>();
+
+                MockLogger.Setup(x => x.Error(It.IsAny<InvalidOperationException>()));
+
+                var result = RunTest();
+
+                Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+            }
+
+            [Fact]
+            public void MatchingItemGeneratesStatus200()
+            {
+                SetupMockResult(BuildDefaultSurvey());
+
+                var result = RunTest();
+
+                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            }
+
+            [Fact]
+            public void NoMatchGenerates404()
+            {
+                //
+                // Arrange
+                SetupMockResult(null);
+
+                //
+                // Act
+                var result = RunTest();
+
+                //
+                // Assert
+                Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            }
+
+            private void SetupMockResult(ISurvey domainResult)
+            {
+                MockDomainManager.Setup(x => x.FindBySurveyId(It.Is<Guid>(y => y == IDENTIFIER)))
+                    .Returns(domainResult);
+            }
+
+            private HttpResponseMessage RunTest()
+            {
+                var system = BuildSystem();
+
+                system.Logger = MockLogger.Object;
+
+                return system.Get(IDENTIFIER).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+            }
+        }
+
+
+        public class GetUsersList : Fixture
+        {
+            [Fact]
+            public void MapsLocationName()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.LocationName, result.First().Location);
+            }
+            
+            [Fact]
+            public void MapsStartDate()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(START_DATE.ToShortDateString(), result.First().StartDate);
+            }
+
+            [Fact]
+            public void MapsStatusForPendingSurvey()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal("Pending", result.First().Status);
+            }
+
+            [Fact]
+            public void MapsStatusForCompletedSurvey()
+            {
+                // fake a completed survey by setting the step to 4
+                var domain = BuildDefaultSurvey(SurveyCompleted.COMPLETED_FORAGING_STEP_NUMBER);
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal("Complete", result.First().Status);
+            }
+
+            [Fact]
+            public void MapsSurveyComments()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.GeneralComments, result.First().SurveyComments);
+            }
+
+            [Fact]
+            public void MapsSurveyIdentifier()
+            {
+                var domain = BuildDefaultSurvey();
+
+                var result = RunHappyPath(domain);
+
+                Assert.Equal(domain.SurveyIdentifier, result.First().SurveyIdentifier);
+            }
+
+            private IList<WaterbirdForagingListItem> RunHappyPath(ISurvey domain)
+            {
+                SetupMockResult(domain);
+
+                var result = RunTest()
+                                .Content
+                                .ReadAsAsync<IList<WaterbirdForagingListItem>>()
+                                .Result;
+                return result;
+            }
+
+            [Fact]
+            public void TreatsExceptionsAsServerError()
+            {
+                MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
+                    .Throws<InvalidOperationException>();
+
+                MockLogger.Setup(x => x.Error(It.IsAny<InvalidOperationException>()));
+
+                var result = RunTest();
+
+                Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
+            }
+
+            [Fact]
+            public void MatchingItemGeneratesStatus200()
+            {
+                SetupMockResult(BuildDefaultSurvey());
+
+                var result = RunTest();
+
+                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            }
+
+            [Fact]
+            public void NoMatchGenerates404()
+            {
+                MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
+                     .Returns(new List<ISurvey>());
+
+                var result = RunTest();
+
+                Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            }
+
+            [Fact]
+            public void NullMatchGenerates404()
+            {
+                MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
+                     .Returns(null as List<ISurvey>);
+
+                var result = RunTest();
+
+                Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            }
+
+            private void SetupMockResult(ISurvey domainResult)
+            {
+                MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
+                    .Returns(new[] { domainResult });
+            }
+
+            private HttpResponseMessage RunTest()
+            {
+                var system = BuildSystem();
+
+                system.Logger = MockLogger.Object;
+
+                return system.Get(OBSERVER_ID).ExecuteAsync(new System.Threading.CancellationToken()).Result;
             }
         }
 
@@ -208,7 +762,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsWindSpeed()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => WIND == y.WindSpeedId)));
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => WIND == y.WindSpeed)));
                 }
 
                 [Fact]
@@ -359,14 +913,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                     MockDomainManager.Setup(x => x.Create(It.IsAny<SurveyPending>()))
                         .Callback((SurveyPending actual) => Assert.Equal(userId, actual.SubmittedBy))
-                        .Returns((SurveyPending actual)=>actual);
+                        .Returns((SurveyPending actual) => actual);
 
                     var system = BuildSystem();
 
                     //
                     // Act
                     var result = ExecuteHttpAction(system.Post(new WaterbirdForagingModel()));
-                    
+
                     // no asserts necessary
                 }
 
@@ -418,7 +972,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     return result;
                 }
 
-                
+
             }
 
             public class ExceptionHandling : Post
@@ -507,7 +1061,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                         });
 
                     var system = BuildSystem();
-                   
+
 
                     WaterbirdForagingModel input = CreateDefautInput();
 
@@ -523,7 +1077,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     RunPositiveTest();
 
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ACCESS_POINT == y.AccessPointId), It.Is<int>(y=>y== STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ACCESS_POINT == y.AccessPointId), It.Is<int>(y => y == STEP)));
                 }
 
                 [Fact]
@@ -608,7 +1162,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsWindSpeed()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WIND == y.WindSpeedId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WIND == y.WindSpeed), It.Is<int>(y => y == STEP)));
                 }
 
                 [Fact]
@@ -748,7 +1302,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     // Assert
                     Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
                 }
-                
+
 
                 private HttpResponseMessage RunPositiveTest()
                 {
@@ -794,10 +1348,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     //
                     // Arrange
                     WaterbirdForagingModel input = CreateDefautInput();
-                    
+
                     //
                     // Act
-                    var result = ExecuteHttpAction(BuildSystem().Put(Guid.Empty,input));
+                    var result = ExecuteHttpAction(BuildSystem().Put(Guid.Empty, input));
 
                     //
                     // Assert

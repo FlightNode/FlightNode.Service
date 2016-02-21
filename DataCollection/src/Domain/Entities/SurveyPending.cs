@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
-    public class SurveyPending : IEntity
+    public class SurveyPending : IEntity, ISurvey
     {
         [Required]
         public Guid SurveyIdentifier { get; set; }
@@ -46,7 +46,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public int? EndTemperature { get; set; }
 
-        public int? WindSpeedId { get; set; }
+        public int? WindSpeed { get; set; }
 
         public int? TideId { get; set; }
 
@@ -61,6 +61,13 @@ namespace FlightNode.DataCollection.Domain.Entities
         [NotMapped] // Prefer to handle this relationship manually
         public List<int> Observers { get; private set; }
 
+        // The specific value doesn't matter, so long as it is not COMPLETED_FORAGING_STEP_NUMBER (4).
+        [NotMapped]
+        public int Step { get; set; } = 0;
+
+        [NotMapped]
+        public string LocationName { get; set; }
+
         public SurveyPending()
         {
             Observations = new List<Observation>();
@@ -68,6 +75,21 @@ namespace FlightNode.DataCollection.Domain.Entities
             Observers = new List<int>();
         }
 
+
+        ISurvey ISurvey.Add(Observation item)
+        {
+            return Add(item);
+        }
+
+        ISurvey ISurvey.Add(Disturbance item)
+        {
+            return Add(item);
+        }
+
+        ISurvey ISurvey.Add(int userId)
+        {
+            return Add(userId);
+        }
 
         public SurveyPending Add(Observation item)
         {
@@ -80,6 +102,7 @@ namespace FlightNode.DataCollection.Domain.Entities
             return this;
         }
 
+
         public SurveyPending Add(Disturbance item)
         {
             if (item == null)
@@ -90,7 +113,6 @@ namespace FlightNode.DataCollection.Domain.Entities
             Disturbances.Add(item);
             return this;
         }
-
         public SurveyPending Add(int userId)
         {
             Observers.Add(userId);
@@ -117,7 +139,7 @@ namespace FlightNode.DataCollection.Domain.Entities
                 TimeOfLowTide = this.TimeOfLowTide,
                 VantagePointId = this.VantagePointId,
                 WeatherId = this.WeatherId,
-                WindSpeedId = this.WindSpeedId
+                WindSpeed = this.WindSpeed
             };
 
             completed.Observations.AddRange(this.Observations);
