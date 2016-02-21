@@ -76,6 +76,14 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         #region ISurveyPersistence
 
+        ICrudSet<Location> ISurveyPersistence.Locations
+        {
+            get
+            {
+                return new CrudSetDecorator<Location>(this.Locations);
+            }
+        }
+
         ICrudSet<SurveyPending> ISurveyPersistence.SurveysPending
         {
             get

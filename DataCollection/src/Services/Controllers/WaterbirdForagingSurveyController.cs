@@ -6,6 +6,9 @@ using Microsoft.AspNet.Identity;
 using System;
 using System.Web.Http;
 
+using System.Linq;
+using FlightNode.DataCollection.Services.Models.Survey;
+
 namespace FlightNode.DataCollection.Services.Controllers
 {
     /// <summary>
@@ -13,6 +16,10 @@ namespace FlightNode.DataCollection.Services.Controllers
     /// </summary>
     public class WaterbirdForagingSurveyController : LoggingController
     {
+
+        private const string COMPLETE = "Complete";
+        private const string PENDING = "Pending";
+        private const string MISSING = "missing";
 
         private readonly IWaterbirdForagingManager _domainManager;
 
@@ -29,6 +36,72 @@ namespace FlightNode.DataCollection.Services.Controllers
 
             _domainManager = domainManager;
         }
+
+        /// <summary>
+        /// Retrieves the requested Waterbird Foraging Survey data.
+        /// </summary>
+        /// <param name="surveyIdentifier">
+        /// Unique identifier for the survey resource to retrieve.
+        /// </param>
+        /// <returns>
+        /// <see cref="IHttpActionResult"/> containiing a <see cref="WaterbirdForagingModel"/> or status 404 if none found.
+        /// </returns>
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult Get(Guid surveyIdentifier)
+        {
+            return WrapWithTryCatch(() =>
+            {
+                var result = _domainManager.FindBySurveyId(surveyIdentifier);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var model = Map(result);
+
+                return Ok(model);
+            });
+        }
+
+        /// <summary>
+        /// Retrieves a a list of Waterbird Foraging information for a given user / submitter.
+        /// </summary>
+        /// <param name="userId">
+        /// UserId of the person who submitted the survey.
+        /// </param>
+        /// <returns>
+        /// <see cref="IHttpActionResult"/> containing a list of <see cref="WaterbirdForagingListItem"/> or 404 if none found.
+        /// </returns>
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult Get(int userId)
+        {
+            return WrapWithTryCatch(() =>
+            {
+                var result = _domainManager.FindBySubmitterId(userId);
+
+                if (result == null || !result.Any())
+                {
+                    return NotFound();
+                }
+
+                var models = result.Select(x => {
+                    return new WaterbirdForagingListItem
+                    {
+                        Location = x.LocationName ?? MISSING,
+                        StartDate = x.StartDate.HasValue ? x.StartDate.Value.ToShortDateString() : MISSING,
+                        Status = (x.Step == SurveyCompleted.COMPLETED_FORAGING_STEP_NUMBER ? "Complete" : "Pending"),
+                        SurveyComments = x.GeneralComments,
+                        SurveyIdentifier = x.SurveyIdentifier
+                    }; 
+                });
+
+                return Ok(models);
+            });
+        }
+
 
         /// <summary>
         /// Creates a new waterbird foraging survey record
@@ -58,7 +131,7 @@ namespace FlightNode.DataCollection.Services.Controllers
             });
         }
 
-        private object Map(SurveyPending input)
+        private WaterbirdForagingModel Map(ISurvey input)
         {
             var entity = new WaterbirdForagingModel
             {
@@ -75,8 +148,9 @@ namespace FlightNode.DataCollection.Services.Controllers
                 TimeOfLowTide = input.TimeOfLowTide,
                 VantagePointInfoId = input.VantagePointId,
                 WeatherInfoId = input.WeatherId,
-                WindSpeed = input.WindSpeedId,
-                SurveyId = input.Id
+                WindSpeed = input.WindSpeed,
+                SurveyId = input.Id,
+                Step = input.Step
             };
 
             foreach (var o in input.Observations)
@@ -102,7 +176,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                     DurationMinutes = d.DurationMinutes,
                     Quantity = d.Quantity,
                     Behavior = d.Result,
-                    DisturbanceId  = d.Id
+                    DisturbanceId = d.Id
                 });
             }
 
@@ -163,7 +237,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 TimeOfLowTide = input.TimeOfLowTide,
                 VantagePointId = input.VantagePointInfoId,
                 WeatherId = input.WeatherInfoId,
-                WindSpeedId = input.WindSpeed,
+                WindSpeed = input.WindSpeed,
                 SubmittedBy = this.LookupUserId(),
                 Id = input.SurveyId
             };
