@@ -3,7 +3,6 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
@@ -56,24 +55,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         #endregion
 
-        #region Specialized Queries for IBirdSpeciesPersistence
-
-        public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
-        {
-            var returnVal = new List<BirdSpecies>();
-            var surveyType = SurveyTypes.Include(survey => survey.BirdSpecies).FirstOrDefault(surveyItem => surveyItem.Id == surveyTypeId);
-
-            if (surveyType != null)
-            {
-                if (surveyType.BirdSpecies != null)
-                {
-                    returnVal = surveyType.BirdSpecies.ToList();
-                }
-            }
-            return returnVal;
-        }
-        #endregion
-
         #region ISurveyPersistence
 
         ICrudSet<Location> ISurveyPersistence.Locations
@@ -91,7 +72,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 return new CrudSetDecorator<SurveyPending>(this.SurveysPending);
             }
         }
-        
+
         ICrudSet<SurveyCompleted> ISurveyPersistence.SurveysCompleted
         {
             get
@@ -197,6 +178,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             this.Configuration.LazyLoadingEnabled = false;
             this.Configuration.ProxyCreationEnabled = false;
+
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -259,7 +241,5 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             return new DataCollectionContext();
         }
-
-
     }
 }

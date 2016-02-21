@@ -24,14 +24,14 @@ namespace FlightNode.DataCollection.Services.Controllers
         private readonly IWaterbirdForagingManager _domainManager;
 
         /// <summary>
-        /// Creates a new instance of <see cref="LocationsController"/>.
+        /// Creates a new instance of <see cref="WaterbirdForagingSurveyController"/>.
         /// </summary>
         /// <param name="domainManager">An instance of <see cref="IWorkLogDomainManager"/></param>
         public WaterbirdForagingSurveyController(IWaterbirdForagingManager domainManager)
         {
             if (domainManager == null)
             {
-                throw new ArgumentNullException("domainManager");
+                throw new ArgumentNullException(nameof(domainManager));
             }
 
             _domainManager = domainManager;
@@ -200,7 +200,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         {
             if (input == null)
             {
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
             }
 
             if (surveyIdentifier == Guid.Empty)
@@ -213,6 +213,8 @@ namespace FlightNode.DataCollection.Services.Controllers
                 SurveyPending entity = Map(input, surveyIdentifier);
 
                 _domainManager.Update(entity, input.Step);
+
+                var result = Map(entity);
 
                 return NoContent();
             });
