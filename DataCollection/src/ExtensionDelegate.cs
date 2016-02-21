@@ -1,12 +1,9 @@
-﻿using FligthNode.Common.Api.Controllers;
+﻿using FlightNode.DataCollection.Domain.Interfaces.Persistence;
+using FligthNode.Common.Api.Controllers;
 using Microsoft.AspNet.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FlightNode.DataCollection.Services.Controllers
+namespace FlightNode.DataCollection
 {
     /// <summary>
     /// Contains delegates pointing to extension methods, which can be overridden for unit test purposes.
@@ -23,6 +20,15 @@ namespace FlightNode.DataCollection.Services.Controllers
 
 
 
+        public static Action<IModifiable, object> SetModifiedStateDelegate;
+
+        public static void SetModifiedStateOn(this IModifiable modifiable, object entry)
+        {
+            SetModifiedStateDelegate(modifiable, entry);
+        }
+        
+
+        
         static ExtensionDelegate()
         {
             Init();
@@ -36,6 +42,11 @@ namespace FlightNode.DataCollection.Services.Controllers
             LookupUserIdDelegate = (LoggingController controller) =>
             {
                 return controller.User.Identity.GetUserId<int>();
+            };
+
+            SetModifiedStateDelegate = (IModifiable persistenceLayer, object input) =>
+            {
+                persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
             };
         }
 

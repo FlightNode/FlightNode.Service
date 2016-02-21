@@ -139,12 +139,15 @@
     <Compile Include="Domain\Entities\WorkLog.cs" />
     <Compile Include="Domain\Entities\WorkLogReportRecord.cs" />
     <Compile Include="Domain\Entities\WorkType.cs" />
+    <Compile Include="Domain\Interfaces\Persistence\ICrudSet.cs" />
+    <Compile Include="Domain\Interfaces\Persistence\IModifiable.cs" />
     <Compile Include="Domain\Interfaces\Persistence\ISurveyPersistence.cs" />
     <Compile Include="Domain\Interfaces\Persistence\ISurveyTypePersistence.cs" />
     <Compile Include="Domain\Interfaces\Persistence\IBirdSpeciesPersistence.cs" />
     <Compile Include="Domain\Managers\SurveyTypeManager.cs" />
     <Compile Include="Domain\Managers\BirdSpeciesManager.cs" />
     <Compile Include="Domain\Managers\WaterbirdForagingManager.cs" />
+    <Compile Include="ExtensionDelegate.cs" />
     <Compile Include="Infrastructure\Customization\CreateViewOperation.cs" />
     <Compile Include="Infrastructure\Customization\CustomSqlServerMigrationSqlGenerator.cs" />
     <Compile Include="Infrastructure\Customization\DropViewOperation.cs" />
@@ -207,7 +210,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Services\Controllers\ExtensionDelegate.cs" />
     <Compile Include="Services\Controllers\SurveyTypeController.cs" />
     <Compile Include="Services\Controllers\WaterbirdForagingSurveyController.cs" />
     <Compile Include="Services\Controllers\WorkLogController.cs" />
