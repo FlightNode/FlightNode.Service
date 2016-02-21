@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using Moq;
+﻿using FlightNode.Common.Exceptions;
+using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using FlightNode.DataCollection.Domain.Managers;
-using FlightNode.DataCollection.Domain.Entities;
-using FlightNode.Common.Exceptions;
+using Moq;
+using System;
+using System.Linq;
+using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 {
@@ -16,6 +13,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
     {
         public class Fixture : IDisposable
         {
+
+            protected readonly Guid IDENTIFIER = new Guid("a507f681-c111-447a-bc1f-195916891226");
+
             protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
             protected Mock<ISurveyPersistence> SurveyPersistenceMock;
             protected Mock<ICrudSet<SurveyPending>> SurveyPendingSet;
@@ -333,7 +333,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     input.Observations.Add(observation);
                     var disturb = new Disturbance();
                     input.Disturbances.Add(disturb);
-                    
+
 
                     // Mocks
                     SetupCrudSets();
@@ -432,7 +432,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null, 1));
                 }
 
-                
+
 
                 [Fact]
                 public void IgnoresExceptions()
@@ -481,7 +481,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     {
                         WaterbirdForagingManager.SetModifiedState = (ISurveyPersistence persistenceLayer, object i) => { /* do nothing */ };
 
-                            BuildSystem().Update(item, 1);
+                        BuildSystem().Update(item, 1);
                         throw new Exception("this should have failed");
                     }
                     catch (DomainValidationException de)
@@ -515,6 +515,236 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     // Act
                     RunNegativeTest(input, "DisturbanceComments");
                 }
+            }
+        }
+
+        public class CreateFakeSet : Fixture
+        {
+            protected const int LOCATION_ID = 234234;
+            protected const string LOCATION_NAME = "fasdfasdf";
+
+
+            protected FakeDbSet<SurveyCompleted> FakeSurveysCompleted = new FakeDbSet<SurveyCompleted>();
+            protected FakeDbSet<SurveyPending> FakeSurveysPending = new FakeDbSet<SurveyPending>();
+            protected FakeDbSet<Location> FakeLocations = new FakeDbSet<Location>();
+
+            protected void UseFakePendingSet()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
+                    .Returns(FakeSurveysPending);
+            }
+
+            protected void UseFakeCompletedSet()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
+                    .Returns(FakeSurveysCompleted);
+            }
+
+            protected void UseFakeLocations()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.Locations)
+                    .Returns(FakeLocations);
+
+
+                FakeLocations.Add(new Location { Id = LOCATION_ID, SiteName = LOCATION_NAME });
+            }
+        }
+
+
+        public class FindBySurveyIdentifier : CreateFakeSet
+        {
+            [Fact]
+            public void ReturnNullWhenSurveyDoesNotExist()
+            {
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+
+                Assert.Null(result);
+            }
+
+            [Fact]
+            public void FindAPendingSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER };
+                FakeSurveysPending.Add(pending);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+
+                //
+                // Assert
+                Assert.Same(pending, result);
+            }
+
+            [Fact]
+            public void FindACompletedSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+
+                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER };
+                FakeSurveysCompleted.Add(completed);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+
+                //
+                // Assert
+                Assert.Same(completed, result);
+            }
+
+            [Fact]
+            public void IgnoreExceptions()
+            {
+                Assert.Throws<MockException>(() => BuildSystem().FindBySurveyId(IDENTIFIER));
+            }
+        }
+
+
+        public class FindBySubmitterId : CreateFakeSet
+        {
+            private const int USER_ID = 234234;
+
+            [Fact]
+            public void ReturnEmptyListWhenSurveyDoesNotExist()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+
+                //
+                // Act
+                var result = BuildSystem().FindBySubmitterId(USER_ID);
+
+                //
+                // Assert
+                Assert.False(result.Any());
+            }
+
+            [Fact]
+            public void FindAPendingSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeLocations();
+
+                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                FakeSurveysPending.Add(pending);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySubmitterId(USER_ID);
+
+                //
+                // Assert
+                Assert.Same(pending, result.First());
+            }
+
+            [Fact]
+            public void FindACompletedSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeLocations();
+
+                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                FakeSurveysCompleted.Add(completed);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySubmitterId(USER_ID);
+
+                //
+                // Assert
+                Assert.Same(completed, result.First());
+            }
+
+
+            [Fact]
+            public void AddLocationToCompletedSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeLocations();
+
+                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                FakeSurveysCompleted.Add(completed);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySubmitterId(USER_ID);
+
+                //
+                // Assert
+                Assert.Equal(LOCATION_NAME, result.First().LocationName);
+            }
+
+            [Fact]
+            public void AddLocationToPendingSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeLocations();
+
+                var completed = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                FakeSurveysPending.Add(completed);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySubmitterId(USER_ID);
+
+                //
+                // Assert
+                Assert.Equal(LOCATION_NAME, result.First().LocationName);
+            }
+
+            [Fact]
+            public void FindBothPendingAndCompletedAtSameTime()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeLocations();
+
+                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                FakeSurveysPending.Add(pending);
+
+                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                FakeSurveysCompleted.Add(completed);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySubmitterId(USER_ID);
+
+                //
+                // Assert
+                Assert.True(result.Contains(completed));
+                Assert.True(result.Contains(pending));
+            }
+
+            [Fact]
+            public void IgnoreExceptions()
+            {
+                Assert.Throws<MockException>(() => BuildSystem().FindBySubmitterId(USER_ID));
             }
         }
     }

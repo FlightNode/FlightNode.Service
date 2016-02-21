@@ -183,7 +183,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                     TimeOfLowTide = LOW_TIDE,
                     VantagePointId = VANTAGE_POINT,
                     WeatherId = WEATHER,
-                    WindSpeedId = WIND
+                    WindSpeed = WIND
                 };
                 result.Add(OBSERVER_ID);
                 result.Add(new Disturbance
@@ -320,7 +320,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 [Fact]
                 public void MapsWindSpeed()
                 {
-                    Assert.Equal(WIND, RunTest().WindSpeedId);
+                    Assert.Equal(WIND, RunTest().WindSpeed);
                 }
             }
         }

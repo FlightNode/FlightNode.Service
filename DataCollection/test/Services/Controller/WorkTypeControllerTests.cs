@@ -372,8 +372,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
         {
             private int id = 123;
             private string description = "somewhere";
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
 
             [Fact]
             public void ConfirmMapsDescription()

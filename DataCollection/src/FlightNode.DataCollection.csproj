@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\Entities\FeedingSuccessRates.cs" />
+    <Compile Include="Domain\Entities\ISurvey.cs" />
     <Compile Include="Domain\Entities\SiteAssessment.cs" />
     <Compile Include="Domain\Entities\Disturbance.cs" />
     <Compile Include="Domain\Entities\AccessPoint.cs" />
@@ -217,6 +218,7 @@
     <Compile Include="Services\Controllers\LocationsController.cs" />
     <Compile Include="Services\Models\Survey\DisturbanceModel.cs" />
     <Compile Include="Services\Models\Survey\ObservationModel.cs" />
+    <Compile Include="Services\Models\Survey\WaterbirdForagingListItem.cs" />
     <Compile Include="Services\Models\Survey\WaterbirdForagingModel.cs" />
     <Compile Include="Services\Models\Survey\RookeryCensusModel.cs" />
     <Compile Include="Services\Models\Worklog\MyWorkLogModel.cs" />

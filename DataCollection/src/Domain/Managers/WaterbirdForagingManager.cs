@@ -1,6 +1,8 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
@@ -9,6 +11,8 @@ namespace FlightNode.DataCollection.Domain.Managers
         SurveyPending Create(SurveyPending waterbirdForagingModel);
         Guid NewIdentifier();
         void Update(SurveyPending entity, int step);
+        ISurvey FindBySurveyId(Guid guid);
+        IList<ISurvey> FindBySubmitterId(int userId);
     }
 
     /// <summary>
@@ -30,6 +34,76 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             _persistence = persistence;
+        }
+
+        /// <summary>
+        /// Looks up either a pending or completed survey by its unique identifier.
+        /// </summary>
+        /// <param name="surveyIdentifier">Survey's unique identifier</param>
+        /// <returns>
+        /// Either <see cref="SurveyCompleted"/> or <see cref="SurveyPending"/> as an <see cref="ISurvey"/>.
+        /// </returns>
+        public ISurvey FindBySurveyId(Guid surveyIdentifier)
+        {
+            var pending = _persistence.SurveysPending
+                                        .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier);
+
+            if (pending != null)
+            {
+                return pending;
+            }
+
+            return _persistence.SurveysCompleted
+                            .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier);
+        }
+
+        /// <summary>
+        /// Looks up all waterbird survey results submitted by a particular user, whether pending or complete.
+        /// </summary>
+        /// <param name="userId">
+        /// The ID for the user who submitted the surveys.
+        /// </param>
+        /// <returns>
+        /// List of both <see cref="SurveyCompleted"/> and <see cref="SurveyPending"/>.
+        /// </returns>
+        public IList<ISurvey> FindBySubmitterId(int userId)
+        {
+            var list = new List<ISurvey>();
+
+            var pending = FindPendingSurveysSubmittedBy(userId);
+            list.AddRange(pending);
+
+            var completed = FindCompletedSurveysSubmittedBy(userId);
+            list.AddRange(completed);
+
+            return LoadLocationNames(list);
+        }
+
+        private IList<ISurvey> LoadLocationNames(List<ISurvey> list)
+        {
+            list.ForEach(x =>
+            {
+                // due to a foreign key relationship, this should never *not* find a result
+                x.LocationName = _persistence.Locations
+                                    .First(y => y.Id == x.LocationId)
+                                    .SiteName;
+            });
+
+            return list;
+        }
+
+        private List<SurveyPending> FindPendingSurveysSubmittedBy(int userId)
+        {
+            return _persistence.SurveysPending
+                                                    .Where(x => x.SubmittedBy == userId)
+                                                    .ToList();
+        }
+
+        private List<SurveyCompleted> FindCompletedSurveysSubmittedBy(int userId)
+        {
+            return _persistence.SurveysCompleted
+                                        .Where(x => x.SubmittedBy == userId)
+                                        .ToList();
         }
 
         /// <summary>
