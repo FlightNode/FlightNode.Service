@@ -248,7 +248,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     // class level. Will cause interacting tests.
                     var modifiedWasCalled = 0;
 
-                    WaterbirdForagingManager.SetModifiedState = (ISurveyPersistence persistenceLayer, object i) =>
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
                     {
                         modifiedWasCalled++;
                     };
@@ -274,7 +274,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     // class level. Will cause interacting tests.
                     var modifiedWasCalled = 0;
 
-                    WaterbirdForagingManager.SetModifiedState = (ISurveyPersistence persistenceLayer, object i) =>
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
                     {
                         modifiedWasCalled++;
                     };
@@ -300,7 +300,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     // class level. Will cause interacting tests.
                     var modifiedWasCalled = 0;
 
-                    WaterbirdForagingManager.SetModifiedState = (ISurveyPersistence persistenceLayer, object i) =>
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
                     {
                         modifiedWasCalled++;
                     };
@@ -353,7 +353,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     var modifiedWasCalled = 0;
                     const int expectedModifications = 3; // observation, disturbance, survey
 
-                    WaterbirdForagingManager.SetModifiedState = (ISurveyPersistence persistenceLayer, object i) =>
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
                     {
                         modifiedWasCalled++;
                     };
@@ -455,7 +455,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     // class level. Will cause interacting tests.
                     var ModifiedWasCalled = 0;
 
-                    WaterbirdForagingManager.SetModifiedState = (ISurveyPersistence persistenceLayer, object i) =>
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
                     {
                         ModifiedWasCalled++;
                     };
@@ -482,7 +482,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     try
                     {
-                        WaterbirdForagingManager.SetModifiedState = (ISurveyPersistence persistenceLayer, object i) => { /* do nothing */ };
+                        ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) => { /* do nothing */ };
 
                         BuildSystem().Update(item, 1);
                         throw new Exception("this should have failed");

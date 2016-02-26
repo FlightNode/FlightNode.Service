@@ -182,7 +182,8 @@ namespace FlightNode.DataCollection.Domain.Managers
         private void LoadModifiedEntitiesIntoPersistenceLayer(SurveyPending survey)
         {
             _persistence.SurveysPending.Add(survey);
-            SetModifiedState(_persistence, survey);
+            _persistence.SetModifiedStateOn(survey);
+
             _persistence.SaveChanges();
 
             survey.Observations.ForEach(x =>
@@ -192,7 +193,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                 //Set the state to Modified only if the object is already created.
                 if (x.Id > 0)
                 {
-                    SetModifiedState(_persistence, x);
+                    _persistence.SetModifiedStateOn(x);
                 }
 
                 _persistence.SaveChanges();
@@ -203,15 +204,12 @@ namespace FlightNode.DataCollection.Domain.Managers
                 //Set the state to Modified only if the object is already created.
                 if (x.Id > 0)
                 {
-                    SetModifiedState(_persistence, x);
+                    _persistence.SetModifiedStateOn(x);
                 }
                 _persistence.SaveChanges();
             });
         }
 
-        public static Action<ISurveyPersistence, object> SetModifiedState = (ISurveyPersistence persistenceLayer, object input) =>
-        {
-            persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
-        };
+
     }
 }
