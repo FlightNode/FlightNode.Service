@@ -187,6 +187,10 @@
     <Compile Include="Migrations\201602200401013_MoreSurveyHelperTables.Designer.cs">
       <DependentUpon>201602200401013_MoreSurveyHelperTables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602271714081_SurveyTypeWindSpeedRename.cs" />
+    <Compile Include="Migrations\201602271714081_SurveyTypeWindSpeedRename.Designer.cs">
+      <DependentUpon>201602271714081_SurveyTypeWindSpeedRename.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
@@ -285,6 +289,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602200401013_MoreSurveyHelperTables.resx">
       <DependentUpon>201602200401013_MoreSurveyHelperTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602271714081_SurveyTypeWindSpeedRename.resx">
+      <DependentUpon>201602271714081_SurveyTypeWindSpeedRename.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

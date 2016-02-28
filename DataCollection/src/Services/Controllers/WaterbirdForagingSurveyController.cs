@@ -1,13 +1,12 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Models.Rookery;
+using FlightNode.DataCollection.Services.Models.Survey;
 using FligthNode.Common.Api.Controllers;
 using Microsoft.AspNet.Identity;
 using System;
-using System.Web.Http;
-
 using System.Linq;
-using FlightNode.DataCollection.Services.Models.Survey;
+using System.Web.Http;
 
 namespace FlightNode.DataCollection.Services.Controllers
 {
@@ -87,7 +86,8 @@ namespace FlightNode.DataCollection.Services.Controllers
                     return NotFound();
                 }
 
-                var models = result.Select(x => {
+                var models = result.Select(x =>
+                {
                     return new WaterbirdForagingListItem
                     {
                         Location = x.LocationName ?? MISSING,
@@ -95,7 +95,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                         Status = (x.Step == SurveyCompleted.COMPLETED_FORAGING_STEP_NUMBER ? "Complete" : "Pending"),
                         SurveyComments = x.GeneralComments,
                         SurveyIdentifier = x.SurveyIdentifier
-                    }; 
+                    };
                 });
 
                 return Ok(models);
@@ -191,6 +191,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// <summary>
         /// Updates an existing new waterbird foraging survey record
         /// </summary>
+        /// <param name="surveyIdentifier"></param>
         /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>
         /// <returns></returns>
         [HttpPut]
@@ -214,9 +215,11 @@ namespace FlightNode.DataCollection.Services.Controllers
 
                 _domainManager.Update(entity, input.Step);
 
+                entity = (SurveyPending)_domainManager.FindBySurveyId(surveyIdentifier);
+
                 var result = Map(entity);
 
-                return NoContent();
+                return Ok(result);
             });
         }
 
