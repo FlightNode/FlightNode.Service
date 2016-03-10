@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FlightNode.DataCollection.Services.Models
+namespace FlightNode.DataCollection.Services.Models.WorkLog
 {
     public class WorkLogModel
     {

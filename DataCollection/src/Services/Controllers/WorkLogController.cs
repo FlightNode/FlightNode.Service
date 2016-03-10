@@ -1,12 +1,12 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
-using FlightNode.DataCollection.Services.Models;
+using FlightNode.DataCollection.Services.Models.WorkLog;
 using FligthNode.Common.Api.Controllers;
 using Flurl;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Linq;
 using System.Web.Http;
-using Microsoft.AspNet.Identity;
 
 namespace FlightNode.DataCollection.Domain.Services.Controllers
 {
@@ -23,7 +23,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         {
             if (domainManager == null)
             {
-                throw new ArgumentNullException("domainManager");
+                throw new ArgumentNullException(nameof(domainManager));
             }
 
             _domainManager = domainManager;

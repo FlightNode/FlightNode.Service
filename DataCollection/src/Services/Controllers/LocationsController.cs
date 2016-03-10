@@ -26,7 +26,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         {
             if (domainManager == null)
             {
-                throw new ArgumentNullException("domainManager");
+                throw new ArgumentNullException(nameof(domainManager));
             }
 
             _domainManager = domainManager;
@@ -49,13 +49,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var locations = _domainManager.FindAll();
 
-                var models = locations.Select(x => new LocationModel
-                {
-                    Description = x.Description,
-                    Id = x.Id,
-                    Latitude = x.Latitude,
-                    Longitude = x.Longitude
-                });
+                var models = locations.Select(Map);
 
                 return Ok(models);
             });
@@ -79,16 +73,24 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var x = _domainManager.FindById(id);
 
-                var model = new LocationModel
-                {
-                    Description = x.Description,
-                    Id = x.Id,
-                    Latitude = x.Latitude,
-                    Longitude = x.Longitude
-                };
+                var model = Map(x);
 
                 return Ok(model);
             });
+        }
+
+        private static LocationModel Map(Location x)
+        {
+            return new LocationModel
+            {
+                Id = x.Id,
+                Latitude = x.Latitude,
+                Longitude = x.Longitude,
+                SiteCode = x.SiteCode,
+                SiteName = x.SiteName,
+                City = x.City,
+                County = x.County
+            };
         }
 
         /// <summary>
@@ -99,7 +101,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// POST: /api/v1/locations
         /// {
-        ///   "description": "some location",
+        ///   "siteName": "some location",
         ///   "longitude": 34.02356,
         ///   "latitude": 73.47885
         /// }
@@ -118,12 +120,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                var location = new Location
-                {
-                    Description = input.Description,
-                    Latitude = input.Latitude,
-                    Longitude = input.Longitude
-                };
+                var location = Map(input);
 
                 location = _domainManager.Create(location);
 
@@ -136,6 +133,20 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             });
         }
 
+        private static Location Map(LocationModel input)
+        {
+            return new Location
+            {
+                SiteName = input.SiteName,
+                Latitude = input.Latitude,
+                Longitude = input.Longitude,
+                SiteCode = input.SiteCode,
+                Id = input.Id,
+                City = input.City,
+                County = input.County
+            };
+        }
+
         /// <summary>
         /// Updates an existing location resource.
         /// </summary>
@@ -144,7 +155,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// PUT: /api/v1/locations/123
         /// {
-        ///   "description": "some location",
+        ///   "siteName": "some location",
         ///   "longitude": 34.02356,
         ///   "latitude": 73.47885,
         ///   "id": 123
@@ -164,15 +175,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                var location = new Location
-                {
-                    Description = input.Description,
-                    Latitude = input.Latitude,
-                    Longitude = input.Longitude,
-                    Id = input.Id
-                };
+                var location = Map(input);
 
-                _domainManager.Update(location);                
+                _domainManager.Update(location);
 
                 return NoContent();
             });
@@ -200,7 +205,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
                 var models = locations.Select(x => new SimpleListItem
                 {
-                    Value = x.Description,
+                    Value = x.SiteName,
                     Id = x.Id
                 });
 

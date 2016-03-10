@@ -1,6 +1,5 @@
 namespace FlightNode.DataCollection.Domain.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
 
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
@@ -1886,8 +1885,10 @@ INSERT INTO dbo.BirdSpecies (CommonAlphaCode, CommonName, [Order], Family, SubFa
             Sql(inserts);
 
             inserts = @"
-INSERT INTO dbo.SurveyType (Description) VALUES ('TERN Rookery Survey');
-INSERT INTO dbo.SurveyType (Description) VALUES ('TERN Waterbird Foraging Survey');
+SET IDENTITY_INSERT dbo.SurveyType ON
+INSERT INTO dbo.SurveyType (Id, Description) VALUES (1, 'TERN Rookery Survey');
+INSERT INTO dbo.SurveyType (Id, Description) VALUES (2, 'TERN Waterbird Foraging Survey');
+SET IDENTITY_INSERT dbo.SurveyType OFF
 ";
             Sql(inserts);
         }

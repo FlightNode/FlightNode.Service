@@ -260,13 +260,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public class Validation : Update
             {
-                private WorkType item = new WorkType
-                {
-                    Description = "this is a valid description",
-                    Id = 0,
-                    WorkLogs = null
-                };
-
                 private void RunPositiveTest()
                 {
                     base.SetupWorkTypesCollection();
