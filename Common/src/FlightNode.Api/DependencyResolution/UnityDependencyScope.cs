@@ -31,7 +31,6 @@ in Unity 4.0, which prevents installation of the original Unity.WebAPI
 using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
-using System.Web.Http.Controllers;
 using System.Web.Http.Dependencies;
 
 namespace FlightNode.Api.DependencyResolution
@@ -71,7 +70,7 @@ namespace FlightNode.Api.DependencyResolution
             {
                 return Container.Resolve(serviceType);
             }
-            catch (ResolutionFailedException)
+            catch (ResolutionFailedException res)
             {
                 // Any other exception might really be a problem, so let it escape.
                 return null;
