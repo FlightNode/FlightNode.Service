@@ -110,8 +110,12 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Controllers\LoggingControllerTests.cs" />
     <Compile Include="DependencyResolution\UnityDependencyResolverTests.cs" />
     <Compile Include="DependencyResolution\UnityDependencyScopeTests.cs" />
+    <Compile Include="Filters\LoggingExceptionHandlerTests.cs" />
+    <Compile Include="Filters\NotImplementedExceptionAttributeTests.cs" />
+    <Compile Include="Filters\UnhandledExceptionFilterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
