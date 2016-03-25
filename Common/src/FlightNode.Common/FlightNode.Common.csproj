@@ -74,7 +74,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseClasses\DomainLogic.cs" />
     <Compile Include="BaseClasses\IEntity.cs" />
     <Compile Include="Exceptions\DatabaseExceptionContent.cs" />
     <Compile Include="Exceptions\ServerException.cs" />

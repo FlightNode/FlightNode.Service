@@ -397,9 +397,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     const int id = 3233;
 
                     var input = new SurveyPending();
-                    var observation = new Observation();
+                    var observation = new Observation { Id = 1 };
                     input.Observations.Add(observation);
-                    var disturb = new Disturbance();
+                    var disturb = new Disturbance { Id = 2 };
                     input.Disturbances.Add(disturb);
 
 
