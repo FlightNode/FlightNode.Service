@@ -25,7 +25,7 @@ namespace FlightNode.Common.Api.Filters
 
         public override void Handle(ExceptionHandlerContext context)
         {
-            _logger.Error(context.Exception);
+            Logger.Error(context.Exception);
 
             base.Handle(context);
         }
