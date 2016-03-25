@@ -243,6 +243,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     //
                     // Arrange
+                    const int expectedCount = 3; // Observation, Disturbance, and Survey
 
                     // Don't extract this to a method for reuse, with the variable at the 
                     // class level. Will cause interacting tests.
@@ -261,7 +262,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(1, modifiedWasCalled);
+                    Assert.Equal(expectedCount, modifiedWasCalled);
                 }
 
                 [Fact]
@@ -269,6 +270,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     //
                     // Arrange
+                    const int expectedCount = 3; // Observation, Disturbance, and Survey
 
                     // Don't extract this to a method for reuse, with the variable at the 
                     // class level. Will cause interacting tests.
@@ -287,7 +289,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(1, modifiedWasCalled);
+                    Assert.Equal(expectedCount, modifiedWasCalled);
                 }
 
                 [Fact]
@@ -295,6 +297,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     //
                     // Arrange
+                    const int expectedCount = 3; // Observation, Disturbance, and Survey
 
                     // Don't extract this to a method for reuse, with the variable at the 
                     // class level. Will cause interacting tests.
@@ -313,7 +316,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(1, modifiedWasCalled);
+                    Assert.Equal(expectedCount, modifiedWasCalled);
                 }
 
                 [Fact]
