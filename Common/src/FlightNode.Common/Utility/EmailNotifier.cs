@@ -31,6 +31,11 @@ namespace FlightNode.Common.Utility
         /// <returns>A <see cref="Task"/></returns>
         public void Send(NotificationModel notification)
         {
+            if (notification == null)
+            {
+                throw new ArgumentNullException("notification");
+            }
+
             var message = _factory.CreateMessage();
             message.AddTo(notification.To);
             message.From = new System.Net.Mail.MailAddress(notification.FromEmail, notification.FromName);

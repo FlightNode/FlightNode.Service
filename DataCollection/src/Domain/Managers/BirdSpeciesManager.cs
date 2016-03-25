@@ -29,7 +29,9 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
         {
-            var returnVal = BirdSpeciesPersistence.Collection.Where(birdItem => birdItem.SurveyTypes.Any(surveyItem => surveyItem.Id == surveyTypeId)).ToList();
+            var returnVal = BirdSpeciesPersistence.Collection
+                                    .Where(birdItem => birdItem.SurveyTypes.Any(surveyItem => surveyItem.Id == surveyTypeId))
+                                    .ToList();
             return returnVal;
         }
     }

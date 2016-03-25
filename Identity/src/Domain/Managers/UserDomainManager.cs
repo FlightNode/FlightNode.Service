@@ -14,7 +14,7 @@ namespace FlightNode.Identity.Domain.Logic
     /// <summary>
     /// Domain / business logic for Users.
     /// </summary>
-    public class UserDomainManager : DomainLogic, IUserDomainManager
+    public class UserDomainManager : IUserDomainManager
     {
 
         public static readonly string PendingUserEmailSubject = Properties.Settings.Default.SiteName + " pending user registration received";
