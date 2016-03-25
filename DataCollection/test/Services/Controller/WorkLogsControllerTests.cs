@@ -3,6 +3,7 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Controllers;
 using FlightNode.DataCollection.Services.Models;
+using FlightNode.DataCollection.Services.Models.WorkLog;
 using log4net;
 using Moq;
 using System;

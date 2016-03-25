@@ -1,6 +1,8 @@
 ﻿using Microsoft.Practices.Unity;
 using Owin;
 using System.Reflection;
+using System.Linq;
+using FlightNode.DataCollection.Domain.Entities;
 
 namespace FlightNode.DataCollection.Services.Providers
 {
@@ -14,7 +16,7 @@ namespace FlightNode.DataCollection.Services.Providers
             return app;
         }
 
-    
+
         public static IUnityContainer ConfigureDependencyInjection(IUnityContainer container)
         {
             container = RegisterAllTypesIn(container, Assembly.GetExecutingAssembly());
@@ -27,10 +29,19 @@ namespace FlightNode.DataCollection.Services.Providers
 
         private static IUnityContainer RegisterAllTypesIn(IUnityContainer container, Assembly repoAssembly)
         {
-            container.RegisterTypes(AllClasses.FromAssemblies(repoAssembly),
-                                                 WithMappings.FromAllInterfacesInSameAssembly,
-                                                 WithName.Default,
-                                                 WithLifetime.PerResolve);
+            //container.RegisterTypes(AllClasses.FromAssemblies(repoAssembly),
+            //                                     WithMappings.FromAllInterfacesInSameAssembly,
+            //                                     WithName.Default,
+            //                                     WithLifetime.PerResolve);
+
+            var typesToRegister = AllClasses.FromAssemblies(repoAssembly)
+                .Where(t => !typeof(ISurvey).IsAssignableFrom(t))
+                .ToList();
+
+            container.RegisterTypes(typesToRegister,
+                WithMappings.FromAllInterfacesInSameAssembly,
+                WithName.Default,
+                WithLifetime.PerResolve);
 
             return container;
         }

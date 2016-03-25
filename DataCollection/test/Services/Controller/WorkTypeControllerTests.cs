@@ -16,6 +16,7 @@ using System.Web.Http.Results;
 using Xunit;
 using FlightNode.Common.Api.Models;
 using FlightNode.DataCollection.Domain.UnitTests.Services.Controller;
+using FlightNode.DataCollection.Services.Models.WorkLog;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services
 {
@@ -371,8 +372,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
         {
             private int id = 123;
             private string description = "somewhere";
-            private decimal longitude = 89.3m;
-            private decimal latitude = -34.0m;
 
             [Fact]
             public void ConfirmMapsDescription()

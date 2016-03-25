@@ -1,7 +1,6 @@
 ﻿using FlightNode.Common.Api.Models;
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
-using FlightNode.DataCollection.Services.Models;
 using FligthNode.Common.Api.Controllers;
 using Flurl;
 using System;
@@ -23,7 +22,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         {
             if (domainManager == null)
             {
-                throw new ArgumentNullException("domainManager");
+                throw new ArgumentNullException(nameof(domainManager));
             }
 
             _domainManager = domainManager;

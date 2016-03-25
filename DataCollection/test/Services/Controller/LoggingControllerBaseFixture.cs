@@ -36,7 +36,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             return controller;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             MockRepository.VerifyAll();
         }
@@ -51,6 +51,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         protected void ExpectToLogToDebug()
         {
             MockLogger.Setup(x => x.Debug(It.IsAny<Exception>()));
+        }
+
+
+        protected static HttpResponseMessage ExecuteHttpAction(IHttpActionResult result)
+        {
+            return result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
+        }
+
+
+
+        protected static TModel ReadResult<TModel>(HttpResponseMessage message)
+        {
+            return message.Content.ReadAsAsync<TModel>().Result;
         }
     }
 }

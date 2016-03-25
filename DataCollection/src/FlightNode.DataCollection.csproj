@@ -47,8 +47,9 @@
       <HintPath>..\..\Packages\Flurl.1.0.10\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10\Flurl.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\Packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
@@ -75,9 +76,9 @@
       <HintPath>..\..\Packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\Packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Owin">
@@ -116,17 +117,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Entities\FeedingSuccessRates.cs" />
+    <Compile Include="Domain\Entities\ISurvey.cs" />
+    <Compile Include="Domain\Entities\SiteAssessment.cs" />
+    <Compile Include="Domain\Entities\Disturbance.cs" />
+    <Compile Include="Domain\Entities\AccessPoint.cs" />
+    <Compile Include="Domain\Entities\VantagePoint.cs" />
+    <Compile Include="Domain\Entities\HabitatType.cs" />
+    <Compile Include="Domain\Entities\SurveyActivity.cs" />
+    <Compile Include="Domain\Entities\SurveyPending.cs" />
+    <Compile Include="Domain\Entities\Tide.cs" />
+    <Compile Include="Domain\Entities\Weather.cs" />
+    <Compile Include="Domain\Entities\DisturbanceType.cs" />
     <Compile Include="Domain\Entities\Location.cs" />
     <Compile Include="Domain\Entities\BirdSpecies.cs" />
+    <Compile Include="Domain\Entities\Observation.cs" />
+    <Compile Include="Domain\Entities\Observer.cs" />
+    <Compile Include="Domain\Entities\SurveyCompleted.cs" />
     <Compile Include="Domain\Entities\SurveyType.cs" />
     <Compile Include="Domain\Entities\ValidationHelper.cs" />
     <Compile Include="Domain\Entities\WorkLog.cs" />
     <Compile Include="Domain\Entities\WorkLogReportRecord.cs" />
     <Compile Include="Domain\Entities\WorkType.cs" />
+    <Compile Include="Domain\Interfaces\Persistence\ICrudSet.cs" />
+    <Compile Include="Domain\Interfaces\Persistence\IModifiable.cs" />
+    <Compile Include="Domain\Interfaces\Persistence\ISurveyPersistence.cs" />
     <Compile Include="Domain\Interfaces\Persistence\ISurveyTypePersistence.cs" />
     <Compile Include="Domain\Interfaces\Persistence\IBirdSpeciesPersistence.cs" />
     <Compile Include="Domain\Managers\SurveyTypeManager.cs" />
     <Compile Include="Domain\Managers\BirdSpeciesManager.cs" />
+    <Compile Include="Domain\Managers\WaterbirdForagingManager.cs" />
+    <Compile Include="ExtensionDelegate.cs" />
     <Compile Include="Infrastructure\Customization\CreateViewOperation.cs" />
     <Compile Include="Infrastructure\Customization\CustomSqlServerMigrationSqlGenerator.cs" />
     <Compile Include="Infrastructure\Customization\DropViewOperation.cs" />
@@ -145,6 +166,30 @@
     <Compile Include="Migrations\201511081916586_Worklog.cs" />
     <Compile Include="Migrations\201511081916586_Worklog.Designer.cs">
       <DependentUpon>201511081916586_Worklog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.cs" />
+    <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.Designer.cs">
+      <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602080256251_SurveyCompleted.cs" />
+    <Compile Include="Migrations\201602080256251_SurveyCompleted.Designer.cs">
+      <DependentUpon>201602080256251_SurveyCompleted.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602140430283_SurveyPending.cs" />
+    <Compile Include="Migrations\201602140430283_SurveyPending.Designer.cs">
+      <DependentUpon>201602140430283_SurveyPending.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602180305419_ImprovingSurveySupport.cs" />
+    <Compile Include="Migrations\201602180305419_ImprovingSurveySupport.Designer.cs">
+      <DependentUpon>201602180305419_ImprovingSurveySupport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602200401013_MoreSurveyHelperTables.cs" />
+    <Compile Include="Migrations\201602200401013_MoreSurveyHelperTables.Designer.cs">
+      <DependentUpon>201602200401013_MoreSurveyHelperTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602262306256_RenameWindSpeed.cs" />
+    <Compile Include="Migrations\201602262306256_RenameWindSpeed.Designer.cs">
+      <DependentUpon>201602262306256_RenameWindSpeed.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
@@ -170,16 +215,22 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Services\Controllers\SurveyTypeController.cs" />
+    <Compile Include="Services\Controllers\WaterbirdForagingSurveyController.cs" />
     <Compile Include="Services\Controllers\WorkLogController.cs" />
     <Compile Include="Services\Controllers\BirdSpeciesController.cs" />
     <Compile Include="Services\Controllers\WorkTypesController.cs" />
     <Compile Include="Services\Models\BirdSpeciesModel.cs" />
     <Compile Include="Services\Models\LocationModel.cs" />
     <Compile Include="Services\Controllers\LocationsController.cs" />
-    <Compile Include="Services\Models\MyWorkLogModel.cs" />
-    <Compile Include="Services\Models\WorkLogModel.cs" />
-    <Compile Include="Services\Models\WorkLogReportModel.cs" />
-    <Compile Include="Services\Models\WorkTypeModel.cs" />
+    <Compile Include="Services\Models\Survey\DisturbanceModel.cs" />
+    <Compile Include="Services\Models\Survey\ObservationModel.cs" />
+    <Compile Include="Services\Models\Survey\WaterbirdForagingListItem.cs" />
+    <Compile Include="Services\Models\Survey\WaterbirdForagingModel.cs" />
+    <Compile Include="Services\Models\Survey\RookeryCensusModel.cs" />
+    <Compile Include="Services\Models\Worklog\MyWorkLogModel.cs" />
+    <Compile Include="Services\Models\Worklog\WorkLogModel.cs" />
+    <Compile Include="Services\Models\Worklog\WorkLogReportModel.cs" />
+    <Compile Include="Services\Models\Worklog\WorkTypeModel.cs" />
     <Compile Include="Services\Providers\ApiStartup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +244,10 @@
     <ProjectReference Include="..\..\Common\src\FlightNode.Common\FlightNode.Common.csproj">
       <Project>{05902c28-0900-4902-9300-0540eedac9c1}</Project>
       <Name>FlightNode.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Identity\src\FlightNode.Identity.csproj">
+      <Project>{8efa7367-e1a8-4ca3-8f20-91ce6fe38f7f}</Project>
+      <Name>FlightNode.Identity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +274,24 @@
     <EmbeddedResource Include="Migrations\201601030352249_SpeciesSurveyType.resx">
       <DependentUpon>201601030352249_SpeciesSurveyType.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.resx">
+      <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602080256251_SurveyCompleted.resx">
+      <DependentUpon>201602080256251_SurveyCompleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602140430283_SurveyPending.resx">
+      <DependentUpon>201602140430283_SurveyPending.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602180305419_ImprovingSurveySupport.resx">
+      <DependentUpon>201602180305419_ImprovingSurveySupport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602200401013_MoreSurveyHelperTables.resx">
+      <DependentUpon>201602200401013_MoreSurveyHelperTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602262306256_RenameWindSpeed.resx">
+      <DependentUpon>201602262306256_RenameWindSpeed.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
