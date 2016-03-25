@@ -8,12 +8,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FlightNode.Identity.Properties {
+namespace FlightNode.Common.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
-    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -25,55 +25,37 @@ namespace FlightNode.Identity.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("JustMakeupSomething")]
-        public string ClientId {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableEmail {
             get {
-                return ((string)(this["ClientId"]));
+                return ((bool)(this["EnableEmail"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("xJJR1vffcprjhi8vK6g4DKDmRq_yKY4Ip1svAmRaVV8")]
-        public string ClientSecret {
+        [global::System.Configuration.DefaultSettingValueAttribute("keeping it secret")]
+        public string SendGridApiKey {
             get {
-                return ((string)(this["ClientSecret"]));
+                return ((string)(this["SendGridApiKey"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AllowInsecureHttpConnection {
+        [global::System.Configuration.DefaultSettingValueAttribute("stephen@safnet.com")]
+        public string FromEmail {
             get {
-                return ((bool)(this["AllowInsecureHttpConnection"]));
+                return ((string)(this["FromEmail"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("FlightNode")]
-        public string IdentityConnectionString {
+        [global::System.Configuration.DefaultSettingValueAttribute("S. Fuqua")]
+        public string FromName {
             get {
-                return ((string)(this["IdentityConnectionString"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost")]
-        public string IssuerUrl {
-            get {
-                return ((string)(this["IssuerUrl"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("FlightNode")]
-        public string SiteName {
-            get {
-                return ((string)(this["SiteName"]));
+                return ((string)(this["FromName"]));
             }
         }
     }

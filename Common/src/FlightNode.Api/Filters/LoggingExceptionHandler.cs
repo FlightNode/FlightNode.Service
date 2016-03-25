@@ -31,7 +31,7 @@ namespace FlightNode.Common.Api.Filters
                 throw new ArgumentNullException("context");
             }
 
-            _logger.Error(context.Exception);
+            Logger.Error(context.Exception);
 
             base.Handle(context);
         }
