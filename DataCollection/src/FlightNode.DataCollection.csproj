@@ -167,6 +167,10 @@
     <Compile Include="Migrations\201511081916586_Worklog.Designer.cs">
       <DependentUpon>201511081916586_Worklog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512200248278_WorkLogReport.cs" />
+    <Compile Include="Migrations\201512200248278_WorkLogReport.Designer.cs">
+      <DependentUpon>201512200248278_WorkLogReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.cs" />
     <Compile Include="Migrations\201602022110503_AddSiteCodeSiteNameToLocation.Designer.cs">
       <DependentUpon>201602022110503_AddSiteCodeSiteNameToLocation.cs</DependentUpon>
@@ -191,14 +195,14 @@
     <Compile Include="Migrations\201602262306256_RenameWindSpeed.Designer.cs">
       <DependentUpon>201602262306256_RenameWindSpeed.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603290305420_WorkLogReport_UpdateLocationSiteName.cs" />
+    <Compile Include="Migrations\201603290305420_WorkLogReport_UpdateLocationSiteName.Designer.cs">
+      <DependentUpon>201603290305420_WorkLogReport_UpdateLocationSiteName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
       <DependentUpon>201512070258005_DecSix.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201512200248278_WorkLogReport.cs" />
-    <Compile Include="Migrations\201512200248278_WorkLogReport.Designer.cs">
-      <DependentUpon>201512200248278_WorkLogReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201512271815285_Decimal-Precision.cs" />
     <Compile Include="Migrations\201512271815285_Decimal-Precision.Designer.cs">
@@ -292,6 +296,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602262306256_RenameWindSpeed.resx">
       <DependentUpon>201602262306256_RenameWindSpeed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603290305420_WorkLogReport_UpdateLocationSiteName.resx">
+      <DependentUpon>201603290305420_WorkLogReport_UpdateLocationSiteName.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
