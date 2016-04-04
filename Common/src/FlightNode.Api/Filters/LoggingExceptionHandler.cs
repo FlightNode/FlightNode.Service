@@ -1,4 +1,5 @@
 ﻿using log4net;
+using System;
 using System.Web.Http.ExceptionHandling;
 
 namespace FlightNode.Common.Api.Filters
@@ -25,7 +26,12 @@ namespace FlightNode.Common.Api.Filters
 
         public override void Handle(ExceptionHandlerContext context)
         {
-            _logger.Error(context.Exception);
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
+            Logger.Error(context.Exception);
 
             base.Handle(context);
         }

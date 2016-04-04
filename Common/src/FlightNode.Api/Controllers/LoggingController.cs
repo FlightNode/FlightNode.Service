@@ -81,12 +81,12 @@ namespace FligthNode.Common.Api.Controllers
         }
 
 
-        protected internal virtual IHttpActionResult NoContent()
+        protected virtual IHttpActionResult NoContent()
         {
             return StatusCode(System.Net.HttpStatusCode.NoContent);
         }
 
-        protected internal virtual IHttpActionResult MethodNotAllowed()
+        protected virtual IHttpActionResult MethodNotAllowed()
         {
             return StatusCode(System.Net.HttpStatusCode.MethodNotAllowed);
         }

@@ -451,5 +451,38 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
             }
         }
+
+        public class GetForUser : CreateFakeSet
+        {
+            [Fact]
+            public void RetrievesRecordCreatedByThisUser()
+            {
+                // Arrange
+                const int userId = 323;
+                WorkLogPersistenceMock.Setup(x => x.GetWorkLogReportRecords(It.IsAny<int>()))
+                    .Returns(new List<WorkLogReportRecord>() { new WorkLogReportRecord() });
+
+                // Act
+                var result = BuildSystem().GetForUser(userId);
+
+                // Assert
+                Assert.Equal(1, result.Count());
+            }
+
+            [Fact]
+            public void QueriesByProperId()
+            {
+                // Arrange
+                const int userId = 323;
+                WorkLogPersistenceMock.Setup(x => x.GetWorkLogReportRecords(It.IsAny<int>()))
+                    .Returns(new List<WorkLogReportRecord>() { new WorkLogReportRecord() });
+
+                // Act
+                var result = BuildSystem().GetForUser(userId);
+
+                // Assert
+                WorkLogPersistenceMock.Verify(x => x.GetWorkLogReportRecords(userId));
+            }
+        }
     }
 }

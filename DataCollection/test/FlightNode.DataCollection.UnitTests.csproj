@@ -106,7 +106,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Domain\Entities\SurveyPendingTests.cs" />
+    <Compile Include="Domain\Managers\BirdSpeciesDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\FakeDbSet.cs" />
+    <Compile Include="Domain\Managers\SurveyTypeDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\WaterbirdForagingManagerTests.cs" />
     <Compile Include="Domain\Managers\WorkLogDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\WorkTypeDomainManagerTests.cs" />
