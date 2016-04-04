@@ -4,11 +4,18 @@ using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Models;
 using FligthNode.Common.Api.Controllers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
 namespace FlightNode.DataCollection.Domain.Services.Controllers
 {
+    public class BirdQuery
+    {
+        public int SurveyTypeId { get; set; }
+    }
+
+    [RoutePrefix("api/v1")]
     public class BirdSpeciesController : LoggingController
     {
 
@@ -35,18 +42,27 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/birdspecies
         /// </example>
-        //[Authorize]
-        public IHttpActionResult Get()
+        [Authorize]
+        public IHttpActionResult Get([FromUri]BirdQuery query)
         {
             return WrapWithTryCatch(() =>
             {
-                var birds = _domainManager.FindAll();
+                IEnumerable<BirdSpecies> birds = null;
+                if (query.SurveyTypeId > 0)
+                {
+                    birds = _domainManager.GetBirdSpeciesBySurveyTypeId(query.SurveyTypeId);
+                }
+                else {
+                    birds = _domainManager.FindAll();
+                }
 
                 var models = birds.Select(x => Map(x));
 
                 return base.Ok(models);
             });
         }
+
+ 
 
         private static BirdSpeciesModel Map(BirdSpecies x)
         {
@@ -71,7 +87,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/birdspecies/123
         /// </example>
-       // [Authorize]
+        [Authorize]
         public IHttpActionResult Get(int id)
         {
             return WrapWithTryCatch(() =>
@@ -171,7 +187,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// GET: /api/v1/birdspecies/simple
         /// </example>
         [Authorize]
-        [Route("api/v1/birdspecies/simple")]
+        [Route("birdspecies/simple")]
         public IHttpActionResult GetSimpleList()
         {
             return WrapWithTryCatch(() =>
@@ -189,24 +205,47 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         }
 
         /// <summary>
-        /// Retrieves a list of bird species representation for a given survey type.
+        /// Adds the given species as a default in the selected survey type.
         /// </summary>
-        /// <param name="surveyTypeId">Unique identifier for the survey type resource</param>
-        /// <returns>Action result containing a representation of the requested bird species</returns>
+        /// <param name="speciesId">Bird species Id</param>
+        /// <param name="surveyTypeId">Survey type ID</param>
+        /// <returns>NoContent (201)</returns>
         /// <example>
-        /// GET: /api/v1/birdspecies/GetBirdSpeciesBySurveyTypeId/1
+        /// POST: /api/v1/birdspecies/1/surveytype/2
         /// </example>
-        [Authorize(Roles = "Administrator,Coordinator")]
-        [Route("api/v1/birdspecies/surveytype/{surveyTypeId}")]
-        public IHttpActionResult GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
+        [Authorize(Roles = "Administrator, Coordinator")]
+        [Route("birdspecies/{speciesId:int}/surveytype/{surveyTypeId:int}")]
+        [HttpPost]
+        public IHttpActionResult PostSurveyType(int speciesId, int surveyTypeId)
         {
             return WrapWithTryCatch(() =>
             {
-                var birds = _domainManager.GetBirdSpeciesBySurveyTypeId(surveyTypeId);
+                _domainManager.AddSpeciesToSurveyType(speciesId, surveyTypeId);
 
-                var models = birds?.Select(x => Map(x));
+                return NoContent();
+            });
+        }
 
-                return base.Ok(models);
+
+        /// <summary>
+        /// Removes the given species as a default in the selected survey type.
+        /// </summary>
+        /// <param name="speciesId">Bird species Id</param>
+        /// <param name="surveyTypeId">Survey type ID</param>
+        /// <returns>OK (201)</returns>
+        /// <example>
+        /// POST: /api/v1/birdspecies/1/surveytype/2
+        /// </example>
+        [Authorize(Roles = "Administrator, Coordinator")]
+        [Route("birdspecies/{speciesId:int}/surveytype/{surveyTypeId:int}")]
+        [HttpDelete]
+        public IHttpActionResult DeleteSurveyType(int speciesId, int surveyTypeId)
+        {
+            return WrapWithTryCatch(() =>
+            {
+                _domainManager.RemoveSpeciesFromSurveyType(speciesId, surveyTypeId);
+
+                return NoContent();
             });
         }
     }

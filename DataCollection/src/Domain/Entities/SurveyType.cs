@@ -18,6 +18,14 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public int Id { get; set; }
 
-        public virtual ICollection<BirdSpecies> BirdSpecies { get; set; }
+        public virtual ICollection<BirdSpecies> BirdSpecies { get; private set; }
+
+        public SurveyType()
+        {
+            Description = string.Empty;
+
+            // TODO: using Set this way... in general makes sense, but probably need to define equality on the BirdSpecies.
+            BirdSpecies = new HashSet<BirdSpecies>();
+        }
     }
 }

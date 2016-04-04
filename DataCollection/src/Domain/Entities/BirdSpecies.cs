@@ -40,6 +40,11 @@ namespace FlightNode.DataCollection.Domain.Entities
         [Required]
         public string Species { get; set; }
 
-        public virtual ICollection<SurveyType> SurveyTypes { get; set; }
+        public virtual ICollection<SurveyType> SurveyTypes { get; private set; }
+
+        public BirdSpecies()
+        {
+            SurveyTypes = new HashSet<SurveyType>();
+        }
     }
 }

@@ -78,15 +78,11 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\Packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Owin">
       <HintPath>..\..\Packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Swashbuckle.Core">
-      <HintPath>..\..\Packages\Swashbuckle.Core.5.2.2\lib\net40\Swashbuckle.Core.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -163,6 +159,10 @@
     <Compile Include="Domain\Managers\WorkLogDomainManager.cs" />
     <Compile Include="Domain\Managers\WorkTypeDomainManager.cs" />
     <Compile Include="Domain\Managers\LocationDomainManager.cs" />
+    <Compile Include="Infrastructure\Persistence\DbCollectionEntryDecorator.cs" />
+    <Compile Include="Infrastructure\Persistence\DbEntityEntryDecorator.cs" />
+    <Compile Include="Infrastructure\Persistence\IDbCollectionEntryDecorator.cs" />
+    <Compile Include="Infrastructure\Persistence\IDbEntityEntryDecorator.cs" />
     <Compile Include="Migrations\201511081916586_Worklog.cs" />
     <Compile Include="Migrations\201511081916586_Worklog.Designer.cs">
       <DependentUpon>201511081916586_Worklog.cs</DependentUpon>

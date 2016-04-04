@@ -1,4 +1,4 @@
-﻿using FlightNode.Common.Api.Filters;
+using FlightNode.Common.Api.Filters;
 using FlightNode.Identity.App;
 using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.StaticFiles;
@@ -35,6 +35,8 @@ namespace FligthNode.Service.App
             config = ConfigureRoutes(config);
             config = ConfigureFilters(config);
             config.DependencyResolver = UnityConfig.RegisterComponents();
+
+            RAML.WebApiExplorer.DocumentationProviderConfig.IncludeXmlComments();
 
             SetupJsonFormatting(config);
         }
