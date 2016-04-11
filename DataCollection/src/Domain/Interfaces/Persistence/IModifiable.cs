@@ -1,10 +1,11 @@
-﻿using System.Data.Entity.Infrastructure;
+﻿using FlightNode.DataCollection.Infrastructure.Persistence;
+using System.Data.Entity.Infrastructure;
 
 namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
 {
     public interface IModifiable
     {
         int SaveChanges();
-        DbEntityEntry Entry(object entity);
+        IDbEntityEntryDecorator Entry(object entity);
     }
 }

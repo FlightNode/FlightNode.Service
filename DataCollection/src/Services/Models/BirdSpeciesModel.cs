@@ -1,7 +1,8 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace FlightNode.DataCollection.Services.Models
 {
-    public class BirdSpeciesModel
+    public class BirdSpeciesModel_bak
     {
         public int Id { get; set; }
 
@@ -18,5 +19,6 @@ namespace FlightNode.DataCollection.Services.Models
         public string Genus { get; set; }
 
         public string Species { get; set; }
+
     }
 }

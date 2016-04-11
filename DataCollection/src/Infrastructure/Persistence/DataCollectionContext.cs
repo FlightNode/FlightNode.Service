@@ -3,6 +3,7 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
@@ -131,6 +132,24 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         #endregion
 
 
+        #region Specialized for IBirdSpeciesPersistence
+        ICrudSet<SurveyType> IBirdSpeciesPersistence.SurveyTypes
+        {
+            get
+            {
+                return new CrudSetDecorator<SurveyType>(SurveyTypes);
+            }
+        }
+        #endregion
+
+
+        #region IModifiable
+        IDbEntityEntryDecorator IModifiable.Entry(object entity)
+        {
+            return new DbEntityEntryDecorator(this.Entry(entity));
+        }
+        #endregion
+
         #region EF DbSets 
 
         public DbSet<Location> Locations { get; set; }
@@ -241,5 +260,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             return new DataCollectionContext();
         }
+
     }
 }
