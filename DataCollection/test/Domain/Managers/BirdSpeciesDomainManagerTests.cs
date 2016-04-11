@@ -284,9 +284,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             }
 
         }
-
-
-
+        
         public class RemoveSpeciesFromSurvey : BaseTester
         {
             protected const int SpeciesId = 23;
@@ -455,6 +453,98 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
             }
 
+        }
+
+        public class FindById : BaseTester
+        {
+            const int id = 23423;
+            const int surveyId = 233;
+            const string surveyName = "Point Count";
+
+            [Fact]
+            public void SpeciesExists()
+            {
+                ArrangeForReturnOfOneBird();
+
+                var result = Act();
+
+                Assert.Equal(id, result.Id);
+            }
+
+            [Fact]
+            public void LazyLoadsSurveyTypes()
+            {
+                var fakeSet = ArrangeForReturnOfOneBird();
+
+                Act();
+
+                collectionMock.Verify(x => x.Load());
+            }
+
+            [Fact]
+            public void FlattensSurveyTypeNames()
+            {
+                ArrangeForReturnOfOneBird();
+
+                var result = Act();
+
+                Assert.Equal(result.SurveyTypeNames.First(), surveyName);
+            }
+
+            [Fact]
+            public void SpeciesDoesNotExistCreatesDoesNotExistExeption()
+            {
+                ArrangeForAnAlternateDataset();
+
+                Assert.Throws<DoesNotExistException>(() => Act());
+            }
+
+
+            private BirdSpecies Act()
+            {
+                var system = Fixture.Create<BirdSpeciesDomainManager>();
+                var result = system.FindById(id);
+                return result;
+            }
+
+            private FakeDbSet<BirdSpecies> ArrangeForReturnOfOneBird()
+            {
+                var bird = new BirdSpecies { Id = id };
+
+                var fakeSet = new FakeDbSet<BirdSpecies>();
+                fakeSet.Add(bird);
+
+                var persistenceMock = Fixture.Freeze<Mock<IBirdSpeciesPersistence>>();
+                persistenceMock.SetupGet(x => x.Collection)
+                    .Returns(fakeSet);
+
+                var surveyType = new SurveyType { Id = surveyId, Description = surveyName };
+                bird.SurveyTypes.Add(surveyType);
+
+                var entityMock = Fixture.Freeze<Mock<IDbEntityEntryDecorator>>();
+                collectionMock = Fixture.Freeze<Mock<IDbCollectionEntryDecorator>>();
+                collectionMock.Setup(x => x.Load());
+
+                entityMock.Setup(x => x.Collection(It.IsAny<string>()))
+                    .Returns(collectionMock.Object);
+
+                persistenceMock.Setup(x => x.Entry(It.IsAny<object>()))
+                    .Returns(entityMock.Object);
+                
+                return fakeSet;
+            }
+
+            Mock<IDbCollectionEntryDecorator> collectionMock;
+
+            private void ArrangeForAnAlternateDataset()
+            {
+                var fakeSet = new FakeDbSet<BirdSpecies>();
+                fakeSet.Add(new BirdSpecies { Id = id + 100});
+
+                var persistenceMock = Fixture.Freeze<Mock<IBirdSpeciesPersistence>>();
+                persistenceMock.SetupGet(x => x.Collection)
+                    .Returns(fakeSet);
+            }
         }
     }
 }

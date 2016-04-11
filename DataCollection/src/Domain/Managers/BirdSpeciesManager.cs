@@ -32,8 +32,57 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
         }
 
+
+
         public BirdSpeciesDomainManager(IBirdSpeciesPersistence birdSpeciesPersistence) : base(birdSpeciesPersistence)
         {
+        }
+
+
+        public override BirdSpecies FindById(int id)
+        {
+            var bird = _persistence.Collection
+                .FirstOrDefault(x => x.Id == id);
+
+            // Force EF to query for surveys
+            // Cannot use "Include" because already using "AsNoTracking" for performance
+            _persistence.Collection.Attach(bird);
+            _persistence.Entry(bird)
+                .Collection(nameof(BirdSpecies.SurveyTypes))
+                .Load();
+
+            if (bird == null)
+            {
+                throw new DoesNotExistException(string.Format(CultureInfo.InvariantCulture, SpeciesDoesNotExistPattern, id));
+            }
+
+            return bird.WithFlatSurveyTypeNames();
+        }
+
+        public override int Update(BirdSpecies input)
+        {
+            input.Validate();
+
+            // Retrieve the existing entry and update it, so that we can pull 
+            // in the survey types and update those correctly.
+
+            // This is the kind of operation that could well be better off in a stored 
+            // procedure in general, but the performance hit of using EF is not likely
+            // to be high enough, in this circumstance, to be worth the extra effort.
+
+            var original = FindById(input.Id);
+            original.CommonAlphaCode = input.CommonAlphaCode;
+            original.CommonName = input.CommonName;
+            original.Family = input.Family;
+            original.Genus = input.Genus;
+            original.Order = input.Order;
+            original.SubFamily = input.SubFamily;
+
+            original = RemoveUnassignedSurveyTypes(input, original);
+            
+            original = AddNewSurveyTypes(input, original);
+
+            return _persistence.SaveChanges();
         }
 
         public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
@@ -48,7 +97,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
             try
             {
-                var bird = RetrieveBirdSpeciesExpectedToExist(speciesId);
+                var bird = FindById(speciesId);
                 var surveyType = RetrieveSurveyTypeExpectedToExist(surveyTypeId);
 
                 AddBirdToSurveyType(bird, surveyType);
@@ -67,12 +116,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public void RemoveSpeciesFromSurveyType(int speciesId, int surveyTypeId)
         {
-            var bird = RetrieveBirdSpeciesExpectedToExist(speciesId);
-
-            // Force EF to query for surveys
-            _persistence.Entry(bird)
-                .Collection(nameof(BirdSpecies.SurveyTypes))
-                .Load();
+            var bird = FindById(speciesId);
 
             var toRemove = bird.SurveyTypes
                                .FirstOrDefault(x => x.Id == surveyTypeId);
@@ -87,6 +131,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             _persistence.SaveChanges();
         }
+
 
         private void AddBirdToSurveyType(BirdSpecies bird, SurveyType surveyType)
         {
@@ -105,22 +150,42 @@ namespace FlightNode.DataCollection.Domain.Managers
             return surveyType;
         }
 
-        private BirdSpecies RetrieveBirdSpeciesExpectedToExist(int speciesId)
-        {
-            var bird = FindById(speciesId);
-            if (bird == null)
-            {
-                throw new DoesNotExistException(string.Format(CultureInfo.InvariantCulture, SpeciesDoesNotExistPattern, speciesId));
-            }
-
-            return bird;
-        }
-
         private static bool DuplicateKeyExceptionOccurred(DbUpdateException updateException)
         {
             return updateException.InnerException != null &&
                                 updateException.InnerException.InnerException != null &&
                                 updateException.InnerException.InnerException.Message.Contains("Cannot insert duplicate key");
         }
+
+
+        private static BirdSpecies RemoveUnassignedSurveyTypes(BirdSpecies input, BirdSpecies original)
+        {
+            foreach (var item in original.SurveyTypes.ToList())
+            {
+                if (!input.SurveyTypeNames.Any(x => x == item.Description))
+                {
+                    original.SurveyTypes
+                        .Remove(item);
+                }
+            }
+
+            return original;
+        }
+
+        private BirdSpecies AddNewSurveyTypes(BirdSpecies input, BirdSpecies original)
+        {
+            var allSurveyTypes = BirdSpeciesPersistence.SurveyTypes.ToList();
+            foreach (var item in input.SurveyTypeNames)
+            {
+                var survey = allSurveyTypes.FirstOrDefault(x => x.Description == item);
+                if (survey != null)
+                {
+                    original.SurveyTypes.Add(survey);
+                }
+            }
+
+            return original;
+        }
+
     }
 }

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -15,6 +16,23 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         where TEntity : class, IEntity
     {
         private DbSet<TEntity> _dbSet;
+        private DbQuery<TEntity> _query;
+
+        protected DbQuery<TEntity> Query
+        {
+            get
+            {
+                if (_query == null)
+                {
+                    _query = _dbSet.AsNoTracking();
+                }
+                return _query;
+            }
+            set
+            {
+                _query = value;
+            }
+        }
 
         public CrudSetDecorator(DbSet<TEntity> dbSet)
         {
@@ -24,6 +42,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             }
             _dbSet = dbSet;
         }
+
 
         public Type ElementType
         {
@@ -37,7 +56,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             get
             {
-                return _dbSet.AsQueryable().Expression;
+                return Query.AsQueryable().Expression;
             }
         }
 
@@ -53,7 +72,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             get
             {
-                return _dbSet.AsQueryable().Provider;
+                return Query.AsQueryable().Provider;
             }
         }
 

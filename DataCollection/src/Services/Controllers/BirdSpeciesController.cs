@@ -56,27 +56,8 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                     birds = _domainManager.FindAll();
                 }
 
-                var models = birds.Select(x => Map(x));
-
-                return base.Ok(models);
+                return base.Ok(birds);
             });
-        }
-
- 
-
-        private static BirdSpeciesModel Map(BirdSpecies x)
-        {
-            return new BirdSpeciesModel
-            {
-                CommonAlphaCode = x.CommonAlphaCode,
-                CommonName = x.CommonName,
-                Family = x.Family,
-                SubFamily = x.SubFamily,
-                Genus = x.Genus,
-                Order = x.Order,
-                Species = x.Species,
-                Id = x.Id
-            };
         }
 
         /// <summary>
@@ -94,9 +75,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var x = _domainManager.FindById(id);
 
-                var model = Map(x);
-
-                return Ok(model);
+                return Ok(x);
             });
         }
 
@@ -113,7 +92,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// </example>
         [Authorize(Roles = "Administrator,Coordinator")]
         [HttpPost]
-        public IHttpActionResult Post([FromBody]BirdSpeciesModel input)
+        public IHttpActionResult Post([FromBody]BirdSpecies input)
         {
             if (input == null)
             {
@@ -122,30 +101,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                BirdSpecies species = Map(input);
+                input = _domainManager.Create(input);
 
-                species = _domainManager.Create(species);
-
-                input.Id = species.Id;
-
-                return Created(input, species.Id.ToString());
+                return Created(input, input.Id.ToString());
             });
-        }
-
-
-        private static BirdSpecies Map(BirdSpeciesModel input)
-        {
-            return new BirdSpecies
-            {
-                CommonAlphaCode = input.CommonAlphaCode,
-                CommonName = input.CommonName,
-                Family = input.Family,
-                SubFamily = input.SubFamily,
-                Genus = input.Genus,
-                Order = input.Order,
-                Species = input.Species,
-                Id = input.Id
-            };
         }
 
         /// <summary>
@@ -162,7 +121,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// </example>
         [Authorize(Roles = "Administrator,Coordinator")]
         [HttpPut]
-        public IHttpActionResult Put([FromBody]BirdSpeciesModel input)
+        public IHttpActionResult Put([FromBody]BirdSpecies input)
         {
             if (input == null)
             {
@@ -171,9 +130,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                var location = Map(input);
+                // TODO: PUT requests should return the modified object
 
-                _domainManager.Update(location);
+                _domainManager.Update(input);
 
                 return NoContent();
             });

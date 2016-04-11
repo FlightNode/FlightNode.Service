@@ -79,6 +79,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             return List.GetEnumerator();
         }
 
+
+        public string IncludeTable { get; set; }
+
+        public ICrudSet<TEntity> Include(string relatedTable)
+        {
+            IncludeTable = relatedTable;
+            return this;
+        }
+
         public TEntity Remove(TEntity entity)
         {
             List.Remove(entity);

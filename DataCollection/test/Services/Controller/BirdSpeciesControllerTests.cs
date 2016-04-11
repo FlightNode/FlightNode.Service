@@ -165,9 +165,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 }
             }
 
-            private List<BirdSpeciesModel> Act()
+            private List<BirdSpecies> Act()
             {
-                return ReadResult<List<BirdSpeciesModel>>(ExecuteHttpAction(CreateSystem().Get(new BirdQuery())));
+                return ReadResult<List<BirdSpecies>>(ExecuteHttpAction(CreateSystem().Get(new BirdQuery())));
             }
 
             private void ArrangeToReturnOneSpecies()
