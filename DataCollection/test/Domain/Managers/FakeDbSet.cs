@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 {
+
+
     public class FakeDbSet<TEntity> : ICrudSet<TEntity>
         where TEntity : class, IEntity
     {
@@ -76,6 +77,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         public IEnumerator<TEntity> GetEnumerator()
         {
             return List.GetEnumerator();
+        }
+
+
+        public string IncludeTable { get; set; }
+
+        public ICrudSet<TEntity> Include(string relatedTable)
+        {
+            IncludeTable = relatedTable;
+            return this;
         }
 
         public TEntity Remove(TEntity entity)

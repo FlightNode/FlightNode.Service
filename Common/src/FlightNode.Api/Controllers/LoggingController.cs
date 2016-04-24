@@ -5,6 +5,7 @@ using System.Web.Http.ModelBinding;
 using System.Linq;
 using log4net;
 using Flurl;
+using FlightNode.Common.Api.Models;
 
 namespace FligthNode.Common.Api.Controllers
 {
@@ -31,6 +32,10 @@ namespace FligthNode.Common.Api.Controllers
             {
                 return func();
             }
+            catch(DoesNotExistException dne)
+            {
+                return Handle(dne);
+            }
             catch (UserException uex)
             {
                 return Handle(uex);
@@ -43,6 +48,13 @@ namespace FligthNode.Common.Api.Controllers
             {
                 return Handle(ex);
             }
+        }
+
+        protected IHttpActionResult Handle(DoesNotExistException dne)
+        {
+            Logger.Debug(dne);
+
+            return Content(System.Net.HttpStatusCode.NotFound, new MessageModel(dne.Message));
         }
 
         protected IHttpActionResult Handle(UserException ex)
