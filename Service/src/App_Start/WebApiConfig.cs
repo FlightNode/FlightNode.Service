@@ -35,9 +35,7 @@ namespace FligthNode.Service.App
             config = ConfigureRoutes(config);
             config = ConfigureFilters(config);
             config.DependencyResolver = UnityConfig.RegisterComponents();
-
-            RAML.WebApiExplorer.DocumentationProviderConfig.IncludeXmlComments();
-
+            
             SetupJsonFormatting(config);
         }
 
