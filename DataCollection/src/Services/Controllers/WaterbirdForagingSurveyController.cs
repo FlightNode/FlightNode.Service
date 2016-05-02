@@ -214,10 +214,21 @@ namespace FlightNode.DataCollection.Services.Controllers
                 SurveyPending entity = Map(input, surveyIdentifier);
 
                 _domainManager.Update(entity, input.Step);
+                WaterbirdForagingModel result;
 
-                entity = (SurveyPending)_domainManager.FindBySurveyId(surveyIdentifier);
+                if (input.Step == 4)
+                {
+                    var newentity = (SurveyCompleted)_domainManager.FindBySurveyId(surveyIdentifier);
+                    result = Map(newentity);
+                }
+                else
+                {
 
-                var result = Map(entity);
+                    entity = (SurveyPending)_domainManager.FindBySurveyId(surveyIdentifier);
+                    result = Map(entity);
+                }
+
+
 
                 return Ok(result);
             });

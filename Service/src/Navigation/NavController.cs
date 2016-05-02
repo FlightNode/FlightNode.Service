@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using FligthNode.Common.Api.Controllers;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Web.Http;
-using FligthNode.Common.Api.Controllers;
-using System.Linq;
 
 namespace FlightNode.Service.Navigation
 {
@@ -101,7 +101,7 @@ namespace FlightNode.Service.Navigation
 
                 collection.AddChild(new NavigationNode("Work Logs", "#/workdays/mylist"));
 
-                collection.AddChild(new NavigationNode("Report Census Data", "#/censusdata/create"));
+                collection.AddChild(new NavigationNode("Report Waterbird Foraging Data", "#/foraging/create"));
 
                 parent.AddChild(collection);
             }
