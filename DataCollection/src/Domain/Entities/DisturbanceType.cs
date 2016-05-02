@@ -1,17 +1,9 @@
-﻿using FlightNode.Common.BaseClasses;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
-    public class DisturbanceType : IEntity
+    public class DisturbanceType : EnumBase
     {
-        public int Id { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        [StringLength(100)]
-        public string Description { get; set; }
 
         public virtual ICollection<Disturbance> Disturbances { get; set; }
     }

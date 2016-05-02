@@ -101,7 +101,7 @@ namespace FlightNode.Service.Navigation
 
                 collection.AddChild(new NavigationNode("Work Logs", "#/workdays/mylist"));
 
-                collection.AddChild(new NavigationNode("Report Census Data", "#/censusdata/create"));
+                collection.AddChild(new NavigationNode("Submit Foraging Survey", "#/foraging"));
 
                 parent.AddChild(collection);
             }

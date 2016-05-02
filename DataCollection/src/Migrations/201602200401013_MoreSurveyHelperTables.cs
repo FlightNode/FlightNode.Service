@@ -1,8 +1,7 @@
 namespace FlightNode.DataCollection.Domain.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class MoreSurveyHelperTables : DbMigration
     {
         public override void Up()

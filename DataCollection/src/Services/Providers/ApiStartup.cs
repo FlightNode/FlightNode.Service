@@ -1,8 +1,8 @@
-﻿using Microsoft.Practices.Unity;
+﻿using FlightNode.DataCollection.Domain.Entities;
+using Microsoft.Practices.Unity;
 using Owin;
-using System.Reflection;
 using System.Linq;
-using FlightNode.DataCollection.Domain.Entities;
+using System.Reflection;
 
 namespace FlightNode.DataCollection.Services.Providers
 {

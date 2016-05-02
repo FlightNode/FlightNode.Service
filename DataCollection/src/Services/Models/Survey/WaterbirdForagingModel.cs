@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FlightNode.DataCollection.Domain.Entities;
 
 namespace FlightNode.DataCollection.Services.Models.Rookery
 {
@@ -21,13 +20,15 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public int? TideInfoId { get; set; }
 
+        public int? WaterHeightId { get; set; }
+
         public int? WeatherInfoId { get; set; }
 
         public int? Temperature { get; set; }
 
         public int? WindSpeed { get; set; }
 
-        public List<int> Observers { get; private set; }
+        public string Observers { get; set; }
 
         public int? VantagePointInfoId { get; set; }
 
@@ -48,7 +49,6 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
         public WaterbirdForagingModel()
         {
             SurveyIdentifier = Guid.Empty;
-            Observers = new List<int>();
             Observations = new List<ObservationModel>();
             Disturbances = new List<DisturbanceModel>();
         }
@@ -62,12 +62,6 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
         public WaterbirdForagingModel Add(DisturbanceModel disturbanceModel)
         {
             Disturbances.Add(disturbanceModel);
-            return this;
-        }
-
-        public WaterbirdForagingModel Add(int u)
-        {
-            Observers.Add(u);
             return this;
         }
     }

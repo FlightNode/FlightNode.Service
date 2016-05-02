@@ -1,13 +1,12 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Models.Rookery;
+using FlightNode.DataCollection.Services.Models.Survey;
 using FligthNode.Common.Api.Controllers;
 using Microsoft.AspNet.Identity;
 using System;
-using System.Web.Http;
-
 using System.Linq;
-using FlightNode.DataCollection.Services.Models.Survey;
+using System.Web.Http;
 
 namespace FlightNode.DataCollection.Services.Controllers
 {
@@ -150,7 +149,9 @@ namespace FlightNode.DataCollection.Services.Controllers
                 WeatherInfoId = input.WeatherId,
                 WindSpeed = input.WindSpeed,
                 SurveyId = input.Id,
-                Step = input.Step
+                Step = input.Step,
+                Observers = input.Observers,
+                WaterHeightId = input.WaterHeightId
             };
 
             foreach (var o in input.Observations)
@@ -178,11 +179,6 @@ namespace FlightNode.DataCollection.Services.Controllers
                     Behavior = d.Result,
                     DisturbanceId = d.Id
                 });
-            }
-
-            foreach (var u in input.Observers)
-            {
-                entity.Add(u);
             }
 
             return entity;
@@ -241,7 +237,9 @@ namespace FlightNode.DataCollection.Services.Controllers
                 WeatherId = input.WeatherInfoId,
                 WindSpeed = input.WindSpeed,
                 SubmittedBy = this.LookupUserId(),
-                Id = input.SurveyId
+                Observers = input.Observers,
+                Id = input.SurveyId,
+                WaterHeightId = input.WaterHeightId
             };
 
             foreach (var o in input.Observations)
@@ -271,11 +269,6 @@ namespace FlightNode.DataCollection.Services.Controllers
                     SurveyIdentifier = identifier,
                     Id = d.DisturbanceId
                 });
-            }
-
-            foreach (var u in input.Observers)
-            {
-                entity.Add(u);
             }
 
             return entity;

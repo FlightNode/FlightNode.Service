@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
-    public class SiteAssessment : IEntity
+    public class EnumBase : IEntity
     {
         public int Id { get; set; }
 
@@ -11,6 +11,5 @@ namespace FlightNode.DataCollection.Domain.Entities
         [MaxLength(100)]
         [StringLength(100)]
         public string Description { get; set; }
-        
     }
 }

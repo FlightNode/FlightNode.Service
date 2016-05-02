@@ -11,14 +11,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
         public class Constructor
         {
             [Fact]
-            public void InitializesObserverList()
-            {
-                var system = new SurveyPending();
-
-                Assert.Equal(0, system.Observers.Count());
-            }
-
-            [Fact]
             public void InitializesObservationsList()
             {
                 var system = new SurveyPending();
@@ -101,33 +93,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
             }
         }
 
-        public class AddObserver
-        {
-            [Fact]
-            public void AddsToCollection()
-            {
-                const int observerId = 23423;
-
-                var system = new SurveyPending();
-
-                system.Add(observerId);
-
-                Assert.True(system.Observers.Contains(observerId));
-            }
-
-            [Fact]
-            public void ReturnsSelf()
-            {
-                const int observerId = 23423;
-
-                var system = new SurveyPending();
-
-                var actual = system.Add(observerId);
-
-                Assert.Same(system, actual);
-            }
-        }
-
         public class ToSurveyCompleted
         {
 
@@ -161,6 +126,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
             protected const int END_TEMPERATURE = 21;
             protected const int USER_ID = 22;
             protected const int SURVEY_TYPE_ID = 23;
+            protected const string Observers = "a, b, and c";
 
 
             protected SurveyPending CreateDefault()
@@ -183,9 +149,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                     TimeOfLowTide = LOW_TIDE,
                     VantagePointId = VANTAGE_POINT,
                     WeatherId = WEATHER,
-                    WindSpeed = WIND
+                    WindSpeed = WIND,
+                    Observers = Observers
                 };
-                result.Add(OBSERVER_ID);
+                
                 result.Add(new Disturbance
                 {
                     DisturbanceTypeId = DISTURBED_TYPE_ID,
@@ -321,6 +288,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 public void MapsWindSpeed()
                 {
                     Assert.Equal(WIND, RunTest().WindSpeed);
+                }
+
+                [Fact]
+                public void MapsObservers()
+                {
+                    Assert.Equal(Observers, RunTest().Observers);
                 }
             }
         }

@@ -62,5 +62,21 @@ namespace FlightNode.DataCollection.Domain.Entities
 
             return this;
         }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as BirdSpecies;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.CommonName == this.CommonName;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.CommonName.GetHashCode();
+        }
     }
 }

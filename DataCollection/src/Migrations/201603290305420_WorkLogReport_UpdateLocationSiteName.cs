@@ -1,10 +1,9 @@
 namespace FlightNode.DataCollection.Domain.Migrations
 {
-	using Infrastructure.Customization;
-	using System;
-	using System.Data.Entity.Migrations;
+    using Infrastructure.Customization;
+    using System.Data.Entity.Migrations;
 
-	public partial class WorkLogReport_UpdateLocationSiteName : DbMigration
+    public partial class WorkLogReport_UpdateLocationSiteName : DbMigration
 	{
 
 		public override void Up()

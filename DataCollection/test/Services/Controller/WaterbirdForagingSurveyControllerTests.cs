@@ -39,6 +39,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             protected const int PRIMARY_ACTIVITY_ID = 11;
             protected const int SECONDARY_ACTIVITY_ID = 12;
             protected const int OBSERVER_ID = 13;
+            protected const string Observers = "a, b, and c";
             protected const int SITE_TYPE_ID = 14;
             protected const int STEP = 15;
             protected const string SURVEY_COMMENTS = "Survey comments";
@@ -51,6 +52,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             protected const int OBSERVATION_ID = 22;
             protected const int DISTURBANCE_ID = 23;
             protected const string LOCATION_NAME = "Charlie's Pasture";
+            protected const int WaterHeightId = 24;
 
             protected ISurvey BuildDefaultSurvey(int step = 1)
             {
@@ -69,7 +71,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 });
                 domainResult.EndDate = END_DATE;
                 domainResult.GeneralComments = SURVEY_COMMENTS;
-                domainResult.Id =SURVEY_ID;
+                domainResult.Id = SURVEY_ID;
                 domainResult.LocationId = LOCATION_ID;
                 domainResult.Observations.Add(new Observation
                 {
@@ -83,19 +85,21 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     SecondaryActivityId = SECONDARY_ACTIVITY_ID,
                     SurveyIdentifier = IDENTIFIER
                 });
-                domainResult.Observers.Add(OBSERVER_ID);
+                domainResult.Observers = Observers;
                 domainResult.StartDate = START_DATE;
                 domainResult.StartTemperature = TEMPERATURE;
                 domainResult.SubmittedBy = 14;
                 domainResult.SurveyIdentifier = IDENTIFIER;
                 domainResult.SurveyTypeId = 15;
-                domainResult.TideId =TIDE;
+                domainResult.TideId = TIDE;
                 domainResult.TimeOfLowTide = LOW_TIDE;
                 domainResult.VantagePointId = VANTAGE_POINT;
                 domainResult.WeatherId = WEATHER;
                 domainResult.WindSpeed = WIND;
                 domainResult.LocationName = LOCATION_NAME;
                 domainResult.Step = step;
+                domainResult.WaterHeightId = WaterHeightId;
+
                 return domainResult;
             }
 
@@ -117,7 +121,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     WeatherInfoId = WEATHER,
                     WindSpeed = WIND,
                     TimeOfLowTide = LOW_TIDE,
-                    SurveyId = SURVEY_ID
+                    SurveyId = SURVEY_ID,
+                    WaterHeightId = WaterHeightId
                 };
                 input.Disturbances.Add(new DisturbanceModel
                 {
@@ -138,7 +143,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     SecondaryActivityId = SECONDARY_ACTIVITY_ID,
                     ObservationId = OBSERVATION_ID
                 });
-                input.Observers.Add(OBSERVER_ID);
                 return input;
             }
 
@@ -161,6 +165,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
         public class GetSpecificItem : Fixture
         {
+            [Fact]
+            public void MapsWaterHeightId()
+            {
+                var domain = BuildDefaultSurvey();
+                var result = RunHappyPath(domain);
+                Assert.Equal(domain.WaterHeightId, result.WaterHeightId);
+            }
+
             [Fact]
             public void MapsAccessPointId()
             {
@@ -343,16 +355,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                 Assert.Equal(domain.Observations.First().SecondaryActivityId, result.Observations.First().SecondaryActivityId);
             }
-
-            [Fact]
-            public void MapsObservers()
-            {
-                var domain = BuildDefaultSurvey();
-
-                var result = RunHappyPath(domain);
-
-                Assert.Equal(domain.Observers.First(), result.Observers.First());
-            }
+            
 
             [Fact]
             public void MapsStartDate()
@@ -464,6 +467,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 Assert.Equal(domain.WindSpeed, result.WindSpeed);
             }
 
+            [Fact]
+            public void MapsObservers()
+            {
+                var domain = BuildDefaultSurvey();
+                var result = RunHappyPath(domain);
+                Assert.Equal(domain.Observers, result.Observers);
+            }
+
             private WaterbirdForagingModel RunHappyPath(ISurvey domain)
             {
                 SetupMockResult(domain);
@@ -543,7 +554,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                 Assert.Equal(domain.LocationName, result.First().Location);
             }
-            
+
             [Fact]
             public void MapsStartDate()
             {
@@ -672,6 +683,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
             public class HappyPath : Post
             {
+                [Fact]
+                public void MapsWaterHeightId()
+                {
+                    RunPositiveTest();
+
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => WaterHeightId == y.WaterHeightId)));
+                }
+
                 [Fact]
                 public void MapsAccessPoint()
                 {
@@ -811,7 +830,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsObserver()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => OBSERVER_ID == y.Observers.First())));
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => Observers == y.Observers))));
                 }
 
                 [Fact]
@@ -1073,6 +1092,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 }
 
                 [Fact]
+                public void MapsWaterHeightId()
+                {
+                    RunPositiveTest();
+
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WaterHeightId == y.WaterHeightId), It.Is<int>(y => y == STEP)));
+                }
+
+                [Fact]
                 public void MapsAccessPoint()
                 {
                     RunPositiveTest();
@@ -1211,7 +1238,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsObserver()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => OBSERVER_ID == y.Observers.First()), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => Observers == y.Observers), It.Is<int>(y => y == STEP)));
                 }
 
                 [Fact]
