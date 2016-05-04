@@ -134,24 +134,24 @@ namespace FlightNode.DataCollection.Services.Controllers
         {
             var entity = new WaterbirdForagingModel
             {
-                AccessPointInfoId = input.AccessPointId,
+                AccessPointId = input.AccessPointId,
                 SiteTypeId = input.AssessmentId,
                 DisturbanceComments = input.DisturbanceComments,
-                EndDate = input.EndDate,
                 SurveyComments = input.GeneralComments,
                 LocationId = input.LocationId,
-                StartDate = input.StartDate,
                 Temperature = input.StartTemperature,
                 SurveyIdentifier = input.SurveyIdentifier,
-                TideInfoId = input.TideId,
-                TimeOfLowTide = input.TimeOfLowTide,
-                VantagePointInfoId = input.VantagePointId,
-                WeatherInfoId = input.WeatherId,
+                TideId = input.TideId,
+                VantagePointId = input.VantagePointId,
+                WeatherId = input.WeatherId,
                 WindSpeed = input.WindSpeed,
                 SurveyId = input.Id,
                 Step = input.Step,
                 Observers = input.Observers,
-                WaterHeightId = input.WaterHeightId
+                WaterHeightId = input.WaterHeightId,
+                StartDate = input.StartDate.Value.ToShortDateString(), // needs null handling
+                StartTime = input.StartDate.Value.ToShortTimeString(),
+                EndTime = input.EndDate.Value.ToShortTimeString()
             };
 
             foreach (var o in input.Observations)
@@ -220,26 +220,25 @@ namespace FlightNode.DataCollection.Services.Controllers
         {
             var entity = new SurveyPending
             {
-                AccessPointId = input.AccessPointInfoId,
+                AccessPointId = input.AccessPointId,
                 AssessmentId = input.SiteTypeId,
                 DisturbanceComments = input.DisturbanceComments,
-                EndDate = input.EndDate,
                 EndTemperature = null,
                 GeneralComments = input.SurveyComments,
                 LocationId = input.LocationId,
-                StartDate = input.StartDate,
                 StartTemperature = input.Temperature,
                 SurveyIdentifier = identifier,
-                TideId = input.TideInfoId,
+                TideId = input.TideId,
                 SurveyTypeId = SurveyType.TERN_FORAGING,
-                TimeOfLowTide = input.TimeOfLowTide,
-                VantagePointId = input.VantagePointInfoId,
-                WeatherId = input.WeatherInfoId,
+                VantagePointId = input.VantagePointId,
+                WeatherId = input.WeatherId,
                 WindSpeed = input.WindSpeed,
                 SubmittedBy = this.LookupUserId(),
                 Observers = input.Observers,
                 Id = input.SurveyId,
-                WaterHeightId = input.WaterHeightId
+                WaterHeightId = input.WaterHeightId,
+                EndDate = DateTime.Parse(input.StartDate + " " + input.EndTime),
+                StartDate = DateTime.Parse(input.StartDate + " " + input.StartTime)
             };
 
             foreach (var o in input.Observations)

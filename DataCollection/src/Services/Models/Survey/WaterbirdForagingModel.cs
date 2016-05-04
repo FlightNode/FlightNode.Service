@@ -12,17 +12,19 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public int LocationId { get; set; }
 
-        public DateTime? StartDate { get; set; }
+        public string StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        public string StartTime { get; set; }
+
+        public string EndTime { get; set; }
 
         public int? SiteTypeId { get; set; }
 
-        public int? TideInfoId { get; set; }
+        public int? TideId { get; set; }
 
         public int? WaterHeightId { get; set; }
 
-        public int? WeatherInfoId { get; set; }
+        public int? WeatherId { get; set; }
 
         public int? Temperature { get; set; }
 
@@ -30,9 +32,9 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public string Observers { get; set; }
 
-        public int? VantagePointInfoId { get; set; }
+        public int? VantagePointId { get; set; }
 
-        public int? AccessPointInfoId { get; set; }
+        public int? AccessPointId { get; set; }
 
         public string SurveyComments { get; set; }
 
@@ -44,8 +46,7 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public int SurveyId { get; set; }
 
-        public DateTime? TimeOfLowTide { get; set; }
-
+        
         public WaterbirdForagingModel()
         {
             SurveyIdentifier = Guid.Empty;
