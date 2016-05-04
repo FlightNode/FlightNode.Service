@@ -86,7 +86,8 @@ namespace FlightNode.DataCollection.Services.Controllers
                     return NotFound();
                 }
 
-                var models = result.Select(x => {
+                var models = result.Select(x =>
+                {
                     return new WaterbirdForagingListItem
                     {
                         Location = x.LocationName ?? MISSING,
@@ -94,7 +95,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                         Status = (x.Step == SurveyCompleted.COMPLETED_FORAGING_STEP_NUMBER ? "Complete" : "Pending"),
                         SurveyComments = x.GeneralComments,
                         SurveyIdentifier = x.SurveyIdentifier
-                    }; 
+                    };
                 });
 
                 return Ok(models);
@@ -187,6 +188,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// <summary>
         /// Updates an existing new waterbird foraging survey record
         /// </summary>
+        /// <param name="surveyIdentifier"></param>
         /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>
         /// <returns></returns>
         [HttpPut]
@@ -209,10 +211,23 @@ namespace FlightNode.DataCollection.Services.Controllers
                 SurveyPending entity = Map(input, surveyIdentifier);
 
                 _domainManager.Update(entity, input.Step);
+                WaterbirdForagingModel result;
 
-                var result = Map(entity);
+                if (input.Step == 4)
+                {
+                    var newentity = (SurveyCompleted)_domainManager.FindBySurveyId(surveyIdentifier);
+                    result = Map(newentity);
+                }
+                else
+                {
 
-                return NoContent();
+                    entity = (SurveyPending)_domainManager.FindBySurveyId(surveyIdentifier);
+                    result = Map(entity);
+                }
+
+
+
+                return Ok(result);
             });
         }
 
