@@ -34,8 +34,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp">
+      <HintPath>..\..\..\Packages\AngleSharp.0.9.5\lib\net45\AngleSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EmitMapper">
       <HintPath>..\..\..\Packages\EmitMapper.1.0.0\lib\EmitMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlSanitizer">
+      <HintPath>..\..\..\Packages\HtmlSanitizer.3.2.103\lib\net45\HtmlSanitizer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -99,7 +107,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Utility\EmailNotifier.cs" />
+    <Compile Include="Utility\ISanitizer.cs" />
     <Compile Include="Utility\NotificationModel.cs" />
+    <Compile Include="Utility\Sanitizer.cs" />
     <Compile Include="Utility\SendGridFactory.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -41,7 +41,12 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public virtual IEnumerable<TEntity> FindAll()
         {
-            return _persistence.Collection.ToList();
+            return _persistence.Collection
+                    // When retrieving a collection - as opposed to a single item - there
+                    // is no expectation that the elements will be directly updated.
+                    // Therefore using AsNoTracking() for performance benefits is appropriate.
+                    .AsNoTracking()
+                    .ToList();
         }
 
         public virtual TEntity FindById(int id)
@@ -52,12 +57,20 @@ namespace FlightNode.DataCollection.Domain.Managers
         public virtual int Update(TEntity input)
         {
             input.Validate();
+            
+
+            return _persistence.SaveChanges();            
+        }
+
+        protected virtual int ReAttachAndUpdate(TEntity input)
+        {
+            input.Validate();
 
             _persistence.Collection.Attach(input);
 
             SetModifiedState(_persistence, input);
 
-            return _persistence.SaveChanges();            
+            return _persistence.SaveChanges();
         }
 
         // This is an ugly hack because I can find no way to unit test the Entry() method, and 

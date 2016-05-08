@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\Packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\Packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props')" />
   <Import Project="..\..\Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\..\Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp">
+      <HintPath>..\..\Packages\AngleSharp.0.9.5\lib\net45\AngleSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Dapper">
       <HintPath>..\..\Packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
     </Reference>
@@ -47,6 +51,10 @@
     </Reference>
     <Reference Include="Flurl">
       <HintPath>..\..\Packages\Flurl.1.0.10\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10\Flurl.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlSanitizer">
+      <HintPath>..\..\Packages\HtmlSanitizer.3.2.103\lib\net45\HtmlSanitizer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -208,6 +216,14 @@
     <Compile Include="Migrations\201605012247143_ObserversAndTides.Designer.cs">
       <DependentUpon>201605012247143_ObserversAndTides.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605050229326_WorkdayNumVolunteersAndTasksCompleted.cs" />
+    <Compile Include="Migrations\201605050229326_WorkdayNumVolunteersAndTasksCompleted.Designer.cs">
+      <DependentUpon>201605050229326_WorkdayNumVolunteersAndTasksCompleted.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605071906538_WorkLogReportUpdate.cs" />
+    <Compile Include="Migrations\201605071906538_WorkLogReportUpdate.Designer.cs">
+      <DependentUpon>201605071906538_WorkLogReportUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
@@ -312,6 +328,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605012247143_ObserversAndTides.resx">
       <DependentUpon>201605012247143_ObserversAndTides.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605050229326_WorkdayNumVolunteersAndTasksCompleted.resx">
+      <DependentUpon>201605050229326_WorkdayNumVolunteersAndTasksCompleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605071906538_WorkLogReportUpdate.resx">
+      <DependentUpon>201605071906538_WorkLogReportUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

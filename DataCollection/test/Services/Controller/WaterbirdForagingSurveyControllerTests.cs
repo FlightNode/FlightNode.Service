@@ -121,8 +121,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     WeatherId = WEATHER,
                     WindSpeed = WIND,
                     SurveyId = SURVEY_ID,
-                    WaterHeightId = WaterHeightId
-                    // TODO: date and time
+                    WaterHeightId = WaterHeightId,
+                    StartDate = StartDateString,
+                    StartTime = StartTimeString,
+                    EndTime = EndTimeString,
+                    Observers = Observers
                 };
                 input.Disturbances.Add(new DisturbanceModel
                 {
@@ -142,6 +145,48 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     PrimaryActivityId = PRIMARY_ACTIVITY_ID,
                     SecondaryActivityId = SECONDARY_ACTIVITY_ID,
                     ObservationId = OBSERVATION_ID
+                });
+                return input;
+            }
+            protected SurveyPending CreateDefaultEntity()
+            {
+                var input = new SurveyPending
+                {
+                    AccessPointId = ACCESS_POINT,
+                    DisturbanceComments = DISTURBED,
+                    LocationId = LOCATION_ID,
+                    AssessmentId= SITE_TYPE_ID,
+                    Step = STEP,
+                    GeneralComments= SURVEY_COMMENTS,
+                    StartTemperature= TEMPERATURE,
+                    TideId = TIDE,
+                    VantagePointId = VANTAGE_POINT,
+                    WeatherId = WEATHER,
+                    WindSpeed = WIND,
+                    Id = SURVEY_ID,
+                    WaterHeightId = WaterHeightId,
+                    StartDate = START_DATE,
+                    EndDate= END_DATE,
+                    Observers = Observers
+                };
+                input.Disturbances.Add(new Disturbance
+                {
+                    Result = DISTURBED_BEHAVIOR,
+                    DisturbanceTypeId = DISTURBED_TYPE_ID,
+                    DurationMinutes = DISTURBED_DURATION,
+                    Quantity = DISTURBED_QUANTITY,
+                    Id = DISTURBANCE_ID
+                });
+                input.Observations.Add(new Observation
+                {
+                    Bin1 = ADULTS,
+                    BirdSpeciesId = SPECIES_ID,
+                    FeedingSuccessRate = FEEDING_ID,
+                    HabitatTypeId = HABITAT_ID,
+                    Bin2= JUVENILES,
+                    PrimaryActivityId = PRIMARY_ACTIVITY_ID,
+                    SecondaryActivityId = SECONDARY_ACTIVITY_ID,
+                    Id= OBSERVATION_ID
                 });
                 return input;
             }
@@ -1319,6 +1364,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                     MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>(), It.Is<int>(y => y == STEP)));
 
+                    MockDomainManager.Setup(x => x.FindBySurveyId(It.IsAny<Guid>()))
+                        .Returns(CreateDefaultEntity());                        
 
                     var system = BuildSystem();
 

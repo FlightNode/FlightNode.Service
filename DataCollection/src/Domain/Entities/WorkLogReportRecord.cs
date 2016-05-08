@@ -8,24 +8,22 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public string WorkDate { get; set; }
 
+        public string Activity { get; set; }
+
+        public string County { get; set; }
+
+        public string SiteName { get; set; }
+
+        public int NumberOfVolunteers { get; set; }
+
         public decimal WorkHours { get; set; }
 
-        public decimal TravelTimeHours { get; set;  }
+        public decimal TravelTimeHours { get; set; }
 
-        public int WorkTypeId { get; set; }
+        public string Volunteer { get; set; }
 
-        public string WorkType { get; set; }
-
-        public int LocationId { get; set; }
-
-        public string LocationName { get; set; }
-
-        public decimal Longitude { get; set; }
-
-        public decimal Latitude { get; set; }
+        public string TasksCompleted { get; set; }
 
         public int UserId { get; set; }
-
-        public string Person { get; set; }
     }
 }

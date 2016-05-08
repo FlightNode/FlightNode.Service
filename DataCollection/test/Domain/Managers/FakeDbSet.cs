@@ -98,5 +98,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         {
             return List.GetEnumerator();
         }
+
+        public ICrudSet<TEntity> AsNoTracking()
+        {
+            return this;
+        }
     }
 }

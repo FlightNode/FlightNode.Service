@@ -1,4 +1,6 @@
-﻿using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.Common.Utility;
+using FlightNode.DataCollection.Domain.Entities;
+using Ganss.XSS;
 using Microsoft.Practices.Unity;
 using Owin;
 using System.Linq;
@@ -21,20 +23,15 @@ namespace FlightNode.DataCollection.Services.Providers
         {
             container = RegisterAllTypesIn(container, Assembly.GetExecutingAssembly());
 
-            //container.RegisterType<IdentityDbContext>();
-            //container.RegisterType(typeof(IUserStore<User, int>), typeof(UserStore));
+            container.RegisterType<ISanitizer, Sanitizer>();
 
             return container;
         }
 
         private static IUnityContainer RegisterAllTypesIn(IUnityContainer container, Assembly repoAssembly)
         {
-            //container.RegisterTypes(AllClasses.FromAssemblies(repoAssembly),
-            //                                     WithMappings.FromAllInterfacesInSameAssembly,
-            //                                     WithName.Default,
-            //                                     WithLifetime.PerResolve);
-
             var typesToRegister = AllClasses.FromAssemblies(repoAssembly)
+                // Skipp registering ISurvey implementations
                 .Where(t => !typeof(ISurvey).IsAssignableFrom(t))
                 .ToList();
 

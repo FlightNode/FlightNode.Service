@@ -4,6 +4,7 @@ using log4net;
 using FligthNode.Common.Api.Controllers;
 using System.Net.Http;
 using System.Web.Http;
+using FlightNode.Common.Utility;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 {
@@ -14,17 +15,35 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
         protected Mock<TManager> MockDomainManager;
         protected Mock<ILog> MockLogger;
+        protected Mock<ISanitizer> MockSanitizer;
+
         protected const string url = "http://some/where/";
 
         public LoggingControllerBaseFixture()
         {
             MockDomainManager = MockRepository.Create<TManager>();
             MockLogger = MockRepository.Create<ILog>();
+            MockSanitizer = MockRepository.Create<ISanitizer>();
         }
 
         protected TController BuildSystem()
         {
             var controller = Activator.CreateInstance(typeof(TController), MockDomainManager.Object) as TController;
+
+            controller.Logger = MockLogger.Object;
+
+            controller.Request = new HttpRequestMessage();
+            controller.Request.RequestUri = new Uri(url);
+
+            controller.Configuration = new HttpConfiguration();
+
+            return controller;
+        }
+
+
+        protected TController BuildSystemWithSanitizer()
+        {
+            var controller = Activator.CreateInstance(typeof(TController), MockDomainManager.Object, MockSanitizer.Object) as TController;
 
             controller.Logger = MockLogger.Object;
 

@@ -104,30 +104,26 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         public IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords()
         {
-            using (var conn = this.Database.Connection)
-            {
-                if (conn.State != System.Data.ConnectionState.Open)
-                {
-                    conn.Open();
-                }
 
-                return conn.Query<WorkLogReportRecord>("SELECT * FROM dbo.WorkLogReport");
-            }
+            return WorkLogReportRecords.AsNoTracking();
+
+            //using (var conn = this.Database.Connection)
+            //{
+            //    if (conn.State != System.Data.ConnectionState.Open)
+            //    {
+            //        conn.Open();
+            //    }
+
+            //    return conn.Query<WorkLogReportRecord>("SELECT * FROM dbo.WorkLogReport");
+            //}
 
         }
 
         public IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords(int userId)
         {
-            using (var conn = this.Database.Connection)
-            {
-                if (conn.State != System.Data.ConnectionState.Open)
-                {
-                    conn.Open();
-                }
-
-                return conn.Query<WorkLogReportRecord>("SELECT * FROM dbo.WorkLogReport WHERE UserId = @UserId", new { UserId = userId });
-            }
-
+            return WorkLogReportRecords
+                .Where(x => x.UserId == userId)
+                .AsNoTracking();
         }
 
         #endregion
@@ -243,6 +239,8 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DbSet<SurveyActivity> SurveyActivities { get; set; }
 
         public DbSet<WaterHeight> WaterHeights { get; set; }
+
+        public DbSet<WorkLogReportRecord> WorkLogReportRecords { get; set; }
         #endregion
 
 
@@ -303,6 +301,9 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             modelBuilder.Entity<FeedingSuccessRate>().ToTable("FeedingSuccessRates");
 
             modelBuilder.Entity<WaterHeight>().ToTable("WaterHeights");
+
+            modelBuilder.Entity<WorkLogReportRecord>().ToTable("WorkLogReport")
+                .HasKey<int>(x => x.Id);
         }
 
 

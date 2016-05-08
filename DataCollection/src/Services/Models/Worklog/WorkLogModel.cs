@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlightNode.Common.Utility;
+using System;
 
 namespace FlightNode.DataCollection.Services.Models.WorkLog
 {
@@ -17,5 +18,15 @@ namespace FlightNode.DataCollection.Services.Models.WorkLog
         public int UserId { get; set; }
         
         public int LocationId { get; set; }
+
+        public int NumberOfVolunteers { get; set; }
+
+        public string TasksCompleted { get; set; }
+
+
+        public void Sanitize(ISanitizer sanitizer)
+        {
+            TasksCompleted = sanitizer.RemoveAllHtml(TasksCompleted);
+        }
     }
 }

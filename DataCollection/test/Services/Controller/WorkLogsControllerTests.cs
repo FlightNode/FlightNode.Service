@@ -1,10 +1,10 @@
 ﻿using FlightNode.Common.Exceptions;
+using FlightNode.Common.Utility;
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Services.Controllers;
 using FlightNode.DataCollection.Services.Models;
 using FlightNode.DataCollection.Services.Models.WorkLog;
-using log4net;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Principal;
-using System.Web.Http;
 using System.Web.Http.Results;
 using Xunit;
 
@@ -30,13 +29,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             [Fact]
             public void ConfirmConstructorHappyPath()
             {
-                BuildSystem();
+                BuildSystemWithSanitizer();
             }
 
             [Fact]
-            public void ConfirmConstructorRejectsNullArgument()
+            public void ConfirmConstructorRejectsNullFirstArgument()
             {
-                Assert.Throws<ArgumentNullException>(() => new WorkLogsController(null));
+                Assert.Throws<ArgumentNullException>(() => new WorkLogsController(null, new Sanitizer()));
+            }
+
+            [Fact]
+            public void ConfirmConstructorRejectsNullSecondArgument()
+            {
+                Assert.Throws<ArgumentNullException>(() => new WorkLogsController(Mock.Of<IWorkLogDomainManager>(), null));
             }
         }
 
@@ -324,7 +329,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 return system;
             }
 
-            private List<MyWorkLogModel> RunPositiveTest()
+            private List<WorkLogReportRecord> RunPositiveTest()
             {
                 // Arrange 
                 var records = new List<WorkLogReportRecord>
@@ -353,7 +358,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                 Assert.Equal(HttpStatusCode.OK, message.StatusCode);
 
-                return message.Content.ReadAsAsync<List<MyWorkLogModel>>().Result;
+                return message.Content.ReadAsAsync<List<WorkLogReportRecord>>().Result;
             }
 
             public class ExceptionHandling : GetMyLogs
@@ -507,6 +512,63 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             private const int userId = 223;
             private const int workTypeId = 3;
             private const int locationId = 4;
+            private const int numberOfVolunteers = 234;
+            private const string tasksCompletedSafe = "asdf asdfasdfasdf";
+            private const string tasksCompletedWithHtml = "asdf asdfa<i>something</i>sdfasdf";
+
+            [Fact]
+            public void ConfirmMapsNumberOfVolunteers()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Create(It.Is<WorkLog>(y => y.NumberOfVolunteers == numberOfVolunteers)));
+            }
+
+            [Fact]
+            public void ConfirmMapsTasksCompleted()
+            {
+                RunPositiveTest();
+                MockDomainManager.Verify(x => x.Create(It.Is<WorkLog>(y => y.TasksCompleted== tasksCompletedSafe)));
+            }
+
+
+            [Fact]
+            public void ConfirmStripsHtmlFromTasksCompleted()
+            {
+
+                // Arrange 
+                var record = new WorkLogModel
+                {
+                    LocationId = locationId,
+                    TravelTimeHours = travelHours,
+                    WorkTypeId = workTypeId,
+                    WorkHours = workHours,
+                    UserId = userId,
+                    WorkDate = workDay,
+                    Id = id,
+                    NumberOfVolunteers = numberOfVolunteers,
+                    TasksCompleted = tasksCompletedWithHtml
+                };
+
+                MockDomainManager.Setup(x => x.Create(It.IsAny<WorkLog>()))
+                .Returns((WorkLog actual) =>
+                {
+                    // inject an ID value so we can confirm that it is passed in the response
+                    actual.Id = id;
+                    return actual;
+                });
+
+                MockSanitizer.Setup(x => x.RemoveAllHtml(tasksCompletedWithHtml))
+                    .Returns(tasksCompletedSafe);
+
+
+                // Act
+                var result = BuildSystemWithSanitizer().Post(record);
+
+                var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
+
+                //Assert
+                MockDomainManager.Verify(x => x.Create(It.Is<WorkLog>(y => y.TasksCompleted == tasksCompletedSafe)));
+            }
 
             [Fact]
             public void ConfirmMapsId()
@@ -587,7 +649,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     WorkHours = workHours,
                     UserId = userId,
                     WorkDate = workDay,
-                    Id = id
+                    Id = id,
+                    NumberOfVolunteers = numberOfVolunteers,
+                    TasksCompleted = tasksCompletedSafe
                 };
 
                 MockDomainManager.Setup(x => x.Create(It.IsAny<WorkLog>()))
@@ -598,9 +662,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     return actual;
                 });
 
+                MockSanitizer.Setup(x => x.RemoveAllHtml(It.IsAny<string>()))
+                    .Returns((string input) => input);
+
 
                 // Act
-                var result = BuildSystem().Post(record);
+                var result = BuildSystemWithSanitizer().Post(record);
 
                 var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
 
@@ -616,7 +683,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Setup(x => x.Create(It.IsAny<WorkLog>()))
                         .Throws(ex);
 
-                    return BuildSystem().Post(new WorkLogModel()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                    MockSanitizer.Setup(x => x.RemoveAllHtml(It.IsAny<string>()))
+                        .Returns(string.Empty);
+
+                    return BuildSystemWithSanitizer().Post(new WorkLogModel()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
                 }
 
                 [Fact]
@@ -699,9 +769,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Setup(x => x.Create(It.IsAny<WorkLog>()))
                                            .Throws(e);
 
+
+                    MockSanitizer.Setup(x => x.RemoveAllHtml(It.IsAny<string>()))
+                        .Returns(string.Empty);
+
                     ExpectToLogToDebug();
 
-                    return BuildSystem().Post(new WorkLogModel()) as InvalidModelStateResult;
+                    return BuildSystemWithSanitizer().Post(new WorkLogModel()) as InvalidModelStateResult;
                 }
             }
         }
@@ -796,9 +870,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 MockDomainManager.Setup(x => x.Update(It.IsAny<WorkLog>()))
                     .Returns(1);
 
+                MockSanitizer.Setup(x => x.RemoveAllHtml(It.IsAny<string>()))
+                    .Returns((string input) => input);
+
 
                 // Act
-                var result = BuildSystem().Put(record);
+                var result = BuildSystemWithSanitizer().Put(record);
 
                 var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
 
@@ -814,7 +891,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Setup(x => x.Update(It.IsAny<WorkLog>()))
                         .Throws(ex);
 
-                    return BuildSystem().Put(new WorkLogModel()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                    MockSanitizer.Setup(x => x.RemoveAllHtml(It.IsAny<string>()))
+                        .Returns(string.Empty);
+
+                    return BuildSystemWithSanitizer().Put(new WorkLogModel()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
                 }
 
                 [Fact]
@@ -898,9 +978,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                     MockDomainManager.Setup(x => x.Update(It.IsAny<WorkLog>()))
                                            .Throws(e);
+
+                    MockSanitizer.Setup(x => x.RemoveAllHtml(It.IsAny<string>()))
+                        .Returns(string.Empty);
+
                     ExpectToLogToDebug();
 
-                    return BuildSystem().Put(new WorkLogModel()) as InvalidModelStateResult;
+                    return BuildSystemWithSanitizer().Put(new WorkLogModel()) as InvalidModelStateResult;
                 }
             }
         }
