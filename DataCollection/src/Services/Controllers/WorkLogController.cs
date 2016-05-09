@@ -1,4 +1,5 @@
-﻿using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.Common.Utility;
+using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Models.WorkLog;
 using FligthNode.Common.Api.Controllers;
@@ -14,19 +15,25 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
     {
 
         private readonly IWorkLogDomainManager _domainManager;
+        private readonly ISanitizer _sanitizer;
 
         /// <summary>
         /// Creates a new instance of <see cref="LocationsController"/>.
         /// </summary>
         /// <param name="domainManager">An instance of <see cref="IWorkLogDomainManager"/></param>
-        public WorkLogsController(IWorkLogDomainManager domainManager)
+        public WorkLogsController(IWorkLogDomainManager domainManager, ISanitizer sanitizer)
         {
             if (domainManager == null)
             {
                 throw new ArgumentNullException(nameof(domainManager));
             }
+            if (sanitizer == null)
+            {
+                throw new ArgumentNullException(nameof(sanitizer));
+            }
 
             _domainManager = domainManager;
+            _sanitizer = sanitizer;
         }
 
         /// <summary>
@@ -43,16 +50,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 var locations = _domainManager.FindAll();
 
-                var models = locations.Select(x => new WorkLogModel
-                {
-                    LocationId = x.LocationId,
-                    TravelTimeHours = x.TravelTimeHours,
-                    UserId = x.UserId,
-                    WorkDate = x.WorkDate,
-                    WorkHours = x.WorkHours,
-                    WorkTypeId = x.WorkTypeId,
-                    Id = x.Id
-                });
+                var models = locations.Select(Map);
 
                 return Ok(models);
             });
@@ -79,20 +77,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             });
         }
 
-        private static WorkLogModel Map(WorkLog x)
-        {
-            return new WorkLogModel
-            {
-                LocationId = x.LocationId,
-                TravelTimeHours = x.TravelTimeHours,
-                UserId = x.UserId,
-                WorkDate = x.WorkDate,
-                WorkHours = x.WorkHours,
-                WorkTypeId = x.WorkTypeId,
-                Id = x.Id
-            };
-        }
-
 
         /// <summary>
         /// Retrieves all of the work log entries only for the logged-in user.
@@ -110,11 +94,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             {
                 int userId = RetrieveCurrentUserId();
 
-                var data = _domainManager.GetForUser(userId);
-
-                var models = data.Select(MyWorkLogModel.CreateFrom).ToList();
-
-                return Ok(models);
+                var data = _domainManager.GetForUser(userId)
+                                    .ToList();
+                return Ok(data);
             });
         }
 
@@ -136,11 +118,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         {
             return WrapWithTryCatch(() =>
             {
-                var data = _domainManager.GetReport();
-
-                var models = data.Select(WorkLogReportModel.CreateFrom).ToList();
-
-                return Ok(models);
+                var data = _domainManager.GetReport()
+                                    .ToList();
+                
+                return Ok(data);
             });
         }
 
@@ -158,6 +139,8 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "workDate": "2015-12-07 13:43", 
         ///   "WorkHours": 4.2,
         ///   "workTypeId": 3,
+        ///   "numberOfVolunteers": 1,
+        ///   "tasksCompleted": "describes what was actually accomplished."
         /// }
         /// </example>
         /// <remarks>
@@ -176,15 +159,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                var WorkLog = new WorkLog
-                {
-                    LocationId = input.LocationId,
-                    TravelTimeHours = input.TravelTimeHours,
-                    UserId = input.UserId,
-                    WorkDate = input.WorkDate,
-                    WorkHours = input.WorkHours,
-                    WorkTypeId = input.WorkTypeId,
-                };
+                input.Sanitize(_sanitizer);
+
+                var WorkLog = Map(input);
 
                 WorkLog = _domainManager.Create(WorkLog);
 
@@ -212,7 +189,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "workDate": "2015-12-07 13:43", 
         ///   "WorkHours": 4.2,
         ///   "workTypeId": 3,
-        ///   "id": 46646
+        ///   "id": 46646,
+        ///   "numberOfVolunteers": 1,
+        ///   "tasksCompleted": "describes what was actually accomplished."
         /// }
         /// </example>
         /// <remarks>
@@ -231,16 +210,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
 
             return WrapWithTryCatch(() =>
             {
-                var location = new WorkLog
-                {
-                    LocationId = input.LocationId,
-                    TravelTimeHours = input.TravelTimeHours,
-                    UserId = input.UserId,
-                    WorkDate = input.WorkDate,
-                    WorkHours = input.WorkHours,
-                    WorkTypeId = input.WorkTypeId,
-                    Id = input.Id
-                };
+                input.Sanitize(_sanitizer);
+
+                var location = Map(input);
 
                 _domainManager.Update(location);
 
@@ -248,5 +220,35 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
             });
         }
 
+        private static WorkLogModel Map(WorkLog x)
+        {
+            return new WorkLogModel
+            {
+                LocationId = x.LocationId,
+                TravelTimeHours = x.TravelTimeHours,
+                UserId = x.UserId,
+                WorkDate = x.WorkDate,
+                WorkHours = x.WorkHours,
+                WorkTypeId = x.WorkTypeId,
+                Id = x.Id,
+                TasksCompleted = x.TasksCompleted,
+                NumberOfVolunteers = x.NumberOfVolunteers
+            };
+        }
+        private static WorkLog Map(WorkLogModel x)
+        {
+            return new WorkLog
+            {
+                LocationId = x.LocationId,
+                TravelTimeHours = x.TravelTimeHours,
+                UserId = x.UserId,
+                WorkDate = x.WorkDate,
+                WorkHours = x.WorkHours,
+                WorkTypeId = x.WorkTypeId,
+                Id = x.Id,
+                TasksCompleted = x.TasksCompleted,
+                NumberOfVolunteers = x.NumberOfVolunteers
+            };
+        }
     }
 }

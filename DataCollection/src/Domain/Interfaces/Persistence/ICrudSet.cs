@@ -6,5 +6,6 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
     public interface ICrudSet<TEntity> : IDbSet<TEntity>
         where TEntity : class, IEntity
     {
+        ICrudSet<TEntity> AsNoTracking();
     }
 }

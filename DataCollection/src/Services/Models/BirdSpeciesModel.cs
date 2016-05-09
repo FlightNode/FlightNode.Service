@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FlightNode.DataCollection.Services.Models
+﻿namespace FlightNode.DataCollection.Services.Models
 {
     public class BirdSpeciesModel_bak
     {

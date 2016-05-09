@@ -49,16 +49,17 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         List<Disturbance> Disturbances { get; }
 
-        List<int> Observers { get; }
+        string Observers { get; set; }
 
         int Step { get;  }
 
         string LocationName { get; set; }
 
+        int? WaterHeightId { get; set; }
+
         ISurvey Add(Observation item);
 
         ISurvey Add(Disturbance item);
 
-        ISurvey Add(int userId);
     }
 }

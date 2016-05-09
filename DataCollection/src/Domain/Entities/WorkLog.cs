@@ -28,5 +28,9 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         [Required]
         public int LocationId { get; set; }
+
+        public int NumberOfVolunteers { get; set; }
+
+        public string TasksCompleted { get; set; }
     }
 }

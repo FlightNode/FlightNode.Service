@@ -3,12 +3,13 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence, IBirdSpeciesPersistence, ISurveyTypePersistence, ISurveyPersistence
+    public class DataCollectionContext : DbContext, ILocationPersistence, IWorkLogPersistence, IWorkTypePersistence, IBirdSpeciesPersistence, ISurveyTypePersistence, ISurveyPersistence, IEnumRepository
     {
         #region Collections used by persistence interfaces that inherit from IPersistenceBase
 
@@ -103,30 +104,26 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         public IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords()
         {
-            using (var conn = this.Database.Connection)
-            {
-                if (conn.State != System.Data.ConnectionState.Open)
-                {
-                    conn.Open();
-                }
 
-                return conn.Query<WorkLogReportRecord>("SELECT * FROM dbo.WorkLogReport");
-            }
+            return WorkLogReportRecords.AsNoTracking();
+
+            //using (var conn = this.Database.Connection)
+            //{
+            //    if (conn.State != System.Data.ConnectionState.Open)
+            //    {
+            //        conn.Open();
+            //    }
+
+            //    return conn.Query<WorkLogReportRecord>("SELECT * FROM dbo.WorkLogReport");
+            //}
 
         }
 
         public IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords(int userId)
         {
-            using (var conn = this.Database.Connection)
-            {
-                if (conn.State != System.Data.ConnectionState.Open)
-                {
-                    conn.Open();
-                }
-
-                return conn.Query<WorkLogReportRecord>("SELECT * FROM dbo.WorkLogReport WHERE UserId = @UserId", new { UserId = userId });
-            }
-
+            return WorkLogReportRecords
+                .Where(x => x.UserId == userId)
+                .AsNoTracking();
         }
 
         #endregion
@@ -150,6 +147,59 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         }
         #endregion
 
+        #region IEnumRepository
+        public async Task<IReadOnlyCollection<Weather>> GetWeather()
+        {
+            return await this.Weather.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<WaterHeight>> GetWaterHeights()
+        {
+            return await this.WaterHeights.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<Tide>> GetTides()
+        {
+            return await this.Tides.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<DisturbanceType>> GetDisturbanceTypes()
+        {
+            return await this.DisturbanceTypes.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<HabitatType>> GetHabitatTypes()
+        {
+            return await this.HabitatTypes.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<FeedingSuccessRate>> GetFeedingSuccessRates()
+        {
+            return await this.FeedingSuccessRates.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<SurveyActivity>> GetSurveyActivities()
+        {
+            return await this.SurveyActivities.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<SiteAssessment>> GetSiteAssessments()
+        {
+            return await this.SiteAssessments.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<VantagePoint>> GetVantagePoints()
+        {
+            return await this.VantagePoints.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<AccessPoint>> GetAccessPoints()
+        {
+            return await this.AccessPoints.ToListAsync();
+        }
+
+        #endregion  
+
         #region EF DbSets 
 
         public DbSet<Location> Locations { get; set; }
@@ -168,11 +218,9 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         public DbSet<Disturbance> Disturbances { get; set; }
 
-        public DbSet<DisturbanceType> DisturbanceType { get; set; }
+        public DbSet<DisturbanceType> DisturbanceTypes { get; set; }
 
         public DbSet<Observation> Observations { get; set; }
-
-        public DbSet<Observer> Observers { get; set; }
 
         public DbSet<Tide> Tides { get; set; }
 
@@ -189,6 +237,10 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DbSet<FeedingSuccessRate> FeedingSuccessRates { get; set; }
 
         public DbSet<SurveyActivity> SurveyActivities { get; set; }
+
+        public DbSet<WaterHeight> WaterHeights { get; set; }
+
+        public DbSet<WorkLogReportRecord> WorkLogReportRecords { get; set; }
         #endregion
 
 
@@ -235,13 +287,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 .WithMany(x => x.Disturbances);
 
             modelBuilder.Entity<SurveyCompleted>().ToTable("SurveyCompleted");
-
-            // Observer has a foreign key to User, but User is in in the 
-            // Identity project. Identity should not have a reference to 
-            // the DataCollection project; User cannot have a navigation
-            // property back to Observer; and therefore we must manually
-            // add the foreign key relationship in the migration script
-
+            
             modelBuilder.Entity<Weather>().ToTable("Weather");
             modelBuilder.Entity<Tide>().ToTable("Tides");
 
@@ -253,6 +299,11 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             modelBuilder.Entity<VantagePoint>().ToTable("VantagePoints");
             modelBuilder.Entity<AccessPoint>().ToTable("AccessPoints");
             modelBuilder.Entity<FeedingSuccessRate>().ToTable("FeedingSuccessRates");
+
+            modelBuilder.Entity<WaterHeight>().ToTable("WaterHeights");
+
+            modelBuilder.Entity<WorkLogReportRecord>().ToTable("WorkLogReport")
+                .HasKey<int>(x => x.Id);
         }
 
 

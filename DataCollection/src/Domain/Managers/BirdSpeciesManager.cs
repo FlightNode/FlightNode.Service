@@ -1,11 +1,10 @@
-﻿using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.Common.Exceptions;
+using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System.Collections.Generic;
-using System.Linq;
-using System;
 using System.Data.Entity.Infrastructure;
-using FlightNode.Common.Exceptions;
 using System.Globalization;
+using System.Linq;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {

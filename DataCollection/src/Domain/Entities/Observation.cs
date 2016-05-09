@@ -43,5 +43,6 @@ namespace FlightNode.DataCollection.Domain.Entities
         public int HabitatTypeId { get; set; }
 
         public int FeedingSuccessRate { get; set; }
+
     }
 }

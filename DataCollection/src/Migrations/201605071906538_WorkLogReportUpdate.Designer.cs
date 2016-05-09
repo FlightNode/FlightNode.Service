@@ -2,17 +2,18 @@
 namespace FlightNode.DataCollection.Domain.Migrations
 {
     using System.CodeDom.Compiler;
+    using System.Data.Entity.Migrations;
     using System.Data.Entity.Migrations.Infrastructure;
     using System.Resources;
-
+    
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class RenameWindSpeed : IMigrationMetadata
+    public sealed partial class WorkLogReportUpdate : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RenameWindSpeed));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(WorkLogReportUpdate));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602262306256_RenameWindSpeed"; }
+            get { return "201605071906538_WorkLogReportUpdate"; }
         }
         
         string IMigrationMetadata.Source

@@ -4,6 +4,7 @@ using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System;
 using System.Collections.Generic;
 
+
 namespace FlightNode.DataCollection.Domain.Managers
 {
     public interface IWorkLogDomainManager : ICrudManager<WorkLog>
@@ -53,7 +54,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             existing = MapInputToExisting(input, existing);
 
-            return _persistence.SaveChanges();
+            return base.Update(existing);
         }
 
         private static WorkLog MapInputToExisting(WorkLog input, WorkLog existing)
@@ -63,6 +64,8 @@ namespace FlightNode.DataCollection.Domain.Managers
             existing.WorkDate = input.WorkDate;
             existing.WorkHours = input.WorkHours;
             existing.WorkTypeId = input.WorkTypeId;
+            existing.NumberOfVolunteers = input.NumberOfVolunteers;
+            existing.TasksCompleted = input.TasksCompleted;
 
             return existing;
         }

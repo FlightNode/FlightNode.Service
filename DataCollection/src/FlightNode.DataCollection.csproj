@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\Packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\Packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props')" />
   <Import Project="..\..\Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\..\Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp">
+      <HintPath>..\..\Packages\AngleSharp.0.9.5\lib\net45\AngleSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Dapper">
       <HintPath>..\..\Packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
     </Reference>
@@ -47,6 +51,10 @@
     </Reference>
     <Reference Include="Flurl">
       <HintPath>..\..\Packages\Flurl.1.0.10\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10\Flurl.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlSanitizer">
+      <HintPath>..\..\Packages\HtmlSanitizer.3.2.103\lib\net45\HtmlSanitizer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -115,22 +123,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Entities\EnumBase.cs" />
     <Compile Include="Domain\Entities\FeedingSuccessRates.cs" />
     <Compile Include="Domain\Entities\ISurvey.cs" />
     <Compile Include="Domain\Entities\SiteAssessment.cs" />
     <Compile Include="Domain\Entities\Disturbance.cs" />
     <Compile Include="Domain\Entities\AccessPoint.cs" />
+    <Compile Include="Domain\Entities\SurveyBase.cs" />
     <Compile Include="Domain\Entities\VantagePoint.cs" />
     <Compile Include="Domain\Entities\HabitatType.cs" />
     <Compile Include="Domain\Entities\SurveyActivity.cs" />
     <Compile Include="Domain\Entities\SurveyPending.cs" />
     <Compile Include="Domain\Entities\Tide.cs" />
+    <Compile Include="Domain\Entities\WaterHeight.cs" />
     <Compile Include="Domain\Entities\Weather.cs" />
     <Compile Include="Domain\Entities\DisturbanceType.cs" />
     <Compile Include="Domain\Entities\Location.cs" />
     <Compile Include="Domain\Entities\BirdSpecies.cs" />
     <Compile Include="Domain\Entities\Observation.cs" />
-    <Compile Include="Domain\Entities\Observer.cs" />
     <Compile Include="Domain\Entities\SurveyCompleted.cs" />
     <Compile Include="Domain\Entities\SurveyType.cs" />
     <Compile Include="Domain\Entities\ValidationHelper.cs" />
@@ -138,6 +148,7 @@
     <Compile Include="Domain\Entities\WorkLogReportRecord.cs" />
     <Compile Include="Domain\Entities\WorkType.cs" />
     <Compile Include="Domain\Interfaces\Persistence\ICrudSet.cs" />
+    <Compile Include="Domain\Interfaces\Persistence\IEnumRepository.cs" />
     <Compile Include="Domain\Interfaces\Persistence\IModifiable.cs" />
     <Compile Include="Domain\Interfaces\Persistence\ISurveyPersistence.cs" />
     <Compile Include="Domain\Interfaces\Persistence\ISurveyTypePersistence.cs" />
@@ -201,6 +212,18 @@
     <Compile Include="Migrations\201603290305420_WorkLogReport_UpdateLocationSiteName.Designer.cs">
       <DependentUpon>201603290305420_WorkLogReport_UpdateLocationSiteName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605012247143_ObserversAndTides.cs" />
+    <Compile Include="Migrations\201605012247143_ObserversAndTides.Designer.cs">
+      <DependentUpon>201605012247143_ObserversAndTides.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605050229326_WorkdayNumVolunteersAndTasksCompleted.cs" />
+    <Compile Include="Migrations\201605050229326_WorkdayNumVolunteersAndTasksCompleted.Designer.cs">
+      <DependentUpon>201605050229326_WorkdayNumVolunteersAndTasksCompleted.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605071906538_WorkLogReportUpdate.cs" />
+    <Compile Include="Migrations\201605071906538_WorkLogReportUpdate.Designer.cs">
+      <DependentUpon>201605071906538_WorkLogReportUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
@@ -220,6 +243,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\Controllers\EnumsController.cs" />
     <Compile Include="Services\Controllers\SurveyTypeController.cs" />
     <Compile Include="Services\Controllers\WaterbirdForagingSurveyController.cs" />
     <Compile Include="Services\Controllers\WorkLogController.cs" />
@@ -301,6 +325,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603290305420_WorkLogReport_UpdateLocationSiteName.resx">
       <DependentUpon>201603290305420_WorkLogReport_UpdateLocationSiteName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605012247143_ObserversAndTides.resx">
+      <DependentUpon>201605012247143_ObserversAndTides.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605050229326_WorkdayNumVolunteersAndTasksCompleted.resx">
+      <DependentUpon>201605050229326_WorkdayNumVolunteersAndTasksCompleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605071906538_WorkLogReportUpdate.resx">
+      <DependentUpon>201605071906538_WorkLogReportUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
