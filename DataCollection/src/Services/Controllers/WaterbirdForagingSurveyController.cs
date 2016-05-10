@@ -150,9 +150,9 @@ namespace FlightNode.DataCollection.Services.Controllers
                 Step = input.Step,
                 Observers = input.Observers,
                 WaterHeightId = input.WaterHeightId,
-                StartDate = input.StartDate.Value.ToShortDateString(), // needs null handling
-                StartTime = input.StartDate.Value.ToShortTimeString(),
-                EndTime = input.EndDate.Value.ToShortTimeString()
+                StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
+                StartTime = input.StartDate.HasValue ? input.StartDate.Value.ToShortTimeString() : string.Empty,
+                EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty
             };
 
             foreach (var o in input.Observations)
@@ -233,6 +233,7 @@ namespace FlightNode.DataCollection.Services.Controllers
 
         private SurveyPending Map(WaterbirdForagingModel input, Guid identifier)
         {
+
             var entity = new SurveyPending
             {
                 AccessPointId = input.AccessPointId,
@@ -252,9 +253,10 @@ namespace FlightNode.DataCollection.Services.Controllers
                 Observers = input.Observers,
                 Id = input.SurveyId,
                 WaterHeightId = input.WaterHeightId,
-                EndDate = DateTime.Parse(input.StartDate + " " + input.EndTime),
-                StartDate = DateTime.Parse(input.StartDate + " " + input.StartTime)
+                StartDate = ParseDateTime(input.StartDate, input.StartTime),
+                EndDate = ParseDateTime(input.StartDate, input.EndTime)
             };
+            
 
             foreach (var o in input.Observations)
             {
@@ -286,6 +288,17 @@ namespace FlightNode.DataCollection.Services.Controllers
             }
 
             return entity;
+        }
+
+        private DateTime? ParseDateTime(string date, string time)
+        {
+            DateTime dateTime;
+            if (DateTime.TryParse((date ?? string.Empty) + " " + (time ?? string.Empty), out dateTime))
+            {
+                return dateTime;
+            }
+
+            return null;
         }
 
         private int RetrieveCurrentUserId()

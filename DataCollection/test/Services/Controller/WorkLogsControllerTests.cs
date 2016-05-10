@@ -118,7 +118,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
 
                 // Act
-                var result = BuildSystem().Get(id);
+                var result = BuildSystemWithSanitizer().Get(id);
 
                 var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
 
@@ -136,7 +136,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                         .Throws(ex);
 
 
-                    return BuildSystem().Get().ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                    return BuildSystemWithSanitizer().Get().ExecuteAsync(new System.Threading.CancellationToken()).Result;
                 }
 
                 [Fact]
@@ -244,7 +244,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     .Returns(records);
 
                 // Act
-                var result = BuildSystem().Get();
+                var result = BuildSystemWithSanitizer().Get();
 
                 var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
 
@@ -261,7 +261,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Setup(x => x.FindAll())
                         .Throws(ex);
 
-                    return BuildSystem().Get().ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                    return BuildSystemWithSanitizer().Get().ExecuteAsync(new System.Threading.CancellationToken()).Result;
                 }
 
                 [Fact]
@@ -351,7 +351,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     .Returns(records);
 
                 // Act
-                var result = SetCurrentUserId(BuildSystem())
+                var result = SetCurrentUserId(BuildSystemWithSanitizer())
                     .GetMyLogs();
 
                 var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
@@ -369,7 +369,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Setup(x => x.GetForUser(It.Is<int>(y => y == 0)))
                             .Throws(ex);
 
-                    return SetCurrentUserId(BuildSystem())
+                    return SetCurrentUserId(BuildSystemWithSanitizer())
                         .GetMyLogs()
                         .ExecuteAsync(new System.Threading.CancellationToken())
                         .Result;
@@ -449,7 +449,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     .Returns(records);
 
                 // Act
-                var result = BuildSystem()
+                var result = BuildSystemWithSanitizer()
                     .GetExport();
 
                 var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
@@ -467,7 +467,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Setup(x => x.GetReport())
                                 .Throws(ex);
 
-                    return BuildSystem()
+                    return BuildSystemWithSanitizer()
                         .GetExport()
                         .ExecuteAsync(new System.Threading.CancellationToken())
                         .Result;
@@ -692,7 +692,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 [Fact]
                 public void ConfirmDoesNotAcceptNull()
                 {
-                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Post(null));
+                    Assert.Throws<ArgumentNullException>(() => BuildSystemWithSanitizer().Post(null));
                 }
 
                 [Fact]
@@ -900,7 +900,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 [Fact]
                 public void ConfirmDoesNotAcceptNull()
                 {
-                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Put(null));
+                    Assert.Throws<ArgumentNullException>(() => BuildSystemWithSanitizer().Put(null));
                 }
 
                 [Fact]

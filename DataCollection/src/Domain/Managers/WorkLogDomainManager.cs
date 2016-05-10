@@ -54,7 +54,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             existing = MapInputToExisting(input, existing);
 
-            return base.Update(existing);
+            return base.UpdateAttachedObject(existing);
         }
 
         private static WorkLog MapInputToExisting(WorkLog input, WorkLog existing)

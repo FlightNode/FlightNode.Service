@@ -24,7 +24,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             {
                 if (_query == null)
                 {
-                    _query = _dbSet;
+                    _query = _dbSet.AsNoTracking();
                 }
                 return _query;
             }
@@ -34,11 +34,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             }
         }
 
-        public ICrudSet<TEntity> AsNoTracking()
-        {
-            Query = Query.AsNoTracking();
-            return this;
-        }
 
         public CrudSetDecorator(DbSet<TEntity> dbSet)
         {

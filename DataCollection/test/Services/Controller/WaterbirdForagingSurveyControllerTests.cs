@@ -44,7 +44,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             protected const int OBSERVER_ID = 13;
             protected const string Observers = "a, b, and c";
             protected const int SITE_TYPE_ID = 14;
-            protected const int STEP = 15;
+            protected const int STEP = 1;
             protected const string SURVEY_COMMENTS = "Survey comments";
             protected const int TEMPERATURE = 16;
             protected const int TIDE = 17;
@@ -155,10 +155,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     AccessPointId = ACCESS_POINT,
                     DisturbanceComments = DISTURBED,
                     LocationId = LOCATION_ID,
-                    AssessmentId= SITE_TYPE_ID,
+                    AssessmentId = SITE_TYPE_ID,
                     Step = STEP,
-                    GeneralComments= SURVEY_COMMENTS,
-                    StartTemperature= TEMPERATURE,
+                    GeneralComments = SURVEY_COMMENTS,
+                    StartTemperature = TEMPERATURE,
                     TideId = TIDE,
                     VantagePointId = VANTAGE_POINT,
                     WeatherId = WEATHER,
@@ -166,7 +166,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     Id = SURVEY_ID,
                     WaterHeightId = WaterHeightId,
                     StartDate = START_DATE,
-                    EndDate= END_DATE,
+                    EndDate = END_DATE,
                     Observers = Observers
                 };
                 input.Disturbances.Add(new Disturbance
@@ -183,12 +183,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     BirdSpeciesId = SPECIES_ID,
                     FeedingSuccessRate = FEEDING_ID,
                     HabitatTypeId = HABITAT_ID,
-                    Bin2= JUVENILES,
+                    Bin2 = JUVENILES,
                     PrimaryActivityId = PRIMARY_ACTIVITY_ID,
                     SecondaryActivityId = SECONDARY_ACTIVITY_ID,
-                    Id= OBSERVATION_ID
+                    Id = OBSERVATION_ID
                 });
                 return input;
+            }
+
+            protected bool DateValuesAreClose(DateTime one, DateTime two)
+            {
+                return Math.Abs((one - two).Milliseconds) < 1000;
             }
 
         }
@@ -401,7 +406,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                 Assert.Equal(domain.Observations.First().SecondaryActivityId, result.Observations.First().SecondaryActivityId);
             }
-            
+
 
             [Fact]
             public void MapsStartDate()
@@ -473,7 +478,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                 Assert.Equal(domain.TideId, result.TideId);
             }
-            
+
             [Fact]
             public void MapsVantagePointInfoId()
             {
@@ -748,14 +753,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsEndDate()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => END_DATE == y.EndDate)));
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => DateValuesAreClose(END_DATE, y.EndDate.Value))));
                 }
 
                 [Fact]
                 public void MapsStartDate()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => START_DATE == y.StartDate)));
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => DateValuesAreClose(START_DATE, y.StartDate.Value))));
                 }
 
                 [Fact]
@@ -764,7 +769,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     RunPositiveTest();
                     MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => LOCATION_ID == y.LocationId)));
                 }
-                
+
 
                 [Fact]
                 public void MapsSiteTypeIdToAssessment()
@@ -1110,6 +1115,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                             Assert.Equal(userId, actual.SubmittedBy);
                         });
 
+                    MockDomainManager.Setup(x => x.FindBySurveyId(It.IsAny<Guid>()))
+                        .Returns(new SurveyPending());
+
                     var system = BuildSystem();
 
 
@@ -1150,14 +1158,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsEndDate()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => END_DATE == y.EndDate), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(END_DATE, y.EndDate.Value)), It.Is<int>(y => y == STEP)));
                 }
+
+
 
                 [Fact]
                 public void MapsStartDate()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => START_DATE == y.StartDate), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(START_DATE, y.StartDate.Value)), It.Is<int>(y => y == STEP)));
                 }
 
                 [Fact]
@@ -1166,7 +1176,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     RunPositiveTest();
                     MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => LOCATION_ID == y.LocationId), It.Is<int>(y => y == STEP)));
                 }
-                
+
                 [Fact]
                 public void MapsSiteTypeIdToAssessment()
                 {
@@ -1345,13 +1355,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
 
                 [Fact]
-                public void RespondsWithNoContent()
+                public void RespondsWithOk200()
                 {
                     HttpResponseMessage result = RunPositiveTest();
 
                     //
                     // Assert
-                    Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+                    Assert.Equal(HttpStatusCode.OK, result.StatusCode);
                 }
 
 
@@ -1365,7 +1375,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>(), It.Is<int>(y => y == STEP)));
 
                     MockDomainManager.Setup(x => x.FindBySurveyId(It.IsAny<Guid>()))
-                        .Returns(CreateDefaultEntity());                        
+                        .Returns(CreateDefaultEntity());
 
                     var system = BuildSystem();
 
