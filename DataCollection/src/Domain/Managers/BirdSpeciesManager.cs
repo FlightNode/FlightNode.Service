@@ -81,7 +81,9 @@ namespace FlightNode.DataCollection.Domain.Managers
             
             original = AddNewSurveyTypes(input, original);
 
-            return _persistence.SaveChanges();
+
+            // TODO: needs to be UpdateAttachedObject, but will need to adjust unit tests
+            return Update(original);
         }
 
         public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)

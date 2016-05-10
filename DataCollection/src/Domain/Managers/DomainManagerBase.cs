@@ -42,10 +42,6 @@ namespace FlightNode.DataCollection.Domain.Managers
         public virtual IEnumerable<TEntity> FindAll()
         {
             return _persistence.Collection
-                    // When retrieving a collection - as opposed to a single item - there
-                    // is no expectation that the elements will be directly updated.
-                    // Therefore using AsNoTracking() for performance benefits is appropriate.
-                    .AsNoTracking()
                     .ToList();
         }
 
@@ -54,7 +50,7 @@ namespace FlightNode.DataCollection.Domain.Managers
             return _persistence.Collection.FirstOrDefault(x => x.Id == id);
         }
 
-        public virtual int Update(TEntity input)
+        public virtual int UpdateAttachedObject(TEntity input)
         {
             input.Validate();
             
@@ -62,7 +58,7 @@ namespace FlightNode.DataCollection.Domain.Managers
             return _persistence.SaveChanges();            
         }
 
-        protected virtual int ReAttachAndUpdate(TEntity input)
+        public virtual int Update(TEntity input)
         {
             input.Validate();
 

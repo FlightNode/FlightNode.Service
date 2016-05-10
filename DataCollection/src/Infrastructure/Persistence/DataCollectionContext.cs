@@ -104,19 +104,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         public IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords()
         {
-
             return WorkLogReportRecords.AsNoTracking();
-
-            //using (var conn = this.Database.Connection)
-            //{
-            //    if (conn.State != System.Data.ConnectionState.Open)
-            //    {
-            //        conn.Open();
-            //    }
-
-            //    return conn.Query<WorkLogReportRecord>("SELECT * FROM dbo.WorkLogReport");
-            //}
-
         }
 
         public IEnumerable<WorkLogReportRecord> GetWorkLogReportRecords(int userId)
