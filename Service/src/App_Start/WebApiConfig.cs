@@ -61,6 +61,7 @@ namespace FligthNode.Service.App
         private static HttpConfiguration ConfigureFilters(HttpConfiguration config)
         {
             config.Filters.Add(new NotImplementedExceptionAttribute());
+            config.Filters.Add(new InvalidApiRequestExceptionFilter());
             config.Filters.Add(new UnhandledExceptionFilterAttribute());
 
             return config;

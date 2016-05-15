@@ -32,7 +32,7 @@ namespace FlightNode.Common.UnitTests.Utility
             [Fact]
             public void RejectsNullArgument()
             {
-                Assert.Throws<ArgumentNullException>(() => new EmailNotifier(Fixture.Create<IEmailFactory>()).Send(null));
+                Assert.Throws<ArgumentNullException>(() => new EmailNotifier(Fixture.Create<IEmailFactory>()).SendAsync(null));
             }
 
             const string to = "someone@somewhere.com";
@@ -134,7 +134,7 @@ namespace FlightNode.Common.UnitTests.Utility
                 FreezeSendGridFactory();
 
                 // Act
-                CreateSystem().Send(model);
+                CreateSystem().SendAsync(model);
 
                 // Assert
                 transportMock.Verify(x => x.DeliverAsync(It.Is<ISendGrid>(y => object.ReferenceEquals(messageMock.Object, y))));
@@ -150,7 +150,7 @@ namespace FlightNode.Common.UnitTests.Utility
                 FreezeSendGridFactory();
 
                 // Act
-                CreateSystem().Send(model);
+                CreateSystem().SendAsync(model);
                 return messageMock;
             }
         }

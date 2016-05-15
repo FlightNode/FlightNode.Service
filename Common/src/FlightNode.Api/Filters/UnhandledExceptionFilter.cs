@@ -28,6 +28,7 @@ namespace FlightNode.Common.Api.Filters
                 throw new ArgumentNullException("context");
             }
 
+            
             Logger.Error(context.Request.RequestUri, context.Exception);
         }
     }

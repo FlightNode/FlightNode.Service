@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace FlightNode.Common.Utility
 {
     public interface IEmailNotifier
     {
-        void Send(NotificationModel notification);
+        Task SendAsync(NotificationModel notification);
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ namespace FlightNode.Common.Utility
         /// </summary>
         /// <param name="notification">E-mail parameters and content</param>
         /// <returns>A <see cref="Task"/></returns>
-        public void Send(NotificationModel notification)
+        public async Task SendAsync(NotificationModel notification)
         {
             if (notification == null)
             {
@@ -45,7 +46,7 @@ namespace FlightNode.Common.Utility
 
             var transportWeb = _factory.CreateTransport();
 
-            transportWeb.DeliverAsync(message);
+            await transportWeb.DeliverAsync(message);
         }
     }
 
