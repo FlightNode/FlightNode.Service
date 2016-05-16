@@ -32,7 +32,7 @@ namespace FlightNode.Common.UnitTests.Utility
             [Fact]
             public void RejectsNullArgument()
             {
-                Assert.Throws<ArgumentNullException>(() => new EmailNotifier(Fixture.Create<IEmailFactory>()).SendAsync(null));
+                Assert.ThrowsAsync<ArgumentNullException>(() => new EmailNotifier(Fixture.Create<IEmailFactory>()).SendAsync(null));
             }
 
             const string to = "someone@somewhere.com";
