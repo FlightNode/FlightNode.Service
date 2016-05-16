@@ -58,6 +58,16 @@ namespace FlightNode.DataCollection.Domain.Managers
             return bird.WithFlatSurveyTypeNames();
         }
 
+
+        public override BirdSpecies Create(BirdSpecies input)
+        {
+
+            input = MapSurveyTypesIntoNewObject(input);
+
+            return base.Create(input);
+        }
+
+
         public override int Update(BirdSpecies input)
         {
             input.Validate();
@@ -82,8 +92,7 @@ namespace FlightNode.DataCollection.Domain.Managers
             original = AddNewSurveyTypes(input, original);
 
 
-            // TODO: needs to be UpdateAttachedObject, but will need to adjust unit tests
-            return Update(original);
+            return UpdateAttachedObject(original);
         }
 
         public IEnumerable<BirdSpecies> GetBirdSpeciesBySurveyTypeId(int surveyTypeId)
@@ -132,6 +141,8 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             _persistence.SaveChanges();
         }
+
+
 
 
         private void AddBirdToSurveyType(BirdSpecies bird, SurveyType surveyType)
@@ -186,6 +197,22 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             return original;
+        }
+
+
+        private BirdSpecies MapSurveyTypesIntoNewObject(BirdSpecies input)
+        {
+            var allSurveyTypes = BirdSpeciesPersistence.SurveyTypes.ToList();
+            foreach (var item in input.SurveyTypeNames)
+            {
+                var survey = allSurveyTypes.FirstOrDefault(x => x.Description == item);
+                if (survey != null)
+                {
+                    input.SurveyTypes.Add(survey);
+                }
+            }
+
+            return input;
         }
 
     }

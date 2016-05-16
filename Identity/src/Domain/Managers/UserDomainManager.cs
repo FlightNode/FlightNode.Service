@@ -1,5 +1,4 @@
-﻿using FlightNode.Common.BaseClasses;
-using FlightNode.Common.Exceptions;
+﻿using FlightNode.Common.Exceptions;
 using FlightNode.Common.Utility;
 using FlightNode.Identity.Domain.Entities;
 using FlightNode.Identity.Domain.Interfaces;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FlightNode.Identity.Domain.Logic
 {
@@ -187,7 +187,7 @@ Username: {1}
             var message = new NotificationModel(record.FormattedEmail, PendingUserEmailSubject, body);
 
             _emailFactory.CreateNotifier()
-                .Send(message);
+                .SendAsync(message);
         }
 
         private int SavePendingUserRecord(UserModel input, User record)
@@ -274,9 +274,6 @@ Username: {1}
 
                 if (user != null)
                 {
-                    // TODO: look into async processing using WhenAny
-                    // https://msdn.microsoft.com/en-us/library/jj155756.aspx
-
                     ApproveSingleUser(user);
                     SendApprovalEmail(user);
                 }
@@ -285,7 +282,7 @@ Username: {1}
             }
         }
 
-        private void SendApprovalEmail(User user)
+        private async Task SendApprovalEmail(User user)
         {
             var message = new NotificationModel(
                 user.FormattedEmail,
@@ -293,16 +290,16 @@ Username: {1}
                 string.Format(CultureInfo.InvariantCulture, AccountApprovedEmailBodyPattern, Properties.Settings.Default.SiteName, user.UserName)
                 );
 
-            _emailFactory.CreateNotifier()
-                .Send(message);
+            await _emailFactory.CreateNotifier()
+                .SendAsync(message);
         }
 
-        private void ApproveSingleUser(User user)
+        private async Task ApproveSingleUser(User user)
         {
             user.Active = User.StatusActive;
             user.LockoutEnabled = false;
 
-            var updateResult = _userManager.UpdateAsync(user).Result;
+            await _userManager.UpdateAsync(user);
         }
     }
 }

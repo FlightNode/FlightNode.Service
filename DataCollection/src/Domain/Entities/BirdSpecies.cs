@@ -9,11 +9,11 @@ namespace FlightNode.DataCollection.Domain.Entities
     public class BirdSpecies : IEntity
     {
         public int Id { get; set; }
-        
+
         [StringLength(4)]
         [Required]
         public string CommonAlphaCode { get; set; }
-        
+
         [StringLength(50)]
         [Required]
         public string CommonName { get; set; }
@@ -76,7 +76,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public override int GetHashCode()
         {
-            return this.CommonName.GetHashCode();
+            return (this.CommonName ?? string.Empty).GetHashCode();
         }
     }
 }

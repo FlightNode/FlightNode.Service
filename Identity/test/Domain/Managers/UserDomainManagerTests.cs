@@ -67,7 +67,8 @@ namespace FlightNode.Identity.UnitTests.Domain.Logic
             protected Mock<IEmailNotifier> ExpectToSendEmail()
             {
                 var notifierMock = this.mockRepository.Create<IEmailNotifier>();
-                notifierMock.Setup(x => x.Send(It.IsAny<NotificationModel>()));
+                notifierMock.Setup(x => x.SendAsync(It.IsAny<NotificationModel>()))
+                    .Returns(Task.Run(() => SuccessResult.Create()));
 
 
                 this.emailFactoryMock.Setup(x => x.CreateNotifier())
@@ -436,7 +437,7 @@ Please visit the website's Contact form to submit any questions to the administr
 
             private static void VerifyEmailParameter(Mock<IEmailNotifier> emailFactoryMock, Func<NotificationModel, bool> assert)
             {
-                emailFactoryMock.Verify(x => x.Send(It.Is<NotificationModel>(y => assert(y))));
+                emailFactoryMock.Verify(x => x.SendAsync(It.Is<NotificationModel>(y => assert(y))));
             }
 
 
@@ -1525,7 +1526,7 @@ Please visit the website's Contact form to submit any questions to the administr
                 RunTest(ids);
 
                 // Assert
-                notifierMock.Verify(x => x.Send(It.Is<NotificationModel>(y => y.To == expected)));
+                notifierMock.Verify(x => x.SendAsync(It.Is<NotificationModel>(y => y.To == expected)));
             }
 
             [Fact]
@@ -1546,7 +1547,7 @@ Username: " + UserName + @"
                 RunTest(ids);
 
                 // Assert
-                notifierMock.Verify(x => x.Send(It.Is<NotificationModel>(y => y.Body == expected)));
+                notifierMock.Verify(x => x.SendAsync(It.Is<NotificationModel>(y => y.Body == expected)));
             }
 
             //" user registration has been approved";
@@ -1567,7 +1568,7 @@ Username: " + UserName + @"
                 RunTest(ids);
 
                 // Assert
-                notifierMock.Verify(x => x.Send(It.Is<NotificationModel>(y => y.Subject == expected)));
+                notifierMock.Verify(x => x.SendAsync(It.Is<NotificationModel>(y => y.Subject == expected)));
             }
 
             private void ExpectSuccessfulUserUpdate()
