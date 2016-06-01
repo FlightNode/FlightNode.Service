@@ -726,6 +726,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             public class HappyPath : Post
             {
                 [Fact]
+                public void MapsStep()
+                {
+                    RunPositiveTest();
+
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => STEP == y.Step)));
+                }
+
+                [Fact]
                 public void MapsWaterHeightId()
                 {
                     RunPositiveTest();
@@ -1387,6 +1395,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 }
 
 
+
+                [Fact]
+                public void NullInputShouldBeTreatedAsABadRequest()
+                {
+
+                    var result = BuildSystem().Put(IDENTIFIER, null).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+
+                    Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+                }
             }
 
             public class ExceptionHandling : Put

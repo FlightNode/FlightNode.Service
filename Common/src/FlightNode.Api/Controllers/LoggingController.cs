@@ -6,6 +6,7 @@ using System.Linq;
 using log4net;
 using Flurl;
 using FlightNode.Common.Api.Models;
+using System.Threading.Tasks;
 
 namespace FligthNode.Common.Api.Controllers
 {
@@ -24,7 +25,29 @@ namespace FligthNode.Common.Api.Controllers
                 _logger = value;
             }
         }
-
+        protected async Task<IHttpActionResult> WrapWithTryCatchAsync(Func<Task<IHttpActionResult>> func)
+        {
+            try
+            {
+                return await func();
+            }
+            catch (DoesNotExistException dne)
+            {
+                return Handle(dne);
+            }
+            catch (UserException uex)
+            {
+                return Handle(uex);
+            }
+            catch (DomainValidationException dex)
+            {
+                return Handle(dex);
+            }
+            catch (Exception ex)
+            {
+                return Handle(ex);
+            }
+        }
 
         protected IHttpActionResult WrapWithTryCatch(Func<IHttpActionResult> func)
         {

@@ -53,7 +53,8 @@ namespace FlightNode.DataCollection.Domain.Entities
                 TimeOfLowTide = this.TimeOfLowTide,
                 VantagePointId = this.VantagePointId,
                 WeatherId = this.WeatherId,
-                WindSpeed = this.WindSpeed
+                WindSpeed = this.WindSpeed,
+                WaterHeightId = this.WaterHeightId
             };
 
             completed.Observations.AddRange(this.Observations);

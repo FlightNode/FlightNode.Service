@@ -152,7 +152,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 WaterHeightId = input.WaterHeightId,
                 StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
                 StartTime = input.StartDate.HasValue ? input.StartDate.Value.ToShortTimeString() : string.Empty,
-                EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty
+                EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty,
             };
 
             foreach (var o in input.Observations)
@@ -198,7 +198,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         {
             if (input == null)
             {
-                throw new ArgumentNullException(nameof(input));
+                return BadRequest("null input");
             }
 
             if (surveyIdentifier == Guid.Empty)
@@ -254,7 +254,8 @@ namespace FlightNode.DataCollection.Services.Controllers
                 Id = input.SurveyId,
                 WaterHeightId = input.WaterHeightId,
                 StartDate = ParseDateTime(input.StartDate, input.StartTime),
-                EndDate = ParseDateTime(input.StartDate, input.EndTime)
+                EndDate = ParseDateTime(input.StartDate, input.EndTime),
+                Step = input.Step
             };
             
 

@@ -95,15 +95,15 @@ namespace FlightNode.DataCollection.Domain.Managers
         private List<SurveyPending> FindPendingSurveysSubmittedBy(int userId)
         {
             return _persistence.SurveysPending
-                                                    .Where(x => x.SubmittedBy == userId)
-                                                    .ToList();
+                                .Where(x => x.SubmittedBy == userId)
+                                .ToList();
         }
 
         private List<SurveyCompleted> FindCompletedSurveysSubmittedBy(int userId)
         {
             return _persistence.SurveysCompleted
-                                        .Where(x => x.SubmittedBy == userId)
-                                        .ToList();
+                                .Where(x => x.SubmittedBy == userId)
+                                .ToList();
         }
 
         /// <summary>
