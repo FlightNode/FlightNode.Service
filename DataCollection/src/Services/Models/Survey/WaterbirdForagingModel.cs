@@ -40,9 +40,9 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public string DisturbanceComments { get; set; }
 
-        public List<DisturbanceModel> Disturbances { get; private set; }
+        public List<DisturbanceModel> Disturbances { get; set; }
 
-        public List<ObservationModel> Observations { get; private set; }
+        public List<ObservationModel> Observations { get; set; }
 
         public int SurveyId { get; set; }
 

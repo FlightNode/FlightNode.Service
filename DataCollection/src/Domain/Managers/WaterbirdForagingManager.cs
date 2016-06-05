@@ -181,6 +181,15 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         private void LoadModifiedEntitiesIntoPersistenceLayer(SurveyPending survey)
         {
+            survey.Id = _persistence.SurveysPending
+                            .Where(x => x.SurveyIdentifier == survey.SurveyIdentifier)
+                            .Select(x => x.Id)
+                            .FirstOrDefault();
+            if (survey.Id == 0)
+            {
+                throw new InvalidOperationException("No pending survey exists for identifer " + survey.SurveyIdentifier);
+            }
+
             _persistence.SurveysPending.Add(survey);
             _persistence.SetModifiedStateOn(survey);
 

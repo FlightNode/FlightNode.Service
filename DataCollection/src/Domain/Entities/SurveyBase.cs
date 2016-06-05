@@ -9,6 +9,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public abstract class SurveyBase : IEntity
     {
+        [NotMapped]
         public virtual int Step { get;set;}
 
         [Required]
@@ -75,9 +76,5 @@ namespace FlightNode.DataCollection.Domain.Entities
             Observations = new List<Observation>();
             Disturbances = new List<Disturbance>();
         }
-
-
-
-
     }
 }
