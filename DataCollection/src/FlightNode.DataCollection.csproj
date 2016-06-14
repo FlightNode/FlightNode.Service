@@ -233,6 +233,10 @@
     <Compile Include="Migrations\201605071906538_WorkLogReportUpdate.Designer.cs">
       <DependentUpon>201605071906538_WorkLogReportUpdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606140228377_AllowNullsInObservations.cs" />
+    <Compile Include="Migrations\201606140228377_AllowNullsInObservations.Designer.cs">
+      <DependentUpon>201606140228377_AllowNullsInObservations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
@@ -343,6 +347,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605071906538_WorkLogReportUpdate.resx">
       <DependentUpon>201605071906538_WorkLogReportUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606140228377_AllowNullsInObservations.resx">
+      <DependentUpon>201606140228377_AllowNullsInObservations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
