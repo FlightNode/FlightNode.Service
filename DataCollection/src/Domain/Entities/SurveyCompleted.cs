@@ -8,7 +8,7 @@ namespace FlightNode.DataCollection.Domain.Entities
         public const int COMPLETED_FORAGING_STEP_NUMBER = 4;
 
         [NotMapped]
-        public int Step {  get { return COMPLETED_FORAGING_STEP_NUMBER; } }      
+        public override int Step {  get { return COMPLETED_FORAGING_STEP_NUMBER; } }      
 
         public SurveyCompleted Add(Observation item)
         {

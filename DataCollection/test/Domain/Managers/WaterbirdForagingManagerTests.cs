@@ -1,6 +1,6 @@
-﻿ //TODO: I have messed up the Update functionality.But this feature is not immediately
- //critical - what is more important is that the rest of the existing features work.
- //Therefore commenting this out temporarily in order to focus on other failures first.
+﻿//TODO: I have messed up the Update functionality.But this feature is not immediately
+//critical - what is more important is that the rest of the existing features work.
+//Therefore commenting this out temporarily in order to focus on other failures first.
 
 
 using FlightNode.Common.Exceptions;
@@ -23,10 +23,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
             protected Mock<ISurveyPersistence> SurveyPersistenceMock;
-            protected Mock<ICrudSet<SurveyPending>> SurveyPendingSet;
-            protected Mock<ICrudSet<SurveyCompleted>> SurveyCompletedSet;
-            protected Mock<ICrudSet<Disturbance>> DisturbanceSet;
-            protected Mock<ICrudSet<Observation>> ObservationSet;
+            //protected Mock<ICrudSet<SurveyPending>> SurveyPendingSet;
+            //protected Mock<ICrudSet<SurveyCompleted>> SurveyCompletedSet;
+            //protected Mock<ICrudSet<Disturbance>> DisturbanceSet;
+            //protected Mock<ICrudSet<Observation>> ObservationSet;
+            protected FakeDbSet<SurveyPending> SurveyPendingSet = new FakeDbSet<SurveyPending>();
+            protected FakeDbSet<SurveyCompleted> SurveyCompletedSet = new FakeDbSet<SurveyCompleted>();
+            protected FakeDbSet<Disturbance> DisturbanceSet = new FakeDbSet<Disturbance>();
+            protected FakeDbSet<Observation> ObservationSet = new FakeDbSet<Observation>();
 
 
             public Fixture()
@@ -46,17 +50,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected void SetupCrudSets()
             {
-                DisturbanceSet = MockRepository.Create<ICrudSet<Disturbance>>();
+                //DisturbanceSet = MockRepository.Create<ICrudSet<Disturbance>>();
+                //SurveyPersistenceMock.SetupGet(x => x.Disturbances)
+                //    .Returns(DisturbanceSet.Object);
                 SurveyPersistenceMock.SetupGet(x => x.Disturbances)
-                    .Returns(DisturbanceSet.Object);
+                    .Returns(DisturbanceSet);
 
-                ObservationSet = MockRepository.Create<ICrudSet<Observation>>();
+                //ObservationSet = MockRepository.Create<ICrudSet<Observation>>();
+                //SurveyPersistenceMock.SetupGet(x => x.Observations)
+                //    .Returns(ObservationSet.Object);
                 SurveyPersistenceMock.SetupGet(x => x.Observations)
-                    .Returns(ObservationSet.Object);
+                    .Returns(ObservationSet);
 
-                SurveyPendingSet = MockRepository.Create<ICrudSet<SurveyPending>>();
+                //SurveyPendingSet = MockRepository.Create<ICrudSet<SurveyPending>>();
+                //SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
+                //    .Returns(SurveyPendingSet.Object);
                 SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
-                    .Returns(SurveyPendingSet.Object);
+                    .Returns(SurveyPendingSet);
             }
         }
 
@@ -84,34 +94,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public class HappyPath : Create
             {
-
+                
                 [Fact]
-                public void SaveReturnsTheNewSurveyId()
-                {
-                    var result = RunTest();
-
-                    Assert.Equal(SURVEY_ID, result.Id);
-                }
-
-
-                [Fact]
-                public void SaveReturnsTheNewObservationId()
-                {
-                    var result = RunTest();
-
-                    Assert.Equal(OBSERVATION_ID, result.Observations.First().Id);
-                }
-
-
-                [Fact]
-                public void SaveReturnsTheNewDisturbanceId()
-                {
-                    var result = RunTest();
-
-                    Assert.Equal(DISTURBANCE_ID, result.Disturbances.First().Id);
-                }
-
-                private SurveyPending RunTest()
+                public void GivenValidInputThenSaveDisturbancesObservationsAndPendingSurvey()
                 {
                     //
                     // Arrange
@@ -124,27 +109,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
-                    DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                        .Callback((Disturbance actual) =>
-                        {
-                            actual.Id = DISTURBANCE_ID;
-                            Assert.Same(disturb, actual);
-                        })
-                        .Returns((Disturbance actual) => actual);
-                    ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                        .Callback((Observation actual) =>
-                        {
-                            actual.Id = OBSERVATION_ID;
-                            Assert.Same(observation, actual);
-                        })
-                        .Returns((Observation actual) => actual);
-                    SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                        .Callback((SurveyPending actual) =>
-                        {
-                            actual.Id = SURVEY_ID;
-                            Assert.Same(input, actual);
-                        })
-                        .Returns((SurveyPending actual) => actual);
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
 
@@ -152,7 +116,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     //
                     // Act
                     var result = BuildSystem().Create(input);
-                    return result;
+
+                    // Assert
+                    Assert.Same(disturb, DisturbanceSet.First());
+                    Assert.Same(observation, ObservationSet.First());
+                    Assert.Same(input, SurveyPendingSet.First());
                 }
             }
 
@@ -179,12 +147,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
-                    DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                        .Returns(disturb);
-                    ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                        .Returns(observation);
-                    SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                        .Returns(input);
+                    //DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
+                    //    .Returns(disturb);
+                    DisturbanceSet.Add(disturb);
+                    //ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
+                    //    .Returns(observation);
+                    ObservationSet.Add(observation);
+                    //SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
+                    //    .Returns(input);
+                    SurveyPendingSet.Add(input);
+
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Throws<InvalidOperationException>();
 
@@ -238,13 +210,99 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             }
         }
 
+        public class Finish : Fixture
+        {
+            [Fact]
+            public void ConvertsToCompletedSurvey()
+            {
+
+                //
+                // Arrange
+                const int id = 3233;
+
+                var input = new SurveyPending();
+                input.SubmittedBy = id;
+                input.StartDate = DateTime.MinValue;
+                input.EndDate = DateTime.MaxValue;
+                input.Step = 4;
+                input.WaterHeightId = 23;
+
+                var observation = new Observation { Id = 1 };   // causes an update 
+                input.Observations.Add(observation);
+                var disturb = new Disturbance { Id = 2 };   // causes an update 
+                input.Disturbances.Add(disturb);
+
+
+                // Mocks
+                SetupCrudSets();
+
+                //DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
+                //    .Callback((Disturbance actual) => Assert.Same(disturb, actual))
+                //    .Returns(disturb);
+                //ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
+                //    .Callback((Observation actual) => Assert.Same(observation, actual))
+                //    .Returns(observation);
+                SurveyPersistenceMock.Setup(x => x.SaveChanges())
+                    .Returns(1);
+
+
+
+                // bypass the EF update process
+                var modifiedWasCalled = 0;
+                const int expectedModifications = 3; // observation, disturbance, survey
+
+                ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
+                {
+                    modifiedWasCalled++;
+                };
+
+
+                // Need to add the pending survey to EF and then remove it to achieve a delete
+                //SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
+                //    .Returns(input);
+                //SurveyPendingSet.Setup(x => x.Remove(It.IsAny<SurveyPending>()))
+                //    .Callback((SurveyPending actual) => Assert.Same(input, actual))
+                //    .Returns(input);
+
+                // Now setup the new completed record
+                //SurveyCompletedSet = MockRepository.Create<ICrudSet<SurveyCompleted>>();
+                SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
+                                        .Returns(SurveyCompletedSet);
+                //.Returns(SurveyCompletedSet.Object);
+                //SurveyCompletedSet.Setup(x => x.Add(It.IsAny<SurveyCompleted>()))
+                //    .Callback((SurveyCompleted actual) =>
+                //    {
+                //        input.Id = id;
+                //    })
+                //    .Returns(new SurveyCompleted());
+
+                //
+                // Act
+                BuildSystem().Finish(input);
+
+                //
+                // Assert
+                Assert.Equal(expectedModifications, modifiedWasCalled);
+
+                Assert.Equal(id, SurveyCompletedSet.First().SubmittedBy);
+                Assert.Equal(input.WaterHeightId, SurveyCompletedSet.First().WaterHeightId);
+            }
+
+            [Fact]
+            public void RejectsNullArgument()
+            {
+                Assert.Throws<ArgumentNullException>(() => BuildSystem().Finish(null));
+            }
+
+        }
+
         public class Update : Fixture
         {
             public class ValidInput : Update
             {
 
                 [Fact]
-                public void Step1SavesPendingData()
+                public void SavesPendingSurvey()
                 {
                     //
                     // Arrange
@@ -259,161 +317,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                         modifiedWasCalled++;
                     };
 
-                    var step = 1;
 
-                    //
-                    // Act
-                    RunTest(step);
-
-                    //
-                    // Assert
-                    Assert.Equal(expectedCount, modifiedWasCalled);
-                }
-
-                [Fact]
-                public void Step2SavesPendingData()
-                {
-                    //
-                    // Arrange
-                    const int expectedCount = 3; // Observation, Disturbance, and Survey
-
-                    // Don't extract this to a method for reuse, with the variable at the 
-                    // class level. Will cause interacting tests.
-                    var modifiedWasCalled = 0;
-
-                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
-                    {
-                        modifiedWasCalled++;
-                    };
-
-                    var step = 2;
-
-                    //
-                    // Act
-                    RunTest(step);
-
-                    //
-                    // Assert
-                    Assert.Equal(expectedCount, modifiedWasCalled);
-                }
-
-                [Fact]
-                public void Step3SavesPendingData()
-                {
-                    //
-                    // Arrange
-                    const int expectedCount = 3; // Observation, Disturbance, and Survey
-
-                    // Don't extract this to a method for reuse, with the variable at the 
-                    // class level. Will cause interacting tests.
-                    var modifiedWasCalled = 0;
-
-                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
-                    {
-                        modifiedWasCalled++;
-                    };
-
-                    var step = 3;
-
-                    //
-                    // Act
-                    RunTest(step);
-
-                    //
-                    // Assert
-                    Assert.Equal(expectedCount, modifiedWasCalled);
-                }
-
-                [Fact]
-                public void Step4ConvertsToCompletedSurvey()
-                {
-
-                    //
-                    // Arrange
                     const int id = 3233;
 
-                    var input = new SurveyPending();
-                    input.SubmittedBy = id;
-                    input.StartDate = DateTime.MinValue;
-                    input.EndDate = DateTime.MaxValue;
-                    input.Step = 4;
-                    input.WaterHeightId = 23;
-
-                    var observation = new Observation { Id = 1 };   // causes an update 
-                    input.Observations.Add(observation);
-                    var disturb = new Disturbance { Id = 2 };   // causes an update 
-                    input.Disturbances.Add(disturb);
-
-
-                    // Mocks
-                    SetupCrudSets();
-
-                    DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                        .Callback((Disturbance actual) => Assert.Same(disturb, actual))
-                        .Returns(disturb);
-                    ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                        .Callback((Observation actual) => Assert.Same(observation, actual))
-                        .Returns(observation);
-                    SurveyPersistenceMock.Setup(x => x.SaveChanges())
-                        .Returns(1);
-
-
-
-                    // bypass the EF update process
-                    var modifiedWasCalled = 0;
-                    const int expectedModifications = 3; // observation, disturbance, survey
-
-                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
-                    {
-                        modifiedWasCalled++;
-                    };
-
-
-                    // Need to add the pending survey to EF and then remove it to achieve a delete
-                    SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                        .Returns(input);
-                    SurveyPendingSet.Setup(x => x.Remove(It.IsAny<SurveyPending>()))
-                        .Callback((SurveyPending actual) => Assert.Same(input, actual))
-                        .Returns(input);
-
-                    // Now setup the new completed record
-                    SurveyCompletedSet = MockRepository.Create<ICrudSet<SurveyCompleted>>();
-                    SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
-                        .Returns(SurveyCompletedSet.Object);
-                    SurveyCompletedSet.Setup(x => x.Add(It.IsAny<SurveyCompleted>()))
-                        .Callback((SurveyCompleted actual) =>
-                        {
-                            input.Id = id;
-                        })
-                        .Returns(new SurveyCompleted());
-
-                    //
-                    // Act
-                    BuildSystem().Update(input, 4);
-
-                    //
-                    // Assert
-                    Assert.Equal(expectedModifications, modifiedWasCalled);
-
-
-                    Func<SurveyCompleted, bool> verifier = actual =>
-                    {
-                        Assert.Equal(id, actual.SubmittedBy);
-                        Assert.Equal(input.WaterHeightId, actual.WaterHeightId);
-                        return true;
-                    };
-                    SurveyCompletedSet.Verify(x => x.Add(It.Is<SurveyCompleted>(actual => verifier(actual))));
-                }
-
-
-
-                private void RunTest(int step)
-                {
-                    //
-                    // Arrange
-                    const int id = 3233;
-
-                    var input = new SurveyPending();
+                    var input = new SurveyPending { Id = id };
                     var observation = new Observation { Id = 1 };
                     input.Observations.Add(observation);
                     var disturb = new Disturbance { Id = 2 };
@@ -424,32 +331,39 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     // Mocks
                     SetupCrudSets();
 
-                    DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                        .Callback((Disturbance actual) => Assert.Same(disturb, actual))
-                        .Returns(disturb);
-                    ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                        .Callback((Observation actual) => Assert.Same(observation, actual))
-                        .Returns(observation);
-                    SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                        .Callback((SurveyPending actual) =>
-                        {
-                            input.Id = id;
-                            Assert.Same(input, actual);
-                        })
-                        .Returns(input);
+                    //DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
+                    //    .Callback((Disturbance actual) => Assert.Same(disturb, actual))
+                    //    .Returns(disturb);
+                    //ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
+                    //    .Callback((Observation actual) => Assert.Same(observation, actual))
+                    //    .Returns(observation);
+                    //SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
+                    //    .Callback((SurveyPending actual) =>
+                    //    {
+                    //        input.Id = id;
+                    //        Assert.Same(input, actual);
+                    //    })
+                    //    .Returns(input);
+                    SurveyPendingSet.Add(input);
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
 
 
                     //
                     // Act
-                    BuildSystem().Update(input, step);
+                    BuildSystem().Update(input);
+
+
+                    //
+                    // Assert
+                    Assert.Equal(expectedCount, modifiedWasCalled);
+                    Assert.Same(input, SurveyPendingSet.First());
                 }
 
                 [Fact]
                 public void RejectsNullArgument()
                 {
-                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null, 1));
+                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null));
                 }
 
 
@@ -479,18 +393,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
 
                     // Mocks
-
-                    SurveyPendingSet = MockRepository.Create<ICrudSet<SurveyPending>>();
                     SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
-                        .Returns(SurveyPendingSet.Object);
-                    SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
                         .Throws<InvalidOperationException>();
-
-
 
                     //
                     // Act & Assert
-                    Assert.Throws<InvalidOperationException>(() => BuildSystem().Update(input, 1));
+                    Assert.Throws<InvalidOperationException>(() => BuildSystem().Update(input));
                 }
             }
 
@@ -502,7 +410,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     {
                         ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) => { /* do nothing */ };
 
-                        BuildSystem().Update(item, 1);
+                        BuildSystem().Update(item);
                         throw new Exception("this should have failed");
                     }
                     catch (DomainValidationException de)

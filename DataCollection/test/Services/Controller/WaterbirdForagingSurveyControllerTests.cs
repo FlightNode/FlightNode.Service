@@ -1117,8 +1117,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     };
 
 
-                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>(), It.IsAny<int>()))
-                        .Callback((SurveyPending actual, int astep) =>
+                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>()))
+                        .Callback((SurveyPending actual) =>
                         {
                             Assert.Equal(userId, actual.SubmittedBy);
                         });
@@ -1143,7 +1143,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     RunPositiveTest();
 
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WaterHeightId == y.WaterHeightId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WaterHeightId == y.WaterHeightId)));
                 }
 
                 [Fact]
@@ -1151,14 +1151,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 {
                     RunPositiveTest();
 
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ACCESS_POINT == y.AccessPointId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ACCESS_POINT == y.AccessPointId)));
                 }
 
                 [Fact]
                 public void MapsDisturbanceComment()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED == y.DisturbanceComments), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED == y.DisturbanceComments)));
                 }
 
 
@@ -1166,7 +1166,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsEndDate()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(END_DATE, y.EndDate.Value)), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(END_DATE, y.EndDate.Value))));
                 }
 
 
@@ -1175,133 +1175,133 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsStartDate()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(START_DATE, y.StartDate.Value)), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(START_DATE, y.StartDate.Value))));
                 }
 
                 [Fact]
                 public void MapsLocationId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => LOCATION_ID == y.LocationId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => LOCATION_ID == y.LocationId)));
                 }
 
                 [Fact]
                 public void MapsSiteTypeIdToAssessment()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SITE_TYPE_ID == y.AssessmentId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SITE_TYPE_ID == y.AssessmentId)));
                 }
 
                 [Fact]
                 public void MapsSurveyCommentsToGeneralComments()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SURVEY_COMMENTS == y.GeneralComments), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SURVEY_COMMENTS == y.GeneralComments)));
                 }
 
                 [Fact]
                 public void MapsTemperature()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => TEMPERATURE == y.StartTemperature), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => TEMPERATURE == y.StartTemperature)));
                 }
 
                 [Fact]
                 public void MapsTide()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => TIDE == y.TideId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => TIDE == y.TideId)));
                 }
 
                 [Fact]
                 public void MapsVantagePoint()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => VANTAGE_POINT == y.VantagePointId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => VANTAGE_POINT == y.VantagePointId)));
                 }
 
                 [Fact]
                 public void MapsWeather()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WEATHER == y.WeatherId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WEATHER == y.WeatherId)));
                 }
 
                 [Fact]
                 public void MapsWindSpeed()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WIND == y.WindSpeed), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WIND == y.WindSpeed)));
                 }
 
                 [Fact]
                 public void MapsDisturbedBehavior()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_BEHAVIOR == y.Disturbances.First().Result), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_BEHAVIOR == y.Disturbances.First().Result)));
                 }
 
                 [Fact]
                 public void MapsDisturbanceTypeId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_TYPE_ID == y.Disturbances.First().DisturbanceTypeId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_TYPE_ID == y.Disturbances.First().DisturbanceTypeId)));
                 }
 
                 [Fact]
                 public void MapsDisturbanceId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBANCE_ID == y.Disturbances.First().Id), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBANCE_ID == y.Disturbances.First().Id)));
                 }
 
                 [Fact]
                 public void MapsDisturbanceDuration()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_DURATION == y.Disturbances.First().DurationMinutes), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_DURATION == y.Disturbances.First().DurationMinutes)));
                 }
 
                 [Fact]
                 public void MapsDisturbanceQuantity()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_QUANTITY == y.Disturbances.First().Quantity), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_QUANTITY == y.Disturbances.First().Quantity)));
                 }
 
                 [Fact]
                 public void MapsIdentifierIntoDisturbance()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => IDENTIFIER == y.Disturbances.First().SurveyIdentifier), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => IDENTIFIER == y.Disturbances.First().SurveyIdentifier)));
                 }
 
                 [Fact]
                 public void MapsObserver()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => Observers == y.Observers), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => Observers == y.Observers)));
                 }
 
                 [Fact]
                 public void MapsIdentifierIntoObservation()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => IDENTIFIER == y.Observations.First().SurveyIdentifier), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => IDENTIFIER == y.Observations.First().SurveyIdentifier)));
                 }
 
                 [Fact]
                 public void MapsObservationId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => OBSERVATION_ID == y.Observations.First().Id), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => OBSERVATION_ID == y.Observations.First().Id)));
                 }
 
                 [Fact]
                 public void MapAdultsToBin1()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ADULTS == y.Observations.First().Bin1), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ADULTS == y.Observations.First().Bin1)));
                 }
 
 
@@ -1309,56 +1309,56 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapJuvenilesToBin2()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => JUVENILES == y.Observations.First().Bin2), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => JUVENILES == y.Observations.First().Bin2)));
                 }
 
                 [Fact]
                 public void MapPrimaryBehavior()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => PRIMARY_ACTIVITY_ID == y.Observations.First().PrimaryActivityId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => PRIMARY_ACTIVITY_ID == y.Observations.First().PrimaryActivityId)));
                 }
 
                 [Fact]
                 public void MapSecondaryBehavior()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SECONDARY_ACTIVITY_ID == y.Observations.First().SecondaryActivityId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SECONDARY_ACTIVITY_ID == y.Observations.First().SecondaryActivityId)));
                 }
 
                 [Fact]
                 public void MapSpeciesId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SPECIES_ID == y.Observations.First().BirdSpeciesId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SPECIES_ID == y.Observations.First().BirdSpeciesId)));
                 }
 
                 [Fact]
                 public void MapsFeedingId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => FEEDING_ID == y.Observations.First().FeedingSuccessRate), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => FEEDING_ID == y.Observations.First().FeedingSuccessRate)));
                 }
 
                 [Fact]
                 public void MapsHabitatId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => HABITAT_ID == y.Observations.First().HabitatTypeId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => HABITAT_ID == y.Observations.First().HabitatTypeId)));
                 }
 
                 [Fact]
                 public void MapsSurveyTypeId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyType.TERN_FORAGING == y.SurveyTypeId), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyType.TERN_FORAGING == y.SurveyTypeId)));
                 }
 
                 [Fact]
                 public void MapsSurveyd()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SURVEY_ID == y.Id), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SURVEY_ID == y.Id)));
                 }
 
 
@@ -1380,7 +1380,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     WaterbirdForagingModel input = CreateDefautInput();
                     input.SurveyIdentifier = IDENTIFIER;
 
-                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>(), It.Is<int>(y => y == STEP)));
+                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>()));
 
                     MockDomainManager.Setup(x => x.FindBySurveyId(It.IsAny<Guid>()))
                         .Returns(CreateDefaultEntity());
@@ -1411,7 +1411,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                 private HttpResponseMessage RunTest(Exception ex)
                 {
-                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>(), It.Is<int>(y => y == STEP)))
+                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>()))
                         .Throws(ex);
 
 
