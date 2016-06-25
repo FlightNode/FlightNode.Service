@@ -8,7 +8,7 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public Guid? SurveyIdentifier { get; set; }
 
-        public int Step { get; set; }
+        public bool Finished { get; set; }
 
         public int LocationId { get; set; }
 

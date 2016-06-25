@@ -224,7 +224,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 input.SubmittedBy = id;
                 input.StartDate = DateTime.MinValue;
                 input.EndDate = DateTime.MaxValue;
-                input.Step = 4;
                 input.WaterHeightId = 23;
 
                 var observation = new Observation { Id = 1 };   // causes an update 
@@ -330,20 +329,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
-
-                    //DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                    //    .Callback((Disturbance actual) => Assert.Same(disturb, actual))
-                    //    .Returns(disturb);
-                    //ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                    //    .Callback((Observation actual) => Assert.Same(observation, actual))
-                    //    .Returns(observation);
-                    //SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                    //    .Callback((SurveyPending actual) =>
-                    //    {
-                    //        input.Id = id;
-                    //        Assert.Same(input, actual);
-                    //    })
-                    //    .Returns(input);
                     SurveyPendingSet.Add(input);
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);

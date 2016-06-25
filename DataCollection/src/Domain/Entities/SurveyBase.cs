@@ -9,9 +9,6 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public abstract class SurveyBase : IEntity
     {
-        [NotMapped]
-        public virtual int Step { get;set;}
-
         [Required]
         public Guid SurveyIdentifier { get; set; }
 

@@ -92,7 +92,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                     {
                         Location = x.LocationName ?? MISSING,
                         StartDate = x.StartDate.HasValue ? x.StartDate.Value.ToShortDateString() : MISSING,
-                        Status = (x.Step == SurveyCompleted.COMPLETED_FORAGING_STEP_NUMBER ? "Complete" : "Pending"),
+                        Status = x.Finished ? "Complete" : "Pending",
                         SurveyComments = x.GeneralComments,
                         SurveyIdentifier = x.SurveyIdentifier
                     };
@@ -147,7 +147,6 @@ namespace FlightNode.DataCollection.Services.Controllers
                 WeatherId = input.WeatherId,
                 WindSpeed = input.WindSpeed,
                 SurveyId = input.Id,
-                Step = input.Step,
                 Observers = input.Observers,
                 WaterHeightId = input.WaterHeightId,
                 StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
@@ -212,7 +211,7 @@ namespace FlightNode.DataCollection.Services.Controllers
 
                 WaterbirdForagingModel result;
 
-                if (input.Step == 4)
+                if (input.Finished)
                 {
                     _domainManager.Finish(entity);
 
@@ -257,7 +256,6 @@ namespace FlightNode.DataCollection.Services.Controllers
                 WaterHeightId = input.WaterHeightId,
                 StartDate = ParseDateTime(input.StartDate, input.StartTime),
                 EndDate = ParseDateTime(input.StartDate, input.EndTime),
-                Step = input.Step
             };
             
 
@@ -295,8 +293,24 @@ namespace FlightNode.DataCollection.Services.Controllers
 
         private DateTime? ParseDateTime(string date, string time)
         {
+            date = date ?? string.Empty;
+            time = time ?? string.Empty;
+
+            var dateOnly = date.Contains("T") ? date.Split('T')[0] : date;
+            var timeOnly = time.Contains("T") ? time.Split('T')[1] : time;
+
+            string combined;
+            if (timeOnly.Contains("M"))
+            {
+                combined = dateOnly + " " + timeOnly;
+            }
+            else
+            {
+                combined = dateOnly + "T" + timeOnly;
+            }
+
             DateTime dateTime;
-            if (DateTime.TryParse((date ?? string.Empty) + " " + (time ?? string.Empty), out dateTime))
+            if (DateTime.TryParse(combined, out dateTime))
             {
                 return dateTime;
             }

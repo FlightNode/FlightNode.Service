@@ -4,6 +4,8 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public class SurveyPending : SurveyBase, ISurvey
     {
+        public bool Finished {  get { return false; } }
+
         public SurveyPending Add(Observation item)
         {
             if (item == null)
