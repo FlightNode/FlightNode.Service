@@ -12,7 +12,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             SetSqlGenerator("System.Data.SqlClient", new CustomSqlServerMigrationSqlGenerator());
         }
 

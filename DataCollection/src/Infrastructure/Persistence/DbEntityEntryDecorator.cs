@@ -206,7 +206,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         /// <returns>
         /// The exact runtime type of the current instance.
         /// </returns>
-        public Type GetType()
+        public new Type GetType()
         {
             return _entry.GetType();
         }

@@ -10,6 +10,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         int Id { get; set; }
 
+        bool Finished { get; }
 
         int LocationId { get; set; }
 
@@ -50,9 +51,7 @@ namespace FlightNode.DataCollection.Domain.Entities
         List<Disturbance> Disturbances { get; }
 
         string Observers { get; set; }
-
-        int Step { get;  }
-
+        
         string LocationName { get; set; }
 
         int? WaterHeightId { get; set; }

@@ -36,13 +36,13 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public Guid SurveyIdentifier { get; set; }
 
-        public int PrimaryActivityId { get; set; }
+        public int? PrimaryActivityId { get; set; }
 
-        public int SecondaryActivityId { get; set; }
+        public int? SecondaryActivityId { get; set; }
 
-        public int HabitatTypeId { get; set; }
+        public int? HabitatTypeId { get; set; }
 
-        public int FeedingSuccessRate { get; set; }
+        public int? FeedingSuccessRate { get; set; }
 
     }
 }

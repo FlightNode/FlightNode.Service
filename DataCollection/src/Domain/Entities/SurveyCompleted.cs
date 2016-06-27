@@ -5,10 +5,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public class SurveyCompleted : SurveyBase, ISurvey
     {
-        public const int COMPLETED_FORAGING_STEP_NUMBER = 4;
-
-        [NotMapped]
-        public int Step {  get { return COMPLETED_FORAGING_STEP_NUMBER; } }      
+        public bool Finished { get { return true; } }
 
         public SurveyCompleted Add(Observation item)
         {

@@ -1,15 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
     public class SurveyPending : SurveyBase, ISurvey
     {
-
-        // The specific value doesn't matter, so long as it is not COMPLETED_FORAGING_STEP_NUMBER (4).
-        [NotMapped]
-        public int Step { get; set; } = 0;
-
+        public bool Finished {  get { return false; } }
 
         public SurveyPending Add(Observation item)
         {
@@ -53,7 +48,8 @@ namespace FlightNode.DataCollection.Domain.Entities
                 TimeOfLowTide = this.TimeOfLowTide,
                 VantagePointId = this.VantagePointId,
                 WeatherId = this.WeatherId,
-                WindSpeed = this.WindSpeed
+                WindSpeed = this.WindSpeed,
+                WaterHeightId = this.WaterHeightId
             };
 
             completed.Observations.AddRange(this.Observations);

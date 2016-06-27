@@ -10,9 +10,10 @@ namespace FlightNode.DataCollection.Domain.Managers
     {
         SurveyPending Create(SurveyPending waterbirdForagingModel);
         Guid NewIdentifier();
-        void Update(SurveyPending entity, int step);
+        void Update(SurveyPending entity);
         ISurvey FindBySurveyId(Guid guid);
         IList<ISurvey> FindBySubmitterId(int userId);
+        void Finish(SurveyPending survey);
     }
 
     /// <summary>
@@ -95,15 +96,15 @@ namespace FlightNode.DataCollection.Domain.Managers
         private List<SurveyPending> FindPendingSurveysSubmittedBy(int userId)
         {
             return _persistence.SurveysPending
-                                                    .Where(x => x.SubmittedBy == userId)
-                                                    .ToList();
+                                .Where(x => x.SubmittedBy == userId)
+                                .ToList();
         }
 
         private List<SurveyCompleted> FindCompletedSurveysSubmittedBy(int userId)
         {
             return _persistence.SurveysCompleted
-                                        .Where(x => x.SubmittedBy == userId)
-                                        .ToList();
+                                .Where(x => x.SubmittedBy == userId)
+                                .ToList();
         }
 
         /// <summary>
@@ -125,7 +126,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             LoadEntitiesIntoPersistenceLayer(survey);
 
-            _persistence.SaveChanges();
+            SaveChanges();
 
             return survey;
         }
@@ -151,7 +152,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// Updates an existing foraging survey record
         /// </summary>
         /// <param name="survey">Update waterbird foraging survey</param>
-        public void Update(SurveyPending survey, int step)
+        public void Update(SurveyPending survey)
         {
             if (survey == null)
             {
@@ -160,32 +161,72 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             survey.Validate();
 
-            LoadModifiedEntitiesIntoPersistenceLayer(survey);
+            LoadPendingSurveyIntoPersistenceLayer(survey);
+            LoadObservationsIntoPersistenceLayer(survey);
+            LoadDisturbancesIntoPersistenceLayer(survey);
 
-            if (step == 4)
+            SaveChanges();
+        }
+
+        /// <summary>
+        /// Updates an existing survey and converts it to a completed survey.
+        /// </summary>
+        /// <param name="survey">Update waterbird foraging survey</param>
+        public void Finish(SurveyPending survey)
+        {
+            if (survey == null)
             {
-                SwitchToCompletedSurvey(survey);
+                throw new ArgumentNullException("survey");
             }
 
+            survey.Validate();
+
+            LoadObservationsIntoPersistenceLayer(survey);
+            LoadDisturbancesIntoPersistenceLayer(survey);
+            SwitchToCompletedSurvey(survey);
+            RemovePendingSurvey(survey);
+
+            SaveChanges();
+        }
+
+        private void SaveChanges()
+        {
             _persistence.SaveChanges();
         }
+
 
         private void SwitchToCompletedSurvey(SurveyPending survey)
         {
             var completed = survey.ToSurveyCompleted();
             _persistence.SurveysCompleted.Add(completed);
 
-            _persistence.SurveysPending.Remove(survey);
-            _persistence.SaveChanges();
         }
 
-        private void LoadModifiedEntitiesIntoPersistenceLayer(SurveyPending survey)
+        private void RemovePendingSurvey(SurveyPending survey)
         {
+            LoadPendingSurveyIntoPersistenceLayer(survey);
+//            _persistence.SetModifiedStateOn(survey);
+            _persistence.SurveysPending.Remove(survey);
+        }
+
+        private void LoadPendingSurveyIntoPersistenceLayer(SurveyPending survey)
+        {
+            survey.Id = _persistence.SurveysPending
+                            .Where(x => x.SurveyIdentifier == survey.SurveyIdentifier)
+                            .Select(x => x.Id)
+                            .FirstOrDefault();
+            if (survey.Id == 0)
+            {
+                throw new InvalidOperationException("No pending survey exists for identifer " + survey.SurveyIdentifier);
+            }
+
             _persistence.SurveysPending.Add(survey);
             _persistence.SetModifiedStateOn(survey);
 
-            _persistence.SaveChanges();
+        }
 
+        private void LoadObservationsIntoPersistenceLayer(SurveyPending survey)
+        {
             survey.Observations.ForEach(x =>
             {
 
@@ -195,9 +236,11 @@ namespace FlightNode.DataCollection.Domain.Managers
                 {
                     _persistence.SetModifiedStateOn(x);
                 }
-
-                _persistence.SaveChanges();
             });
+        }
+
+        private void LoadDisturbancesIntoPersistenceLayer(SurveyPending survey)
+        {
             survey.Disturbances.ForEach(x =>
             {
                 _persistence.Disturbances.Add(x);
@@ -206,10 +249,8 @@ namespace FlightNode.DataCollection.Domain.Managers
                 {
                     _persistence.SetModifiedStateOn(x);
                 }
-                _persistence.SaveChanges();
             });
         }
-
 
     }
 }

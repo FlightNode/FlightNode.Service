@@ -1500,15 +1500,12 @@ Please visit the website's Contact form to submit any questions to the administr
             [Fact]
             public void NullObjectNotAllowed()
             {
-                Assert.Throws<ArgumentNullException>(() =>
-                {
-                    BuildSystem().Approve(null);
-                });
+                Assert.ThrowsAsync<ArgumentNullException>(() => BuildSystem().Approve(null));
             }
 
-            private void RunTest(List<int> ids)
+            private Task RunTest(List<int> ids)
             {
-                BuildSystem().Approve(ids);
+                return BuildSystem().Approve(ids);
             }
 
             [Fact]
@@ -1763,7 +1760,7 @@ Username: " + UserName + @"
 
                 //
                 // Act & Assert
-                Assert.Throws<InvalidOperationException>(() => RunTest(ids));
+                Assert.ThrowsAsync<InvalidOperationException>(() => RunTest(ids));
             }
 
             [Fact]
@@ -1771,15 +1768,18 @@ Username: " + UserName + @"
             {
                 var ids = new List<int>() { 14, 43 };
 
-                mockUserManager.Setup(x => x.FindByIdAsync(It.Is<int>(y => y == ids[0])))
-                    .Returns(Task.Run(() => new User { Id = ids[0], Active = "pending" }));
+                mockUserManager.Setup(x => x.FindByIdAsync(ids[0]))
+                    .ReturnsAsync(new User { Id = ids[0], Active = "pending" });
+
+                //mockUserManager.Setup(x => x.FindByIdAsync(ids[1]))
+                //    .ReturnsAsync(new User { Id = ids[1], Active = "pending" });
 
                 mockUserManager.Setup(x => x.UpdateAsync(It.Is<User>(y => y.Id == ids[0])))
-                    .Throws<InvalidOperationException>();
+                    .ThrowsAsync(new InvalidOperationException());
 
                 //
                 // Act & Assert
-                Assert.Throws<InvalidOperationException>(() => RunTest(ids));
+                Assert.ThrowsAsync<AggregateException>(() => RunTest(ids));
             }
         }
     }

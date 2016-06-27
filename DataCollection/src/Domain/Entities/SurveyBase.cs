@@ -9,8 +9,6 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public abstract class SurveyBase : IEntity
     {
-        public virtual int Step { get;set;}
-
         [Required]
         public Guid SurveyIdentifier { get; set; }
 
@@ -75,9 +73,5 @@ namespace FlightNode.DataCollection.Domain.Entities
             Observations = new List<Observation>();
             Disturbances = new List<Disturbance>();
         }
-
-
-
-
     }
 }

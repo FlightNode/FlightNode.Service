@@ -92,7 +92,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                     {
                         Location = x.LocationName ?? MISSING,
                         StartDate = x.StartDate.HasValue ? x.StartDate.Value.ToShortDateString() : MISSING,
-                        Status = (x.Step == SurveyCompleted.COMPLETED_FORAGING_STEP_NUMBER ? "Complete" : "Pending"),
+                        Status = x.Finished ? "Complete" : "Pending",
                         SurveyComments = x.GeneralComments,
                         SurveyIdentifier = x.SurveyIdentifier
                     };
@@ -147,12 +147,11 @@ namespace FlightNode.DataCollection.Services.Controllers
                 WeatherId = input.WeatherId,
                 WindSpeed = input.WindSpeed,
                 SurveyId = input.Id,
-                Step = input.Step,
                 Observers = input.Observers,
                 WaterHeightId = input.WaterHeightId,
                 StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
                 StartTime = input.StartDate.HasValue ? input.StartDate.Value.ToShortTimeString() : string.Empty,
-                EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty
+                EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty,
             };
 
             foreach (var o in input.Observations)
@@ -198,7 +197,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         {
             if (input == null)
             {
-                throw new ArgumentNullException(nameof(input));
+                return BadRequest("null input");
             }
 
             if (surveyIdentifier == Guid.Empty)
@@ -210,16 +209,18 @@ namespace FlightNode.DataCollection.Services.Controllers
             {
                 SurveyPending entity = Map(input, surveyIdentifier);
 
-                _domainManager.Update(entity, input.Step);
                 WaterbirdForagingModel result;
 
-                if (input.Step == 4)
+                if (input.Finished)
                 {
+                    _domainManager.Finish(entity);
+
                     var newentity = (SurveyCompleted)_domainManager.FindBySurveyId(surveyIdentifier);
                     result = Map(newentity);
                 }
                 else
                 {
+                    _domainManager.Update(entity);
 
                     entity = (SurveyPending)_domainManager.FindBySurveyId(surveyIdentifier);
                     result = Map(entity);
@@ -254,7 +255,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 Id = input.SurveyId,
                 WaterHeightId = input.WaterHeightId,
                 StartDate = ParseDateTime(input.StartDate, input.StartTime),
-                EndDate = ParseDateTime(input.StartDate, input.EndTime)
+                EndDate = ParseDateTime(input.StartDate, input.EndTime),
             };
             
 
@@ -292,8 +293,24 @@ namespace FlightNode.DataCollection.Services.Controllers
 
         private DateTime? ParseDateTime(string date, string time)
         {
+            date = date ?? string.Empty;
+            time = time ?? string.Empty;
+
+            var dateOnly = date.Contains("T") ? date.Split('T')[0] : date;
+            var timeOnly = time.Contains("T") ? time.Split('T')[1] : time;
+
+            string combined;
+            if (timeOnly.Contains("M"))
+            {
+                combined = dateOnly + " " + timeOnly;
+            }
+            else
+            {
+                combined = dateOnly + "T" + timeOnly;
+            }
+
             DateTime dateTime;
-            if (DateTime.TryParse((date ?? string.Empty) + " " + (time ?? string.Empty), out dateTime))
+            if (DateTime.TryParse(combined, out dateTime))
             {
                 return dateTime;
             }
