@@ -204,10 +204,9 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         private void RemovePendingSurvey(SurveyPending survey)
         {
-            _persistence.SurveysPending.Add(survey);
-            _persistence.SetModifiedStateOn(survey);
+            LoadPendingSurveyIntoPersistenceLayer(survey);
+//            _persistence.SetModifiedStateOn(survey);
             _persistence.SurveysPending.Remove(survey);
-            _persistence.SaveChanges();
         }
 
         private void LoadPendingSurveyIntoPersistenceLayer(SurveyPending survey)
