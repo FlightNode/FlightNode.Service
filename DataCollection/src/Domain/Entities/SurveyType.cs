@@ -4,8 +4,8 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public class SurveyType : EnumBase
     {
-        public const int TERN_ROOKERY = 1;
-        public const int TERN_FORAGING = 2;
+        public const int Rookery = 1;
+        public const int Foraging = 2;
 
         public virtual ICollection<BirdSpecies> BirdSpecies { get; private set; }
 

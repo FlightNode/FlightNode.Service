@@ -102,6 +102,18 @@ namespace FlightNode.DataCollection.Services.Controllers
             });
         }
 
+        /// <summary>
+        /// Retrieves a list of all Waterbird Foraging information, including both pending and completed surveys.
+        /// </summary>
+        /// <returns>
+        /// 200 with a list of <see cref="ForagingListItem"/>
+        /// </returns>
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult GetForagingList()
+        {
+            return Ok(_domainManager.GetForagingSurveyList());
+        }
 
         /// <summary>
         /// Creates a new waterbird foraging survey record
@@ -213,20 +225,13 @@ namespace FlightNode.DataCollection.Services.Controllers
 
                 if (input.Finished)
                 {
-                    _domainManager.Finish(entity);
-
-                    var newentity = (SurveyCompleted)_domainManager.FindBySurveyId(surveyIdentifier);
-                    result = Map(newentity);
+                    result = Map(_domainManager.Finish(entity));
                 }
                 else
                 {
-                    _domainManager.Update(entity);
-
-                    entity = (SurveyPending)_domainManager.FindBySurveyId(surveyIdentifier);
-                    result = Map(entity);
+                    result = Map(_domainManager.Update(entity));
                 }
-
-
+                
 
                 return Ok(result);
             });
@@ -246,7 +251,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 StartTemperature = input.Temperature,
                 SurveyIdentifier = identifier,
                 TideId = input.TideId,
-                SurveyTypeId = SurveyType.TERN_FORAGING,
+                SurveyTypeId = SurveyType.Foraging,
                 VantagePointId = input.VantagePointId,
                 WeatherId = input.WeatherId,
                 WindSpeed = input.WindSpeed,

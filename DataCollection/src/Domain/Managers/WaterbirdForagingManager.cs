@@ -10,10 +10,11 @@ namespace FlightNode.DataCollection.Domain.Managers
     {
         SurveyPending Create(SurveyPending waterbirdForagingModel);
         Guid NewIdentifier();
-        void Update(SurveyPending entity);
+        SurveyPending Update(SurveyPending entity);
         ISurvey FindBySurveyId(Guid guid);
-        IList<ISurvey> FindBySubmitterId(int userId);
-        void Finish(SurveyPending survey);
+        IReadOnlyList<ISurvey> FindBySubmitterId(int userId);
+        SurveyCompleted Finish(SurveyPending survey);
+        IReadOnlyList<ForagingListItem> GetForagingSurveyList();
     }
 
     /// <summary>
@@ -67,7 +68,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// <returns>
         /// List of both <see cref="SurveyCompleted"/> and <see cref="SurveyPending"/>.
         /// </returns>
-        public IList<ISurvey> FindBySubmitterId(int userId)
+        public IReadOnlyList<ISurvey> FindBySubmitterId(int userId)
         {
             var list = new List<ISurvey>();
 
@@ -80,7 +81,7 @@ namespace FlightNode.DataCollection.Domain.Managers
             return LoadLocationNames(list);
         }
 
-        private IList<ISurvey> LoadLocationNames(List<ISurvey> list)
+        private IReadOnlyList<ISurvey> LoadLocationNames(List<ISurvey> list)
         {
             list.ForEach(x =>
             {
@@ -152,7 +153,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// Updates an existing foraging survey record
         /// </summary>
         /// <param name="survey">Update waterbird foraging survey</param>
-        public void Update(SurveyPending survey)
+        public SurveyPending Update(SurveyPending survey)
         {
             if (survey == null)
             {
@@ -166,13 +167,16 @@ namespace FlightNode.DataCollection.Domain.Managers
             LoadDisturbancesIntoPersistenceLayer(survey);
 
             SaveChanges();
+
+            // This object, potentially, has been modified by EF. Return that modified version to the calling class
+            return survey;
         }
 
         /// <summary>
         /// Updates an existing survey and converts it to a completed survey.
         /// </summary>
         /// <param name="survey">Update waterbird foraging survey</param>
-        public void Finish(SurveyPending survey)
+        public SurveyCompleted Finish(SurveyPending survey)
         {
             if (survey == null)
             {
@@ -183,11 +187,87 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             LoadObservationsIntoPersistenceLayer(survey);
             LoadDisturbancesIntoPersistenceLayer(survey);
-            SwitchToCompletedSurvey(survey);
+            var completed = SwitchToCompletedSurvey(survey);
             RemovePendingSurvey(survey);
 
             SaveChanges();
+
+            return completed;
         }
+
+        /// <summary>
+        /// Gets a list of all of the foraging surveys, whether pending or complete.
+        /// </summary>
+        /// <returns>
+        /// Read-only list of <see cref="ForagingListItem"/>.
+        /// </returns>
+        public IReadOnlyList<ForagingListItem> GetForagingSurveyList()
+        {
+            var surveysPending = _persistence.SurveysPending.AsQueryable();
+            var locations = _persistence.Locations.AsQueryable();
+            var users = _persistence.Users.AsQueryable();
+            var surveysCompleted = _persistence.SurveysCompleted.AsQueryable();
+
+            var pending = surveysPending
+                        .Where(survey => survey.SurveyTypeId == SurveyType.Foraging)
+                        .Join(
+                            locations,
+                            survey => survey.LocationId,
+                            location => location.Id,
+                            (survey, location) => new {survey,location}
+                        )
+                        .Join(
+                            users,
+                            spl => spl.survey.SubmittedBy,
+                            user => user.Id,
+                            (spl, user) => new { spl.survey, spl.location, user}
+                        )
+                        .Select(
+                            x => new ForagingListItem
+                            {
+                                SiteCode = x.location.SiteCode,
+                                SiteName = x.location.SiteName,
+                                StartDate = x.survey.StartDate.Value,
+                                SubmittedBy = x.user.FullName,
+                                SurveyIdentifier = x.survey.SurveyIdentifier,
+                                Status = "Pending"
+                            }
+                        ).ToList();
+
+            var complete = surveysCompleted
+                        .Where(survey => survey.SurveyTypeId == SurveyType.Foraging)
+                        .Join(
+                            locations,
+                            survey => survey.LocationId,
+                            location => location.Id,
+                            (survey, location) => new { survey, location }
+                        )
+                        .Join(
+                            users,
+                            spl => spl.survey.SubmittedBy,
+                            user => user.Id,
+                            (spl, user) => new { spl.survey, spl.location, user }
+                        )
+                        .Select(
+                            x => new ForagingListItem
+                            {
+                                SiteCode = x.location.SiteCode,
+                                SiteName = x.location.SiteName,
+                                StartDate = x.survey.StartDate.Value,
+                                SubmittedBy = x.user.FullName,
+                                SurveyIdentifier = x.survey.SurveyIdentifier,
+                                Status = "Complete"
+                            }
+                        ).ToList();
+
+            pending.AddRange(complete);
+
+            var merged = pending.OrderBy(x => x.StartDate)
+                                .ToList();
+
+            return merged;
+        }
+
 
         private void SaveChanges()
         {
@@ -195,11 +275,12 @@ namespace FlightNode.DataCollection.Domain.Managers
         }
 
 
-        private void SwitchToCompletedSurvey(SurveyPending survey)
+        private SurveyCompleted SwitchToCompletedSurvey(SurveyPending survey)
         {
             var completed = survey.ToSurveyCompleted();
             _persistence.SurveysCompleted.Add(completed);
 
+            return completed;
         }
 
         private void RemovePendingSurvey(SurveyPending survey)

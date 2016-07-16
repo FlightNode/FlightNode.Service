@@ -94,7 +94,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public class HappyPath : Create
             {
-                
+
                 [Fact]
                 public void GivenValidInputThenSaveDisturbancesObservationsAndPendingSurvey()
                 {
@@ -220,11 +220,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 // Arrange
                 const int id = 3233;
 
-                var input = new SurveyPending();
-                input.SubmittedBy = id;
-                input.StartDate = DateTime.MinValue;
-                input.EndDate = DateTime.MaxValue;
-                input.WaterHeightId = 23;
+                var input = new SurveyPending
+                {
+                    SubmittedBy = id,
+                    StartDate = DateTime.MinValue,
+                    EndDate = DateTime.MaxValue,
+                    WaterHeightId = 23,
+                    SurveyIdentifier = Guid.Empty,
+                    Id = id
+                };
 
                 var observation = new Observation { Id = 1 };   // causes an update 
                 input.Observations.Add(observation);
@@ -234,13 +238,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Mocks
                 SetupCrudSets();
-
-                //DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                //    .Callback((Disturbance actual) => Assert.Same(disturb, actual))
-                //    .Returns(disturb);
-                //ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                //    .Callback((Observation actual) => Assert.Same(observation, actual))
-                //    .Returns(observation);
+                
                 SurveyPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(1);
 
@@ -255,26 +253,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     modifiedWasCalled++;
                 };
 
-
-                // Need to add the pending survey to EF and then remove it to achieve a delete
-                //SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                //    .Returns(input);
-                //SurveyPendingSet.Setup(x => x.Remove(It.IsAny<SurveyPending>()))
-                //    .Callback((SurveyPending actual) => Assert.Same(input, actual))
-                //    .Returns(input);
+                // The pending survey needs to exist in order to delete it
+                SurveyPendingSet.Add(input);
 
                 // Now setup the new completed record
-                //SurveyCompletedSet = MockRepository.Create<ICrudSet<SurveyCompleted>>();
                 SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
                                         .Returns(SurveyCompletedSet);
-                //.Returns(SurveyCompletedSet.Object);
-                //SurveyCompletedSet.Setup(x => x.Add(It.IsAny<SurveyCompleted>()))
-                //    .Callback((SurveyCompleted actual) =>
-                //    {
-                //        input.Id = id;
-                //    })
-                //    .Returns(new SurveyCompleted());
-
+                
+                
                 //
                 // Act
                 BuildSystem().Finish(input);

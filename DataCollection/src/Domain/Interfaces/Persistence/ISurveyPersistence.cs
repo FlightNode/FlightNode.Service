@@ -9,5 +9,6 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
         ICrudSet<Disturbance> Disturbances { get; }
         ICrudSet<Observation> Observations { get; }
         ICrudSet<Location> Locations { get; }
+        ICrudSet<User> Users { get; }
     }
 }

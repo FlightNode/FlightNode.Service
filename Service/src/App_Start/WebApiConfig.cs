@@ -1,14 +1,11 @@
 using FlightNode.Common.Api.Filters;
 using FlightNode.Identity.App;
-using Microsoft.Owin.FileSystems;
-using Microsoft.Owin.StaticFiles;
 using Newtonsoft.Json.Serialization;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
-using System.Web.Http.Cors;
 
-namespace FligthNode.Service.App
+namespace FlightNode.Service.App
 {
     public static class WebApiConfig
     {
@@ -35,14 +32,19 @@ namespace FligthNode.Service.App
             config = ConfigureRoutes(config);
             config = ConfigureFilters(config);
             config.DependencyResolver = UnityConfig.RegisterComponents();
-            
+
             SetupJsonFormatting(config);
         }
 
         private static void SetupJsonFormatting(HttpConfiguration config)
         {
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
-            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jsonFormatter.SerializerSettings = new Newtonsoft.Json.JsonSerializerSettings
+            {
+                //TraceWriter = new Log4NetTracer(),
+                Converters = { new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter() },
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
         }
 
         private static HttpConfiguration ConfigureRoutes(HttpConfiguration config)

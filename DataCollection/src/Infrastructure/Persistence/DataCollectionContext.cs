@@ -58,6 +58,13 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         #endregion
 
         #region ISurveyPersistence
+        ICrudSet<User> ISurveyPersistence.Users
+        {
+            get
+            {
+                return new CrudSetDecorator<User>(this.Users);
+            }
+        }
 
         ICrudSet<Location> ISurveyPersistence.Locations
         {
@@ -229,6 +236,8 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DbSet<WaterHeight> WaterHeights { get; set; }
 
         public DbSet<WorkLogReportRecord> WorkLogReportRecords { get; set; }
+
+        public DbSet<User> Users { get; set; }
         #endregion
 
 
@@ -292,6 +301,8 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
             modelBuilder.Entity<WorkLogReportRecord>().ToTable("WorkLogReport")
                 .HasKey<int>(x => x.Id);
+
+            modelBuilder.Entity<User>().ToTable("Users");
         }
 
 

@@ -16,6 +16,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
     {
         public List<TEntity> List = new List<TEntity>();
 
+        public static FakeDbSet<TEntity> Create(params TEntity[] entities)
+        {
+            var set = new FakeDbSet<TEntity>();
+            set.List.AddRange(entities);
+            return set;
+        }
+
+
+
         public Type ElementType
         {
             get

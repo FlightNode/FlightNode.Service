@@ -16,7 +16,7 @@ using System.Web.Http;
 using System.Web.Http.Results;
 using Xunit;
 
-namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
+namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.WaterbirdForagingSurveyControllerTests
 {
     public class WaterbirdForagingSurveyControllerTests
     {
@@ -947,7 +947,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsSurveyTypeId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => SurveyType.TERN_FORAGING == y.SurveyTypeId)));
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => SurveyType.Foraging == y.SurveyTypeId)));
                 }
 
 
@@ -1127,10 +1127,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                         .Callback((SurveyPending actual) =>
                         {
                             Assert.Equal(userId, actual.SubmittedBy);
-                        });
-
-                    MockDomainManager.Setup(x => x.FindBySurveyId(It.IsAny<Guid>()))
-                        .Returns(new SurveyPending());
+                        })
+                        .Returns<SurveyPending>(x => x);
 
                     var system = BuildSystem();
 
@@ -1357,7 +1355,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 public void MapsSurveyTypeId()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyType.TERN_FORAGING == y.SurveyTypeId)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyType.Foraging == y.SurveyTypeId)));
                 }
 
                 [Fact]
@@ -1386,10 +1384,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     WaterbirdForagingModel input = CreateDefautInput();
                     input.SurveyIdentifier = IDENTIFIER;
 
-                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>()));
-
-                    MockDomainManager.Setup(x => x.FindBySurveyId(It.IsAny<Guid>()))
-                        .Returns(CreateDefaultEntity());
+                    MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>()))
+                        .Returns<SurveyPending>(actual => actual);
 
                     var system = BuildSystem();
 

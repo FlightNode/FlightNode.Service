@@ -18,7 +18,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 {
     public class BirdSpeciesDomainManagerTests
     {
-        public class Fixture
+        public class Fixture : IDisposable
         {
             protected MockRepository MockRepository { get; set; }
             protected Mock<IBirdSpeciesPersistence> BirdSpeciesPersistenceMock { get; set; }
@@ -28,6 +28,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 MockRepository = new MockRepository(MockBehavior.Strict);
                 BirdSpeciesPersistenceMock = MockRepository.Create<IBirdSpeciesPersistence>();
+            }
+
+            public void Dispose()
+            {
+                MockRepository.VerifyAll();
             }
         }
 
