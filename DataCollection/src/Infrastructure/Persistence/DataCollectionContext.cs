@@ -246,7 +246,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             this.Configuration.LazyLoadingEnabled = false;
             this.Configuration.ProxyCreationEnabled = false;
-
+            
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

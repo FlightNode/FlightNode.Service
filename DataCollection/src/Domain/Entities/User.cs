@@ -29,12 +29,9 @@ namespace FlightNode.DataCollection.Domain.Entities
         /// <summary>
         /// Gets or sets the Full Name as trimmed concatenation of Given and Family names.
         /// </summary>
-        public string FullName
+        public string GetFullName()
         {
-            get
-            {
-                return ((GivenName ?? "") + " " + (FamilyName ?? "")).Trim();
-            }
+            return ((GivenName ?? "") + " " + (FamilyName ?? "")).Trim();
         }
     }
 }

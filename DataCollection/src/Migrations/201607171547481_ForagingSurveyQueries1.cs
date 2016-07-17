@@ -1,13 +1,26 @@
+using FlightNode.DataCollection.Infrastructure.Customization;
+using System.Data.Entity.Migrations;
+
 namespace FlightNode.DataCollection.Domain.Migrations
 {
-    using Infrastructure.Customization;
-    using System;
-    using System.Data.Entity.Migrations;
 
-    public partial class ForagingSurveyQueries : DbMigration
+    public partial class ForagingSurveyQueries1 : DbMigration
     {
         public override void Up()
         {
+
+            
+            //CreateTable(
+            //    "dbo.Users",
+            //    c => new
+            //        {
+            //            Id = c.Int(nullable: false, identity: true),
+            //            GivenName = c.String(),
+            //            FamilyName = c.String(),
+            //        })
+            //    .PrimaryKey(t => t.Id);
+
+
             this.CreateView("dbo.WaterbirdForagingExport", @"WITH observation as (
 	SELECT 
 		svy.SurveyIdentifier,
@@ -93,10 +106,12 @@ LEFT OUTER JOIN dbo.Disturbances personal ON o.SurveyIdentifier = personal.Surve
 LEFT OUTER JOIN dbo.Disturbances humans ON o.SurveyIdentifier = humans.SurveyIdentifier AND humans.DisturbanceTypeId = 6
 LEFT OUTER JOIN dbo.Disturbances noise ON o.SurveyIdentifier = noise.SurveyIdentifier AND noise.DisturbanceTypeId = 7
 LEFT OUTER JOIN dbo.Disturbances other ON o.SurveyIdentifier = other.SurveyIdentifier AND other.DisturbanceTypeId = 8");
+
         }
         
         public override void Down()
         {
+            this.DropView("dbo.WaterbirdForagingExport");
         }
     }
 }

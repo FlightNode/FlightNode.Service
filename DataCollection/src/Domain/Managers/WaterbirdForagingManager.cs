@@ -228,7 +228,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                                 SiteCode = x.location.SiteCode,
                                 SiteName = x.location.SiteName,
                                 StartDate = x.survey.StartDate.Value,
-                                SubmittedBy = x.user.FullName,
+                                SubmittedBy = (x.user.GivenName +" " + x.user.FamilyName).Trim(),
                                 SurveyIdentifier = x.survey.SurveyIdentifier,
                                 Status = "Pending"
                             }
@@ -254,7 +254,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                                 SiteCode = x.location.SiteCode,
                                 SiteName = x.location.SiteName,
                                 StartDate = x.survey.StartDate.Value,
-                                SubmittedBy = x.user.FullName,
+                                SubmittedBy = (x.user.GivenName + " " + x.user.FamilyName).Trim(),
                                 SurveyIdentifier = x.survey.SurveyIdentifier,
                                 Status = "Complete"
                             }

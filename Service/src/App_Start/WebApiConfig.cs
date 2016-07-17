@@ -42,7 +42,7 @@ namespace FlightNode.Service.App
             jsonFormatter.SerializerSettings = new Newtonsoft.Json.JsonSerializerSettings
             {
                 //TraceWriter = new Log4NetTracer(),
-                Converters = { new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter() },
+                //Converters = { new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter() },
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
         }

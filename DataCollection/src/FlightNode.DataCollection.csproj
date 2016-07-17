@@ -244,9 +244,9 @@
     <Compile Include="Migrations\201606140228377_AllowNullsInObservations.Designer.cs">
       <DependentUpon>201606140228377_AllowNullsInObservations.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201607050159031_ForagingSurveyQueries.cs" />
-    <Compile Include="Migrations\201607050159031_ForagingSurveyQueries.Designer.cs">
-      <DependentUpon>201607050159031_ForagingSurveyQueries.cs</DependentUpon>
+    <Compile Include="Migrations\201607171547481_ForagingSurveyQueries1.cs" />
+    <Compile Include="Migrations\201607171547481_ForagingSurveyQueries1.Designer.cs">
+      <DependentUpon>201607171547481_ForagingSurveyQueries1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
@@ -364,8 +364,8 @@
     <EmbeddedResource Include="Migrations\201606140228377_AllowNullsInObservations.resx">
       <DependentUpon>201606140228377_AllowNullsInObservations.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201607050159031_ForagingSurveyQueries.resx">
-      <DependentUpon>201607050159031_ForagingSurveyQueries.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201607171547481_ForagingSurveyQueries1.resx">
+      <DependentUpon>201607171547481_ForagingSurveyQueries1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
