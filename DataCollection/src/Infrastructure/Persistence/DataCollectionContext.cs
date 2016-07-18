@@ -104,6 +104,15 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 return new CrudSetDecorator<Observation>(this.Observations);
             }
         }
+
+        IEnumerable<ForagingSurveyExportItem> ISurveyPersistence.ForagingSurveyExport
+        {
+            get
+            {
+                // Because we don't need EF to handle this view, just map it with Dapper
+                return this.Database.Connection.Query<ForagingSurveyExportItem>("SELECT * FROM dbo.WaterbirdForagingExport");
+            }
+        }
         #endregion
 
 
@@ -300,7 +309,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             modelBuilder.Entity<WaterHeight>().ToTable("WaterHeights");
 
             modelBuilder.Entity<WorkLogReportRecord>().ToTable("WorkLogReport")
-                .HasKey<int>(x => x.Id);
+                .HasKey(x => x.Id);
 
             modelBuilder.Entity<User>().ToTable("Users");
         }

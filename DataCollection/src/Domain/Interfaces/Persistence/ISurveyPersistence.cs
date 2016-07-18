@@ -1,4 +1,5 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
+using System.Collections.Generic;
 
 namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
 {
@@ -10,5 +11,6 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
         ICrudSet<Observation> Observations { get; }
         ICrudSet<Location> Locations { get; }
         ICrudSet<User> Users { get; }
+        IEnumerable<ForagingSurveyExportItem> ForagingSurveyExport { get; }
     }
 }

@@ -23,6 +23,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
 
             this.CreateView("dbo.WaterbirdForagingExport", @"WITH observation as (
 	SELECT 
+        obs.Id,
 		svy.SurveyIdentifier,
 		loc.SiteCode,
 		loc.SiteName,
@@ -78,7 +79,7 @@ SELECT o.*,
 	ISNULL(kayak.Result,'') as KayakResult,
 	ISNULL(wading.Quantity,0) as FishermenWadingQuantity,
 	ISNULL(wading.DurationMinutes,0) as FishermenWaidingDurationMinutes,
-	ISNULL(wading.Result,'') as FishermenWaidinggResult,
+	ISNULL(wading.Result,'') as FishermenWaidingResult,
 	ISNULL(stationary.Quantity,0) as StationaryBoatsQuantity,
 	ISNULL(stationary.DurationMinutes,0) as StationaryBoatsDurationMinutes,
 	ISNULL(stationary.Result,'') as StationaryBoatsResult,

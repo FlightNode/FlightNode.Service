@@ -54,7 +54,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                     new ForagingListItem()
                 };
 
-                MockDomainManager.Setup(mgr => mgr.GetForagingSurveyList())
+                MockDomainManager.Setup(mgr => mgr.GetForagingSurveyList(null))
                     .Returns(list);
             }
         }
@@ -92,9 +92,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             {
                 var list = new List<ForagingListItem>();
 
-                MockDomainManager.Setup(mgr => mgr.GetForagingSurveyList())
+                MockDomainManager.Setup(mgr => mgr.GetForagingSurveyList(null))
                     .Returns(list);
             }
         }
+        
     }
 }

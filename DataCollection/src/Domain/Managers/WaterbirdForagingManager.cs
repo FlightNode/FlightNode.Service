@@ -14,7 +14,8 @@ namespace FlightNode.DataCollection.Domain.Managers
         ISurvey FindBySurveyId(Guid guid);
         IReadOnlyList<ISurvey> FindBySubmitterId(int userId);
         SurveyCompleted Finish(SurveyPending survey);
-        IReadOnlyList<ForagingListItem> GetForagingSurveyList();
+        IReadOnlyList<ForagingListItem> GetForagingSurveyList(int? userId = null);
+        IReadOnlyList<ForagingSurveyExportItem> ExportAll();
     }
 
     /// <summary>
@@ -198,15 +199,23 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// <summary>
         /// Gets a list of all of the foraging surveys, whether pending or complete.
         /// </summary>
+        /// <param name="userId">Optional User Id</param>
         /// <returns>
         /// Read-only list of <see cref="ForagingListItem"/>.
         /// </returns>
-        public IReadOnlyList<ForagingListItem> GetForagingSurveyList()
+        public IReadOnlyList<ForagingListItem> GetForagingSurveyList(int? userId = null)
         {
             var surveysPending = _persistence.SurveysPending.AsQueryable();
             var locations = _persistence.Locations.AsQueryable();
             var users = _persistence.Users.AsQueryable();
             var surveysCompleted = _persistence.SurveysCompleted.AsQueryable();
+
+
+            if (userId.HasValue)
+            {
+                surveysPending = surveysPending.Where(x => x.SubmittedBy == userId.Value);
+                surveysCompleted = surveysCompleted.Where(x => x.SubmittedBy == userId.Value);
+            }
 
             var pending = surveysPending
                         .Where(survey => survey.SurveyTypeId == SurveyType.Foraging)
@@ -214,13 +223,13 @@ namespace FlightNode.DataCollection.Domain.Managers
                             locations,
                             survey => survey.LocationId,
                             location => location.Id,
-                            (survey, location) => new {survey,location}
+                            (survey, location) => new { survey, location }
                         )
                         .Join(
                             users,
                             spl => spl.survey.SubmittedBy,
                             user => user.Id,
-                            (spl, user) => new { spl.survey, spl.location, user}
+                            (spl, user) => new { spl.survey, spl.location, user }
                         )
                         .Select(
                             x => new ForagingListItem
@@ -228,7 +237,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                                 SiteCode = x.location.SiteCode,
                                 SiteName = x.location.SiteName,
                                 StartDate = x.survey.StartDate.Value,
-                                SubmittedBy = (x.user.GivenName +" " + x.user.FamilyName).Trim(),
+                                SubmittedBy = (x.user.GivenName + " " + x.user.FamilyName).Trim(),
                                 SurveyIdentifier = x.survey.SurveyIdentifier,
                                 Status = "Pending"
                             }
@@ -268,6 +277,18 @@ namespace FlightNode.DataCollection.Domain.Managers
             return merged;
         }
 
+        /// <summary>
+        /// Retrieves all completed Foraging Survey data.
+        /// </summary>
+        /// <returns>
+        /// Read-only collection of <see cref="ForagingSurveyExportItem"/>.
+        /// </returns>
+        public IReadOnlyList<ForagingSurveyExportItem> ExportAll()
+        {
+            return _persistence.ForagingSurveyExport
+                                .ToList();
+        }
+
 
         private void SaveChanges()
         {
@@ -286,7 +307,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         private void RemovePendingSurvey(SurveyPending survey)
         {
             LoadPendingSurveyIntoPersistenceLayer(survey);
-//            _persistence.SetModifiedStateOn(survey);
+            //            _persistence.SetModifiedStateOn(survey);
             _persistence.SurveysPending.Remove(survey);
         }
 

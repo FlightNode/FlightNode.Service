@@ -116,6 +116,20 @@ namespace FlightNode.DataCollection.Services.Controllers
         }
 
         /// <summary>
+        /// Retrieves all completed surveys for data export.
+        /// </summary>
+        /// <returns>
+        /// 200 with a list of <see cref="ForagingSurveyExportItem"/>
+        /// </returns>
+        [HttpGet]
+        [Authorize]
+        [Route("api/v1/waterbirdforagingsurvey/export")]
+        public IHttpActionResult Export()
+        {
+            return Ok(_domainManager.ExportAll());
+        }
+
+        /// <summary>
         /// Creates a new waterbird foraging survey record
         /// </summary>
         /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>

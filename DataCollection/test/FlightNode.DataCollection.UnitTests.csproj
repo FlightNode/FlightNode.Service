@@ -136,6 +136,7 @@
     <Compile Include="Domain\Managers\FakeDbSet.cs" />
     <Compile Include="Domain\Managers\SurveyTypeDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\WaterbirdForagingManagerTests.cs" />
+    <Compile Include="Domain\Managers\WaterBirdForaging\WhenExportingResults.cs" />
     <Compile Include="Domain\Managers\WaterBirdForaging\WhenGettingAListOfForagingSurveys.cs" />
     <Compile Include="Domain\Managers\WorkLogDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\WorkTypeDomainManagerTests.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Services\Controller\BirdSpeciesControllerTests.cs" />
     <Compile Include="Services\Controller\LoggingControllerBaseFixture.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WaterbirdForagingSurveyControllerTests.cs" />
+    <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenExportingData.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenGettingTheListOfForagingSurveys.cs" />
     <Compile Include="Services\Controller\WorkLogsControllerTests.cs" />
     <Compile Include="Services\Controller\WorkTypeControllerTests.cs" />

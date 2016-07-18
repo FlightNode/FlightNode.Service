@@ -33,7 +33,14 @@ namespace FlightNode.Service.App
             config = ConfigureFilters(config);
             config.DependencyResolver = UnityConfig.RegisterComponents();
 
+            DisableDetailedErrorResponses();
+
             SetupJsonFormatting(config);
+        }
+
+        private static void DisableDetailedErrorResponses()
+        {
+            GlobalConfiguration.Configuration.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Never;
         }
 
         private static void SetupJsonFormatting(HttpConfiguration config)
