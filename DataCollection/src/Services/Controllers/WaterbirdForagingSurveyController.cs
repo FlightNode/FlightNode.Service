@@ -5,6 +5,7 @@ using FlightNode.DataCollection.Services.Models.Survey;
 using FligthNode.Common.Api.Controllers;
 using Microsoft.AspNet.Identity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
@@ -43,10 +44,12 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// Unique identifier for the survey resource to retrieve.
         /// </param>
         /// <returns>
-        /// <see cref="IHttpActionResult"/> containiing a <see cref="WaterbirdForagingModel"/> or status 404 if none found.
+        /// 200 with the survey data
+        /// 400 if not found
         /// </returns>
         [HttpGet]
         [Authorize]
+        [Route("api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}")]
         public IHttpActionResult Get(Guid surveyIdentifier)
         {
             return WrapWithTryCatch(() =>
@@ -71,11 +74,14 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// UserId of the person who submitted the survey.
         /// </param>
         /// <returns>
-        /// <see cref="IHttpActionResult"/> containing a list of <see cref="WaterbirdForagingListItem"/> or 404 if none found.
+        /// 200 with a list of <see cref="WaterbirdForagingListItem"/> (empty list if none found)
         /// </returns>
+        /// <example>
+        /// </example>
         [HttpGet]
         [Authorize]
-        public IHttpActionResult Get(int userId)
+        [Route("api/WaterbirdForagingSurvey/user/{userId:int}")]
+        public IHttpActionResult GetForUser(int userId)
         {
             return WrapWithTryCatch(() =>
             {
@@ -83,7 +89,7 @@ namespace FlightNode.DataCollection.Services.Controllers
 
                 if (result == null || !result.Any())
                 {
-                    return NotFound();
+                    return Ok(new List<WaterbirdForagingListItem>());
                 }
 
                 var models = result.Select(x =>
@@ -110,7 +116,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// </returns>
         [HttpGet]
         [Authorize]
-        public IHttpActionResult GetForagingList()
+        public IHttpActionResult Get()
         {
             return Ok(_domainManager.GetForagingSurveyList());
         }
@@ -245,7 +251,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 {
                     result = Map(_domainManager.Update(entity));
                 }
-                
+
 
                 return Ok(result);
             });
@@ -276,7 +282,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 StartDate = ParseDateTime(input.StartDate, input.StartTime),
                 EndDate = ParseDateTime(input.StartDate, input.EndTime),
             };
-            
+
 
             foreach (var o in input.Observations)
             {

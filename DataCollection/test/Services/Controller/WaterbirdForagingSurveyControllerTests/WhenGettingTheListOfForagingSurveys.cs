@@ -43,7 +43,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             private System.Web.Http.IHttpActionResult RunTest()
             {
-                return CreateController().GetForagingList();
+                return CreateController().Get();
             }
 
             private void ArrangeTest()
@@ -85,7 +85,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             private System.Web.Http.IHttpActionResult RunTest()
             {
-                return CreateController().GetForagingList();
+                return CreateController().Get();
             }
 
             private void ArrangeTest()

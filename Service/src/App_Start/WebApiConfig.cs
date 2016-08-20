@@ -48,6 +48,7 @@ namespace FlightNode.Service.App
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
             jsonFormatter.SerializerSettings = new Newtonsoft.Json.JsonSerializerSettings
             {
+                // Restore if JSON logging is needed
                 //TraceWriter = new Log4NetTracer(),
                 //Converters = { new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter() },
                 ContractResolver = new CamelCasePropertyNamesContractResolver()

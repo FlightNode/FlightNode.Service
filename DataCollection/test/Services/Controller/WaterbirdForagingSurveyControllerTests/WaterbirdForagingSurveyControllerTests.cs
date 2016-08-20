@@ -678,25 +678,25 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             }
 
             [Fact]
-            public void NoMatchGenerates404()
+            public void NoMatchGeneratesOkWithEmptyList()
             {
                 MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
                      .Returns(new List<ISurvey>());
 
                 var result = RunTest();
 
-                Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             }
 
             [Fact]
-            public void NullMatchGenerates404()
+            public void NullMatchGeneratesOkWithEmptyList()
             {
                 MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
                      .Returns(null as List<ISurvey>);
 
                 var result = RunTest();
 
-                Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             }
 
             private void SetupMockResult(ISurvey domainResult)
@@ -711,7 +711,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
                 system.Logger = MockLogger.Object;
 
-                return system.Get(OBSERVER_ID).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                return system.GetForUser(OBSERVER_ID).ExecuteAsync(new System.Threading.CancellationToken()).Result;
             }
         }
 

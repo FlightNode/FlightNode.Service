@@ -3,6 +3,7 @@ using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
@@ -48,16 +49,24 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// </returns>
         public ISurvey FindBySurveyId(Guid surveyIdentifier)
         {
-            var pending = _persistence.SurveysPending
-                                        .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier);
+            ISurvey survey = _persistence.SurveysPending
+                                      .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier);
 
-            if (pending != null)
+            if (survey == null)
             {
-                return pending;
+                survey = _persistence.SurveysCompleted
+                                   .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier);
             }
 
-            return _persistence.SurveysCompleted
-                            .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier);
+            if (survey != null)
+            {
+                // We are not currently setup to take advantage of EF's hydration option (.Include(path)),
+                // so for now do this the manual way
+                survey.Observations.AddRange(_persistence.Observations.Where(o => o.SurveyIdentifier == surveyIdentifier));
+                survey.Disturbances.AddRange(_persistence.Disturbances.Where(d => d.SurveyIdentifier == surveyIdentifier));
+            }
+
+            return survey;
         }
 
         /// <summary>

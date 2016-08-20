@@ -427,6 +427,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             protected FakeDbSet<SurveyCompleted> FakeSurveysCompleted = new FakeDbSet<SurveyCompleted>();
             protected FakeDbSet<SurveyPending> FakeSurveysPending = new FakeDbSet<SurveyPending>();
             protected FakeDbSet<Location> FakeLocations = new FakeDbSet<Location>();
+            protected FakeDbSet<Observation> FakeObservations = new FakeDbSet<Observation>();
+            protected FakeDbSet<Disturbance> FakeDisturbances = new FakeDbSet<Disturbance>();
 
             protected void UseFakePendingSet()
             {
@@ -447,6 +449,18 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
 
                 FakeLocations.Add(new Location { Id = LOCATION_ID, SiteName = LOCATION_NAME });
+            }
+
+            protected void UseFakeObservations()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.Observations)
+                    .Returns(FakeObservations);
+            }
+
+            protected void UseFakeDisturbances()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.Disturbances)
+                    .Returns(FakeDisturbances);
             }
         }
 
@@ -470,6 +484,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 //
                 // Arrange
                 UseFakePendingSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
                 var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER };
                 FakeSurveysPending.Add(pending);
 
@@ -483,12 +500,62 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             }
 
             [Fact]
+            public void LoadObservationsIntoPendingSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER };
+                FakeSurveysPending.Add(pending);
+
+                var observation = new Observation { SurveyIdentifier = IDENTIFIER };
+                FakeObservations.Add(observation);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+
+                //
+                // Assert
+                Assert.Same(observation, result.Observations.First());
+            }
+
+            [Fact]
+            public void LoadDisturbancesIntoPendingSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER };
+                FakeSurveysPending.Add(pending);
+
+                var disturbance = new Disturbance { SurveyIdentifier = IDENTIFIER };
+                FakeDisturbances.Add(disturbance);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+
+                //
+                // Assert
+                Assert.Same(disturbance, result.Disturbances.First());
+            }
+
+            [Fact]
             public void FindACompletedSurvey()
             {
                 //
                 // Arrange
                 UseFakePendingSet();
                 UseFakeCompletedSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
 
                 var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER };
                 FakeSurveysCompleted.Add(completed);
@@ -500,6 +567,58 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 //
                 // Assert
                 Assert.Same(completed, result);
+            }
+
+
+            [Fact]
+            public void LoadObservationsIntoCompletedSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER };
+                FakeSurveysCompleted.Add(completed);
+
+                var observation = new Observation { SurveyIdentifier = IDENTIFIER };
+                FakeObservations.Add(observation);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+
+                //
+                // Assert
+                Assert.Same(observation, result.Observations.First());
+            }
+
+
+            [Fact]
+            public void LoadDisturbancesIntoCompletedSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER };
+                FakeSurveysCompleted.Add(completed);
+
+                var disturbance = new Disturbance { SurveyIdentifier = IDENTIFIER };
+                FakeDisturbances.Add(disturbance);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+
+                //
+                // Assert
+                Assert.Same(disturbance, result.Disturbances.First());
             }
 
             [Fact]
