@@ -5,7 +5,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public class SurveyCompleted : SurveyBase, ISurvey
     {
-        public bool Finished { get { return true; } }
+        public bool Completed { get { return true; } }
 
         public SurveyCompleted Add(Observation item)
         {

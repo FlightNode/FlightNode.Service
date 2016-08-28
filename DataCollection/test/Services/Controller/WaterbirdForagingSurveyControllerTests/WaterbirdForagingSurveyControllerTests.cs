@@ -616,7 +616,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             {
                 var domain = new Mock<ISurvey>();
                 domain.SetupAllProperties();
-                domain.SetupGet(x => x.Finished).Returns(true);                
+                domain.SetupGet(x => x.Completed).Returns(true);                
 
                 var result = RunHappyPath(domain.Object);
 

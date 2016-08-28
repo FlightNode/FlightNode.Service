@@ -3,7 +3,6 @@ using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
@@ -17,6 +16,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         SurveyCompleted Finish(SurveyPending survey);
         IReadOnlyList<ForagingListItem> GetForagingSurveyList(int? userId = null);
         IReadOnlyList<ForagingSurveyExportItem> ExportAll();
+        SurveyCompleted Update(SurveyCompleted survey);
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         }
 
         /// <summary>
-        /// Updates an existing foraging survey record
+        /// Updates a pending foraging survey record
         /// </summary>
         /// <param name="survey">Update waterbird foraging survey</param>
         public SurveyPending Update(SurveyPending survey)
@@ -173,6 +173,29 @@ namespace FlightNode.DataCollection.Domain.Managers
             survey.Validate();
 
             LoadPendingSurveyIntoPersistenceLayer(survey);
+            LoadObservationsIntoPersistenceLayer(survey);
+            LoadDisturbancesIntoPersistenceLayer(survey);
+
+            SaveChanges();
+
+            // This object, potentially, has been modified by EF. Return that modified version to the calling class
+            return survey;
+        }
+
+        /// <summary>
+        /// Updates a completed foraging survey record
+        /// </summary>
+        /// <param name="survey">Update waterbird foraging survey</param>
+        public SurveyCompleted Update(SurveyCompleted survey)
+        {
+            if (survey == null)
+            {
+                throw new ArgumentNullException("survey");
+            }
+
+            survey.Validate();
+
+            LoadCompletedSurveyIntoPersistenceLayer(survey);
             LoadObservationsIntoPersistenceLayer(survey);
             LoadDisturbancesIntoPersistenceLayer(survey);
 
@@ -316,7 +339,6 @@ namespace FlightNode.DataCollection.Domain.Managers
         private void RemovePendingSurvey(SurveyPending survey)
         {
             LoadPendingSurveyIntoPersistenceLayer(survey);
-            //            _persistence.SetModifiedStateOn(survey);
             _persistence.SurveysPending.Remove(survey);
         }
 
@@ -336,7 +358,23 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         }
 
-        private void LoadObservationsIntoPersistenceLayer(SurveyPending survey)
+        private void LoadCompletedSurveyIntoPersistenceLayer(SurveyCompleted survey)
+        {
+            survey.Id = _persistence.SurveysCompleted
+                            .Where(x => x.SurveyIdentifier == survey.SurveyIdentifier)
+                            .Select(x => x.Id)
+                            .FirstOrDefault();
+            if (survey.Id == 0)
+            {
+                throw new InvalidOperationException("No completed survey exists for identifer " + survey.SurveyIdentifier);
+            }
+
+            _persistence.SurveysCompleted.Add(survey);
+            _persistence.SetModifiedStateOn(survey);
+
+        }
+
+        private void LoadObservationsIntoPersistenceLayer(ISurvey survey)
         {
             survey.Observations.ForEach(x =>
             {
@@ -350,7 +388,7 @@ namespace FlightNode.DataCollection.Domain.Managers
             });
         }
 
-        private void LoadDisturbancesIntoPersistenceLayer(SurveyPending survey)
+        private void LoadDisturbancesIntoPersistenceLayer(ISurvey survey)
         {
             survey.Disturbances.ForEach(x =>
             {

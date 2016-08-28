@@ -23,10 +23,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
             protected Mock<ISurveyPersistence> SurveyPersistenceMock;
-            //protected Mock<ICrudSet<SurveyPending>> SurveyPendingSet;
-            //protected Mock<ICrudSet<SurveyCompleted>> SurveyCompletedSet;
-            //protected Mock<ICrudSet<Disturbance>> DisturbanceSet;
-            //protected Mock<ICrudSet<Observation>> ObservationSet;
             protected FakeDbSet<SurveyPending> SurveyPendingSet = new FakeDbSet<SurveyPending>();
             protected FakeDbSet<SurveyCompleted> SurveyCompletedSet = new FakeDbSet<SurveyCompleted>();
             protected FakeDbSet<Disturbance> DisturbanceSet = new FakeDbSet<Disturbance>();
@@ -50,23 +46,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected void SetupCrudSets()
             {
-                //DisturbanceSet = MockRepository.Create<ICrudSet<Disturbance>>();
-                //SurveyPersistenceMock.SetupGet(x => x.Disturbances)
-                //    .Returns(DisturbanceSet.Object);
                 SurveyPersistenceMock.SetupGet(x => x.Disturbances)
                     .Returns(DisturbanceSet);
 
-                //ObservationSet = MockRepository.Create<ICrudSet<Observation>>();
-                //SurveyPersistenceMock.SetupGet(x => x.Observations)
-                //    .Returns(ObservationSet.Object);
                 SurveyPersistenceMock.SetupGet(x => x.Observations)
                     .Returns(ObservationSet);
+            }
 
-                //SurveyPendingSet = MockRepository.Create<ICrudSet<SurveyPending>>();
-                //SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
-                //    .Returns(SurveyPendingSet.Object);
+            protected void ExpectToWorkWithPendingSurveys()
+            {
                 SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
                     .Returns(SurveyPendingSet);
+            }
+
+            protected void ExpectToWorkWithCompletedSurveys()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
+                    .Returns(SurveyCompletedSet);
             }
         }
 
@@ -109,6 +105,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
+                    ExpectToWorkWithPendingSurveys();
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
 
@@ -147,14 +144,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
-                    //DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                    //    .Returns(disturb);
+                    ExpectToWorkWithPendingSurveys();
                     DisturbanceSet.Add(disturb);
-                    //ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                    //    .Returns(observation);
                     ObservationSet.Add(observation);
-                    //SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                    //    .Returns(input);
                     SurveyPendingSet.Add(input);
 
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
@@ -238,7 +230,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Mocks
                 SetupCrudSets();
-                
+                ExpectToWorkWithPendingSurveys();
                 SurveyPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(1);
 
@@ -259,8 +251,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 // Now setup the new completed record
                 SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
                                         .Returns(SurveyCompletedSet);
-                
-                
+
+
                 //
                 // Act
                 BuildSystem().Finish(input);
@@ -281,9 +273,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         }
 
-        public class Update : Fixture
+        public class UpdatePending : Fixture
         {
-            public class ValidInput : Update
+            public class ValidInput : UpdatePending
             {
 
                 [Fact]
@@ -315,6 +307,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
+                    ExpectToWorkWithPendingSurveys();
                     SurveyPendingSet.Add(input);
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
@@ -334,7 +327,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void RejectsNullArgument()
                 {
-                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null));
+                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null as SurveyPending));
                 }
 
 
@@ -373,7 +366,145 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
             }
 
-            public class InvalidInput : Update
+            public class InvalidInput : UpdatePending
+            {
+                private void RunNegativeTest(SurveyPending item, string memberName)
+                {
+                    try
+                    {
+                        ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) => { /* do nothing */ };
+
+                        BuildSystem().Update(item);
+                        throw new Exception("this should have failed");
+                    }
+                    catch (DomainValidationException de)
+                    {
+                        Assert.True(de.ValidationResults.Any(x => x.MemberNames.Any(y => y == memberName)));
+                    }
+                }
+
+                [Fact]
+                public void GeneralCommentsCannotBeLongerThan500Characters()
+                {
+                    //
+                    // Arrange
+                    var input = new SurveyPending();
+                    input.GeneralComments = "a".PadRight(501, 'a');
+
+                    //
+                    // Act
+                    RunNegativeTest(input, "GeneralComments");
+                }
+
+                [Fact]
+                public void DisturbanceCommentsCannotBeLongerThan500Characters()
+                {
+                    //
+                    // Arrange
+                    var input = new SurveyPending();
+                    input.DisturbanceComments = "a".PadRight(501, 'a');
+
+                    //
+                    // Act
+                    RunNegativeTest(input, "DisturbanceComments");
+                }
+            }
+        }
+
+        public class UpdateCompleted : Fixture
+        {
+            public class ValidInput : UpdateCompleted
+            {
+
+                [Fact]
+                public void SavesPendingSurvey()
+                {
+                    //
+                    // Arrange
+                    const int expectedCount = 3; // Observation, Disturbance, and Survey
+
+                    // Don't extract this to a method for reuse, with the variable at the 
+                    // class level. Will cause interacting tests.
+                    var modifiedWasCalled = 0;
+
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
+                    {
+                        modifiedWasCalled++;
+                    };
+
+
+                    const int id = 3233;
+
+                    var input = new SurveyCompleted { Id = id };
+                    var observation = new Observation { Id = 1 };
+                    input.Observations.Add(observation);
+                    var disturb = new Disturbance { Id = 2 };
+                    input.Disturbances.Add(disturb);
+
+
+
+                    // Mocks
+                    SetupCrudSets();
+                    ExpectToWorkWithCompletedSurveys();
+                    SurveyCompletedSet.Add(input);
+                    SurveyPersistenceMock.Setup(x => x.SaveChanges())
+                        .Returns(1);
+
+
+                    //
+                    // Act
+                    BuildSystem().Update(input);
+
+
+                    //
+                    // Assert
+                    Assert.Equal(expectedCount, modifiedWasCalled);
+                    Assert.Same(input, SurveyCompletedSet.First());
+                }
+
+                [Fact]
+                public void RejectsNullArgument()
+                {
+                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null as SurveyCompleted));
+                }
+
+
+
+                [Fact]
+                public void IgnoresExceptions()
+                {
+
+                    //
+                    // Arrange
+                    var input = new SurveyPending();
+                    var observation = new Observation();
+                    input.Observations.Add(observation);
+                    var disturb = new Disturbance();
+                    input.Disturbances.Add(disturb);
+
+
+
+                    // Don't extract this to a method for reuse, with the variable at the 
+                    // class level. Will cause interacting tests.
+                    var ModifiedWasCalled = 0;
+
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
+                    {
+                        ModifiedWasCalled++;
+                    };
+
+
+                    // Mocks
+                    SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
+                        .Throws<InvalidOperationException>();
+
+                    //
+                    // Act & Assert
+                    Assert.Throws<InvalidOperationException>(() => BuildSystem().Update(input));
+                }
+            }
+
+            public class InvalidInput : UpdateCompleted
             {
                 private void RunNegativeTest(SurveyPending item, string memberName)
                 {

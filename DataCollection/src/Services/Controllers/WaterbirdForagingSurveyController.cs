@@ -52,8 +52,6 @@ namespace FlightNode.DataCollection.Services.Controllers
         [Route("api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}")]
         public IHttpActionResult Get(Guid surveyIdentifier)
         {
-            return WrapWithTryCatch(() =>
-            {
                 var result = _domainManager.FindBySurveyId(surveyIdentifier);
 
                 if (result == null)
@@ -64,8 +62,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 var model = Map(result);
 
                 return Ok(model);
-            });
-        }
+          }
 
         /// <summary>
         /// Retrieves a a list of Waterbird Foraging information for a given user / submitter.
@@ -98,7 +95,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                     {
                         Location = x.LocationName ?? MISSING,
                         StartDate = x.StartDate.HasValue ? x.StartDate.Value.ToShortDateString() : MISSING,
-                        Status = x.Finished ? "Complete" : "Pending",
+                        Status = x.Completed ? COMPLETE : PENDING,
                         SurveyComments = x.GeneralComments,
                         SurveyIdentifier = x.SurveyIdentifier
                     };
@@ -153,7 +150,7 @@ namespace FlightNode.DataCollection.Services.Controllers
             {
                 var identifier = _domainManager.NewIdentifier();
 
-                SurveyPending entity = Map(input, identifier);
+                var entity = MapToPendingSurvey(input, identifier);
 
                 entity = _domainManager.Create(entity);
 
@@ -184,6 +181,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
                 StartTime = input.StartDate.HasValue ? input.StartDate.Value.ToShortTimeString() : string.Empty,
                 EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty,
+                Completed = input.Completed
             };
 
             foreach (var o in input.Observations)
@@ -237,11 +235,16 @@ namespace FlightNode.DataCollection.Services.Controllers
                 return BadRequest("Invalid Survey Identifier");
             }
 
-            return WrapWithTryCatch(() =>
-            {
-                SurveyPending entity = Map(input, surveyIdentifier);
+            WaterbirdForagingModel result;
 
-                WaterbirdForagingModel result;
+            if (input.Completed)
+            {
+                var entity = MapToCompletedSurvey(input, surveyIdentifier);
+                result = Map(_domainManager.Update(entity));
+            }
+            else
+            {
+                var entity = MapToPendingSurvey(input, surveyIdentifier);
 
                 if (input.Finished)
                 {
@@ -251,42 +254,61 @@ namespace FlightNode.DataCollection.Services.Controllers
                 {
                     result = Map(_domainManager.Update(entity));
                 }
+            }
 
-
-                return Ok(result);
-            });
+            return Ok(result);
         }
 
-        private SurveyPending Map(WaterbirdForagingModel input, Guid identifier)
+        private SurveyPending MapToPendingSurvey(WaterbirdForagingModel input, Guid identifier)
         {
 
-            var entity = new SurveyPending
-            {
-                AccessPointId = input.AccessPointId,
-                AssessmentId = input.SiteTypeId,
-                DisturbanceComments = input.DisturbanceComments,
-                EndTemperature = null,
-                GeneralComments = input.SurveyComments,
-                LocationId = input.LocationId,
-                StartTemperature = input.Temperature,
-                SurveyIdentifier = identifier,
-                TideId = input.TideId,
-                SurveyTypeId = SurveyType.Foraging,
-                VantagePointId = input.VantagePointId,
-                WeatherId = input.WeatherId,
-                WindSpeed = input.WindSpeed,
-                SubmittedBy = this.LookupUserId(),
-                Observers = input.Observers,
-                Id = input.SurveyId,
-                WaterHeightId = input.WaterHeightId,
-                StartDate = ParseDateTime(input.StartDate, input.StartTime),
-                EndDate = ParseDateTime(input.StartDate, input.EndTime),
-            };
+            var entity = new SurveyPending();
+            MapForagingInputIntoSurvey(entity, input, identifier);
+            MapObservationsIntoSurvey(entity, input, identifier);
+            MapDisturbancesIntoSurvey(entity, input, identifier);
 
+            return entity;
+        }
 
+        private SurveyCompleted MapToCompletedSurvey(WaterbirdForagingModel input, Guid identifier)
+        {
+
+            var entity = new SurveyCompleted();
+            MapForagingInputIntoSurvey(entity, input, identifier);
+            MapObservationsIntoSurvey(entity, input, identifier);
+            MapDisturbancesIntoSurvey(entity, input, identifier);
+
+            return entity;
+        }
+
+        private void MapForagingInputIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        {
+            survey.AccessPointId = input.AccessPointId;
+            survey.AssessmentId = input.SiteTypeId;
+            survey.DisturbanceComments = input.DisturbanceComments;
+            survey.EndTemperature = null;
+            survey.GeneralComments = input.SurveyComments;
+            survey.LocationId = input.LocationId;
+            survey.StartTemperature = input.Temperature;
+            survey.SurveyIdentifier = identifier;
+            survey.TideId = input.TideId;
+            survey.SurveyTypeId = SurveyType.Foraging;
+            survey.VantagePointId = input.VantagePointId;
+            survey.WeatherId = input.WeatherId;
+            survey.WindSpeed = input.WindSpeed;
+            survey.SubmittedBy = this.LookupUserId();
+            survey.Observers = input.Observers;
+            survey.Id = input.SurveyId;
+            survey.WaterHeightId = input.WaterHeightId;
+            survey.StartDate = ParseDateTime(input.StartDate, input.StartTime);
+            survey.EndDate = ParseDateTime(input.StartDate, input.EndTime);
+        }
+
+        private void MapObservationsIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        {
             foreach (var o in input.Observations)
             {
-                entity.Add(new Observation
+                survey.Add(new Observation
                 {
                     Bin1 = o.Adults,
                     Bin2 = o.Juveniles,
@@ -299,10 +321,13 @@ namespace FlightNode.DataCollection.Services.Controllers
                     Id = o.ObservationId
                 });
             }
+        }
 
+        private void MapDisturbancesIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        {
             foreach (var d in input.Disturbances)
             {
-                entity.Add(new Disturbance
+                survey.Add(new Disturbance
                 {
                     DisturbanceTypeId = d.DisturbanceTypeId,
                     DurationMinutes = d.DurationMinutes,
@@ -312,8 +337,6 @@ namespace FlightNode.DataCollection.Services.Controllers
                     Id = d.DisturbanceId
                 });
             }
-
-            return entity;
         }
 
         private DateTime? ParseDateTime(string date, string time)

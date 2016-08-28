@@ -72,7 +72,6 @@ namespace FlightNode.Service.App
         {
             config.Filters.Add(new NotImplementedExceptionAttribute());
             config.Filters.Add(new InvalidApiRequestExceptionFilter());
-            config.Filters.Add(new UnhandledExceptionFilterAttribute());
 
             return config;
         }

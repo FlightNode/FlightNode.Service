@@ -10,7 +10,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         int Id { get; set; }
 
-        bool Finished { get; }
+        bool Completed { get; }
 
         int LocationId { get; set; }
 
