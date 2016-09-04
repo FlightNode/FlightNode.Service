@@ -1,5 +1,6 @@
 ﻿using FlightNode.Common.Utility;
 using FlightNode.DataCollection.Domain.Entities;
+using FlightNode.DataCollection.Services.Models.Survey;
 using Ganss.XSS;
 using Microsoft.Practices.Unity;
 using Owin;
@@ -32,7 +33,8 @@ namespace FlightNode.DataCollection.Services.Providers
         {
             var typesToRegister = AllClasses.FromAssemblies(repoAssembly)
                 // Skipp registering ISurvey implementations
-                .Where(t => !typeof(ISurvey).IsAssignableFrom(t))
+                .Where(t => !typeof(ISurvey).IsAssignableFrom(t) &&
+                            !typeof(ISurveyModel).IsAssignableFrom(t))
                 .ToList();
 
             container.RegisterTypes(typesToRegister,

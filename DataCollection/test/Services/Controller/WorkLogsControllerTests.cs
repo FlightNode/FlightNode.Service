@@ -140,24 +140,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 }
 
                 [Fact]
-                public void ConfirmHandlingOfInvalidOperation()
-                {
-                    ExpectToLogToError();
-
-                    var e = new InvalidOperationException();
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfServerError()
-                {
-                    ExpectToLogToError();
-
-                    var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
                     ExpectToLogToDebug();
@@ -265,24 +247,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 }
 
                 [Fact]
-                public void ConfirmHandlingOfInvalidOperation()
-                {
-                    ExpectToLogToError();
-
-                    var e = new InvalidOperationException();
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfServerError()
-                {
-                    ExpectToLogToError();
-
-                    var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
                     ExpectToLogToDebug();
@@ -375,23 +339,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                         .Result;
                 }
 
-                [Fact]
-                public void ConfirmHandlingOfInvalidOperation()
-                {
-                    ExpectToLogToError();
-
-                    var e = new InvalidOperationException();
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfServerError()
-                {
-                    ExpectToLogToError();
-
-                    var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
 
                 [Fact]
                 public void ConfirmHandlingOfUserError()
@@ -471,24 +418,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                         .GetExport()
                         .ExecuteAsync(new System.Threading.CancellationToken())
                         .Result;
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfInvalidOperation()
-                {
-                    ExpectToLogToError();
-
-                    var e = new InvalidOperationException();
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfServerError()
-                {
-                    ExpectToLogToError();
-
-                    var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
                 }
 
                 [Fact]
@@ -696,24 +625,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 }
 
                 [Fact]
-                public void ConfirmHandlingOfInvalidOperation()
-                {
-                    ExpectToLogToError();
-
-                    var e = new InvalidOperationException();
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfServerError()
-                {
-                    ExpectToLogToError();
-
-                    var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
                 public void ConfirmHandlingOfUserError()
                 {
                     ExpectToLogToDebug();
@@ -903,23 +814,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                     Assert.Throws<ArgumentNullException>(() => BuildSystemWithSanitizer().Put(null));
                 }
 
-                [Fact]
-                public void ConfirmHandlingOfInvalidOperation()
-                {
-                    ExpectToLogToError();
-
-                    var e = new InvalidOperationException();
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfServerError()
-                {
-                    ExpectToLogToError();
-
-                    var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
 
                 [Fact]
                 public void ConfirmHandlingOfUserError()

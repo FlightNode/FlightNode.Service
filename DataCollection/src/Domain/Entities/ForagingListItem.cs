@@ -5,7 +5,7 @@ namespace FlightNode.DataCollection.Domain.Entities
     /// <summary>
     /// Models the data needed to display a list of Waterbird Foraging Surveys
     /// </summary>
-    public class ForagingListItem
+    public class SurveyListItem
     {
         /// <summary>
         /// Gets or sets the survey identifier.

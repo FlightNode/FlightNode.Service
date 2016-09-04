@@ -1,14 +1,11 @@
-﻿using FlightNode.Common.Exceptions;
-using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Controllers;
-using FlightNode.DataCollection.Services.Models.Rookery;
 using FlightNode.DataCollection.Services.Models.Survey;
 using FligthNode.Common.Api.Controllers;
 using Moq;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,7 +17,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 {
     public class WaterbirdForagingSurveyControllerTests
     {
-        public class Fixture : LoggingControllerBaseFixture<WaterbirdForagingSurveyController, IWaterbirdForagingManager>
+        public class Fixture : LoggingControllerBaseFixture<WaterbirdForagingSurveyController, ISurveyManager>
         {
             protected readonly Guid IDENTIFIER = new Guid("a507f681-c111-447a-bc1f-195916891226");
             protected const int ACCESS_POINT = 1;
@@ -422,7 +419,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                 //Assert.Equal(domain.StartDate, result.StartDate);
             }
 
-            
+
             [Fact]
             public void MapsSurveyComments()
             {
@@ -513,37 +510,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             private WaterbirdForagingModel RunHappyPath(ISurvey domain)
             {
-                SetupMockResult(domain);
+                SetupMockResult(domain, SurveyType.Foraging);
 
-                var result = RunTest()
-                                .Content
-                                .ReadAsAsync<WaterbirdForagingModel>()
-                                .Result;
+                var result = (RunTest() as OkNegotiatedContentResult<WaterbirdForagingModel>)
+                                .Content;
                 return result;
             }
 
-            [Fact]
-            public void TreatsExceptionsAsServerError()
-            {
 
-                MockDomainManager.Setup(x => x.FindBySurveyId(It.Is<Guid>(y => y == IDENTIFIER)))
-                    .Throws<InvalidOperationException>();
-
-                MockLogger.Setup(x => x.Error(It.IsAny<InvalidOperationException>()));
-
-                var result = RunTest();
-
-                Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            }
 
             [Fact]
             public void MatchingItemGeneratesStatus200()
             {
-                SetupMockResult(BuildDefaultSurvey());
+                SetupMockResult(BuildDefaultSurvey(), SurveyType.Foraging);
 
                 var result = RunTest();
-
-                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+                Assert.IsType<OkNegotiatedContentResult<WaterbirdForagingModel>>(result);
             }
 
             [Fact]
@@ -551,167 +533,29 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             {
                 //
                 // Arrange
-                SetupMockResult(null);
-
+                SetupMockResult(null, SurveyType.Foraging);
                 //
                 // Act
                 var result = RunTest();
 
                 //
                 // Assert
-                Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+                Assert.IsType<NotFoundResult>(result);
             }
 
-            private void SetupMockResult(ISurvey domainResult)
+            private void SetupMockResult(ISurvey domainResult, int surveyTypeId)
             {
-                MockDomainManager.Setup(x => x.FindBySurveyId(It.Is<Guid>(y => y == IDENTIFIER)))
+                MockDomainManager.Setup(x => x.FindBySurveyId(IDENTIFIER, surveyTypeId))
                     .Returns(domainResult);
             }
 
-            private HttpResponseMessage RunTest()
+            private IHttpActionResult RunTest()
             {
                 var system = BuildSystem();
 
                 system.Logger = MockLogger.Object;
 
-                return system.Get(IDENTIFIER).ExecuteAsync(new System.Threading.CancellationToken()).Result;
-            }
-        }
-
-
-        public class GetUsersList : Fixture
-        {
-            [Fact]
-            public void MapsLocationName()
-            {
-                var domain = BuildDefaultSurvey();
-
-                var result = RunHappyPath(domain);
-
-                Assert.Equal(domain.LocationName, result.First().Location);
-            }
-
-            [Fact]
-            public void MapsStartDate()
-            {
-                var domain = BuildDefaultSurvey();
-
-                var result = RunHappyPath(domain);
-
-                Assert.Equal(START_DATE.ToShortDateString(), result.First().StartDate);
-            }
-
-            [Fact]
-            public void MapsStatusForPendingSurvey()
-            {
-                var domain = BuildDefaultSurvey();
-
-                var result = RunHappyPath(domain);
-
-                Assert.Equal("Pending", result.First().Status);
-            }
-
-            [Fact]
-            public void MapsStatusForCompletedSurvey()
-            {
-                var domain = new Mock<ISurvey>();
-                domain.SetupAllProperties();
-                domain.SetupGet(x => x.Completed).Returns(true);                
-
-                var result = RunHappyPath(domain.Object);
-
-                Assert.Equal("Complete", result.First().Status);
-            }
-
-            [Fact]
-            public void MapsSurveyComments()
-            {
-                var domain = BuildDefaultSurvey();
-
-                var result = RunHappyPath(domain);
-
-                Assert.Equal(domain.GeneralComments, result.First().SurveyComments);
-            }
-
-            [Fact]
-            public void MapsSurveyIdentifier()
-            {
-                var domain = BuildDefaultSurvey();
-
-                var result = RunHappyPath(domain);
-
-                Assert.Equal(domain.SurveyIdentifier, result.First().SurveyIdentifier);
-            }
-
-            private IList<WaterbirdForagingListItem> RunHappyPath(ISurvey domain)
-            {
-                SetupMockResult(domain);
-
-                var result = RunTest()
-                                .Content
-                                .ReadAsAsync<IList<WaterbirdForagingListItem>>()
-                                .Result;
-                return result;
-            }
-
-            [Fact]
-            public void TreatsExceptionsAsServerError()
-            {
-                MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
-                    .Throws<InvalidOperationException>();
-
-                MockLogger.Setup(x => x.Error(It.IsAny<InvalidOperationException>()));
-
-                var result = RunTest();
-
-                Assert.Equal(HttpStatusCode.InternalServerError, result.StatusCode);
-            }
-
-            [Fact]
-            public void MatchingItemGeneratesStatus200()
-            {
-                SetupMockResult(BuildDefaultSurvey());
-
-                var result = RunTest();
-
-                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            }
-
-            [Fact]
-            public void NoMatchGeneratesOkWithEmptyList()
-            {
-                MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
-                     .Returns(new List<ISurvey>());
-
-                var result = RunTest();
-
-                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            }
-
-            [Fact]
-            public void NullMatchGeneratesOkWithEmptyList()
-            {
-                MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
-                     .Returns(null as List<ISurvey>);
-
-                var result = RunTest();
-
-                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            }
-
-            private void SetupMockResult(ISurvey domainResult)
-            {
-                MockDomainManager.Setup(x => x.FindBySubmitterId(It.Is<int>(y => y == OBSERVER_ID)))
-                    .Returns(new[] { domainResult });
-            }
-
-            private HttpResponseMessage RunTest()
-            {
-                var system = BuildSystem();
-
-                system.Logger = MockLogger.Object;
-
-                return system.GetForUser(OBSERVER_ID).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                return system.Get(IDENTIFIER);
             }
         }
 
@@ -1056,33 +900,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
 
                     return BuildSystem().Post(CreateDefautInput()).ExecuteAsync(new System.Threading.CancellationToken()).Result;
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfInvalidOperation()
-                {
-                    ExpectToLogToError();
-
-                    var e = new InvalidOperationException();
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfServerError()
-                {
-                    ExpectToLogToError();
-
-                    var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfUserError()
-                {
-                    ExpectToLogToDebug();
-
-                    var e = new UserException("asdf");
-                    Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
                 }
 
                 [Fact]
@@ -1438,33 +1255,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                     //
                     // Assert
                     Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfInvalidOperation()
-                {
-                    ExpectToLogToError();
-
-                    var e = new InvalidOperationException();
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfServerError()
-                {
-                    ExpectToLogToError();
-
-                    var e = ServerException.HandleException<ExceptionHandling>(new Exception(), "asdf");
-                    Assert.Equal(HttpStatusCode.InternalServerError, RunTest(e).StatusCode);
-                }
-
-                [Fact]
-                public void ConfirmHandlingOfUserError()
-                {
-                    ExpectToLogToDebug();
-
-                    var e = new UserException("asdf");
-                    Assert.Equal(HttpStatusCode.BadRequest, RunTest(e).StatusCode);
                 }
             }
         }

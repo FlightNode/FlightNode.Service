@@ -1,4 +1,5 @@
-﻿using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.Common.Exceptions;
+using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System;
 using System.Collections.Generic;
@@ -6,31 +7,32 @@ using System.Linq;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
-    public interface IWaterbirdForagingManager
+    public interface ISurveyManager
     {
         SurveyPending Create(SurveyPending waterbirdForagingModel);
         Guid NewIdentifier();
         SurveyPending Update(SurveyPending entity);
-        ISurvey FindBySurveyId(Guid guid);
-        IReadOnlyList<ISurvey> FindBySubmitterId(int userId);
+        ISurvey FindBySurveyId(Guid guid, int surveyTypeId);
+        IReadOnlyList<ISurvey> FindBySubmitterIdAndSurveyType(int userId, int surveyTypeId);
         SurveyCompleted Finish(SurveyPending survey);
-        IReadOnlyList<ForagingListItem> GetForagingSurveyList(int? userId = null);
-        IReadOnlyList<ForagingSurveyExportItem> ExportAll();
+        IReadOnlyList<SurveyListItem> GetSurveyListByTypeAndUser(int surveyTypeId, int? userId = null);
+        IReadOnlyList<ForagingSurveyExportItem> ExportAllForagingSurveys();
+        IReadOnlyList<RookeryCensusExportItem> ExportAllRookeryCensuses();
         SurveyCompleted Update(SurveyCompleted survey);
     }
 
     /// <summary>
     /// Domain / business manager for waterbird foraging surveys.
     /// </summary>
-    public class WaterbirdForagingManager : IWaterbirdForagingManager
+    public class SurveyManager : ISurveyManager
     {
         private readonly ISurveyPersistence _persistence;
 
         /// <summary>
-        /// Constructs a new instance of <see cref="WaterbirdForagingManager"/>
+        /// Constructs a new instance of <see cref="SurveyManager"/>
         /// </summary>
         /// <param name="persistence"></param>
-        public WaterbirdForagingManager(ISurveyPersistence persistence)
+        public SurveyManager(ISurveyPersistence persistence)
         {
             if (persistence == null)
             {
@@ -44,27 +46,26 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// Looks up either a pending or completed survey by its unique identifier.
         /// </summary>
         /// <param name="surveyIdentifier">Survey's unique identifier</param>
+        /// <param name="surveyTypeId">Survey Type Id</param>
         /// <returns>
         /// Either <see cref="SurveyCompleted"/> or <see cref="SurveyPending"/> as an <see cref="ISurvey"/>.
         /// </returns>
-        public ISurvey FindBySurveyId(Guid surveyIdentifier)
+        public ISurvey FindBySurveyId(Guid surveyIdentifier, int surveyTypeId)
         {
             ISurvey survey = _persistence.SurveysPending
-                                      .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier);
+                                      .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier && x.SurveyTypeId == surveyTypeId) as ISurvey
+                            ?? _persistence.SurveysCompleted
+                                   .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier && x.SurveyTypeId == surveyTypeId);
 
             if (survey == null)
             {
-                survey = _persistence.SurveysCompleted
-                                   .FirstOrDefault(x => x.SurveyIdentifier == surveyIdentifier);
+                return survey;
             }
 
-            if (survey != null)
-            {
-                // We are not currently setup to take advantage of EF's hydration option (.Include(path)),
-                // so for now do this the manual way
-                survey.Observations.AddRange(_persistence.Observations.Where(o => o.SurveyIdentifier == surveyIdentifier));
-                survey.Disturbances.AddRange(_persistence.Disturbances.Where(d => d.SurveyIdentifier == surveyIdentifier));
-            }
+            // We are not currently setup to take advantage of EF's hydration option (.Include(path)),
+            // so for now do this the manual way
+            survey.Observations.AddRange(_persistence.Observations.Where(o => o.SurveyIdentifier == surveyIdentifier));
+            survey.Disturbances.AddRange(_persistence.Disturbances.Where(d => d.SurveyIdentifier == surveyIdentifier));
 
             return survey;
         }
@@ -75,17 +76,18 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// <param name="userId">
         /// The ID for the user who submitted the surveys.
         /// </param>
+        /// <param name="surveyTypeId">Survey Type Id</param>
         /// <returns>
         /// List of both <see cref="SurveyCompleted"/> and <see cref="SurveyPending"/>.
         /// </returns>
-        public IReadOnlyList<ISurvey> FindBySubmitterId(int userId)
+        public IReadOnlyList<ISurvey> FindBySubmitterIdAndSurveyType(int userId, int surveyTypeId)
         {
             var list = new List<ISurvey>();
 
-            var pending = FindPendingSurveysSubmittedBy(userId);
+            var pending = FindPendingSurveysSubmittedBy(userId, surveyTypeId);
             list.AddRange(pending);
 
-            var completed = FindCompletedSurveysSubmittedBy(userId);
+            var completed = FindCompletedSurveysSubmittedBy(userId, surveyTypeId);
             list.AddRange(completed);
 
             return LoadLocationNames(list);
@@ -104,17 +106,17 @@ namespace FlightNode.DataCollection.Domain.Managers
             return list;
         }
 
-        private List<SurveyPending> FindPendingSurveysSubmittedBy(int userId)
+        private List<SurveyPending> FindPendingSurveysSubmittedBy(int userId, int surveyTypeId)
         {
             return _persistence.SurveysPending
-                                .Where(x => x.SubmittedBy == userId)
+                                .Where(x => x.SubmittedBy == userId && x.SurveyTypeId == surveyTypeId)
                                 .ToList();
         }
 
-        private List<SurveyCompleted> FindCompletedSurveysSubmittedBy(int userId)
+        private List<SurveyCompleted> FindCompletedSurveysSubmittedBy(int userId, int surveyTypeId)
         {
             return _persistence.SurveysCompleted
-                                .Where(x => x.SubmittedBy == userId)
+                                .Where(x => x.SubmittedBy == userId && x.SurveyTypeId == surveyTypeId)
                                 .ToList();
         }
 
@@ -178,7 +180,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             SaveChanges();
 
-            // This object, potentially, has been modified by EF. Return that modified version to the calling class
+            // This object, potentially, has been modified by EF. Return that modified version to the calling method
             return survey;
         }
 
@@ -201,7 +203,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             SaveChanges();
 
-            // This object, potentially, has been modified by EF. Return that modified version to the calling class
+            // This object, potentially, has been modified by EF. Return that modified version to the calling method
             return survey;
         }
 
@@ -231,11 +233,12 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// <summary>
         /// Gets a list of all of the foraging surveys, whether pending or complete.
         /// </summary>
+        /// <param name="surveyTypeId">Survey Type Id</param>
         /// <param name="userId">Optional User Id</param>
         /// <returns>
-        /// Read-only list of <see cref="ForagingListItem"/>.
+        /// Read-only list of <see cref="SurveyListItem"/>.
         /// </returns>
-        public IReadOnlyList<ForagingListItem> GetForagingSurveyList(int? userId = null)
+        public IReadOnlyList<SurveyListItem> GetSurveyListByTypeAndUser(int surveyTypeId, int? userId = null)
         {
             var surveysPending = _persistence.SurveysPending.AsQueryable();
             var locations = _persistence.Locations.AsQueryable();
@@ -250,7 +253,7 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             var pending = surveysPending
-                        .Where(survey => survey.SurveyTypeId == SurveyType.Foraging)
+                        .Where(survey => survey.SurveyTypeId == surveyTypeId)
                         .Join(
                             locations,
                             survey => survey.LocationId,
@@ -264,7 +267,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                             (spl, user) => new { spl.survey, spl.location, user }
                         )
                         .Select(
-                            x => new ForagingListItem
+                            x => new SurveyListItem
                             {
                                 SiteCode = x.location.SiteCode,
                                 SiteName = x.location.SiteName,
@@ -276,7 +279,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                         ).ToList();
 
             var complete = surveysCompleted
-                        .Where(survey => survey.SurveyTypeId == SurveyType.Foraging)
+                        .Where(survey => survey.SurveyTypeId == surveyTypeId)
                         .Join(
                             locations,
                             survey => survey.LocationId,
@@ -290,7 +293,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                             (spl, user) => new { spl.survey, spl.location, user }
                         )
                         .Select(
-                            x => new ForagingListItem
+                            x => new SurveyListItem
                             {
                                 SiteCode = x.location.SiteCode,
                                 SiteName = x.location.SiteName,
@@ -315,12 +318,16 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// <returns>
         /// Read-only collection of <see cref="ForagingSurveyExportItem"/>.
         /// </returns>
-        public IReadOnlyList<ForagingSurveyExportItem> ExportAll()
+        public IReadOnlyList<ForagingSurveyExportItem> ExportAllForagingSurveys()
         {
             return _persistence.ForagingSurveyExport
                                 .ToList();
         }
 
+        public IReadOnlyList<RookeryCensusExportItem> ExportAllRookeryCensuses()
+        {
+            return _persistence.RookeryCensusExport.ToList();
+        }
 
         private void SaveChanges()
         {

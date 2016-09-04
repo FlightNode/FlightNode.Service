@@ -12,5 +12,6 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
         ICrudSet<Location> Locations { get; }
         ICrudSet<User> Users { get; }
         IEnumerable<ForagingSurveyExportItem> ForagingSurveyExport { get; }
+        IEnumerable<RookeryCensusExportItem> RookeryCensusExport { get; }
     }
 }

@@ -9,7 +9,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 {
     public class WhenGettingTheListOfForagingSurveys
     {
-        public class Fixture : LoggingControllerBaseFixture<WaterbirdForagingSurveyController, IWaterbirdForagingManager>
+        public class Fixture : LoggingControllerBaseFixture<WaterbirdForagingSurveyController, ISurveyManager>
         {
             protected WaterbirdForagingSurveyController CreateController()
             {
@@ -26,7 +26,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
                 var result = RunTest();
 
-                Assert.IsType<OkNegotiatedContentResult<IReadOnlyList<ForagingListItem>>>(result);
+                Assert.IsType<OkNegotiatedContentResult<IReadOnlyList<SurveyListItem>>>(result);
             }
 
             [Fact]
@@ -36,7 +36,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
                 var result = RunTest();
 
-                var ok = result as OkNegotiatedContentResult<IReadOnlyList<ForagingListItem>>;
+                var ok = result as OkNegotiatedContentResult<IReadOnlyList<SurveyListItem>>;
 
                 Assert.Equal(2, ok.Content.Count);
             }
@@ -48,13 +48,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             private void ArrangeTest()
             {
-                var list = new List<ForagingListItem>
+                var list = new List<SurveyListItem>
                 {
-                    new ForagingListItem(),
-                    new ForagingListItem()
+                    new SurveyListItem(),
+                    new SurveyListItem()
                 };
 
-                MockDomainManager.Setup(mgr => mgr.GetForagingSurveyList(null))
+                MockDomainManager.Setup(mgr => mgr.GetSurveyListByTypeAndUser(SurveyType.Foraging, null))
                     .Returns(list);
             }
         }
@@ -68,7 +68,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
                 var result = RunTest();
 
-                Assert.IsType<OkNegotiatedContentResult<IReadOnlyList<ForagingListItem>>>(result);
+                Assert.IsType<OkNegotiatedContentResult<IReadOnlyList<SurveyListItem>>>(result);
             }
 
             [Fact]
@@ -78,7 +78,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
                 var result = RunTest();
 
-                var ok = result as OkNegotiatedContentResult<IReadOnlyList<ForagingListItem>>;
+                var ok = result as OkNegotiatedContentResult<IReadOnlyList<SurveyListItem>>;
 
                 Assert.Equal(0, ok.Content.Count);
             }
@@ -90,9 +90,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             private void ArrangeTest()
             {
-                var list = new List<ForagingListItem>();
+                var list = new List<SurveyListItem>();
 
-                MockDomainManager.Setup(mgr => mgr.GetForagingSurveyList(null))
+                MockDomainManager.Setup(mgr => mgr.GetSurveyListByTypeAndUser(SurveyType.Foraging, null))
                     .Returns(list);
             }
         }

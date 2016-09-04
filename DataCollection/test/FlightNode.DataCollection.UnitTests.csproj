@@ -150,8 +150,6 @@
     <Compile Include="Services\Controller\WorkLogsControllerTests.cs" />
     <Compile Include="Services\Controller\WorkTypeControllerTests.cs" />
     <Compile Include="Services\Controller\LocationControllerTests.cs" />
-    <Compile Include="Services\Models\MyWorkLogModelTests.cs" />
-    <Compile Include="Services\Models\RookeryCensusModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -13,14 +13,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
         {
             protected MockRepository MockRepository { get; set; }
             protected Mock<ISurveyPersistence> SurveyPersistenceMock { get; set; }
-            protected WaterbirdForagingManager Manager { get; set; }
+            protected SurveyManager Manager { get; set; }
 
             public Fixture()
             {
                 MockRepository = new MockRepository(MockBehavior.Strict);
                 SurveyPersistenceMock = MockRepository.Create<ISurveyPersistence>();
 
-                Manager = new WaterbirdForagingManager(SurveyPersistenceMock.Object);
+                Manager = new SurveyManager(SurveyPersistenceMock.Object);
             }
 
             public void Dispose()
@@ -37,7 +37,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
                         new ForagingSurveyExportItem()
                         ));
 
-                var result = Manager.ExportAll();
+                var result = Manager.ExportAllForagingSurveys();
 
                 Assert.Equal(2, result.Count);
             }

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FlightNode.DataCollection.Services.Models.Rookery
+namespace FlightNode.DataCollection.Services.Models.Survey
 {
-    public class WaterbirdForagingModel 
+    public class WaterbirdForagingModel : ISurveyModel
     {
 
         public Guid? SurveyIdentifier { get; set; }
 
-        public bool Completed { get; set; }
+        public bool Updating { get; set; }
 
-        public bool Finished { get; set; }
+        public bool FinishedEditing { get; set; }
 
         public int LocationId { get; set; }
 

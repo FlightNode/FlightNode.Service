@@ -1,12 +1,7 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Controllers;
-using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http.Results;
 using Xunit;
 
@@ -14,7 +9,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 {
     public class WhenExportingData
     {
-        public class Fixture : LoggingControllerBaseFixture<WaterbirdForagingSurveyController, IWaterbirdForagingManager>
+        public class Fixture : LoggingControllerBaseFixture<WaterbirdForagingSurveyController, ISurveyManager>
         {
             protected WaterbirdForagingSurveyController CreateController()
             {
@@ -27,7 +22,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             [Fact]
             public void ThenReturnOk()
             {
-                MockDomainManager.Setup(x => x.ExportAll())
+                MockDomainManager.Setup(x => x.ExportAllForagingSurveys())
                     .Returns(new List<ForagingSurveyExportItem>()
                     {
                         new ForagingSurveyExportItem(),
@@ -43,7 +38,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             [Fact]
             public void ThenReturnListOfQueryResults()
             {
-                MockDomainManager.Setup(x => x.ExportAll())
+                MockDomainManager.Setup(x => x.ExportAllForagingSurveys())
                     .Returns(new List<ForagingSurveyExportItem>()
                     {
                         new ForagingSurveyExportItem(),
@@ -64,7 +59,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             [Fact]
             public void ThenReturnOk()
             {
-                MockDomainManager.Setup(x => x.ExportAll())
+                MockDomainManager.Setup(x => x.ExportAllForagingSurveys())
                     .Returns(new List<ForagingSurveyExportItem>());
 
 
@@ -76,7 +71,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             [Fact]
             public void ThenReturnListOfQueryResults()
             {
-                MockDomainManager.Setup(x => x.ExportAll())
+                MockDomainManager.Setup(x => x.ExportAllForagingSurveys())
                     .Returns(new List<ForagingSurveyExportItem>());
 
 

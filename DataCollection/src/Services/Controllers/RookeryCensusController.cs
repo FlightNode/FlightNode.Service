@@ -1,31 +1,28 @@
-﻿using FlightNode.Common.Exceptions;
-using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Services.Models.Survey;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Web.Http;
 
 namespace FlightNode.DataCollection.Services.Controllers
 {
     /// <summary>
-    /// API Controller for submitting Waterbird Foraging surveys.
+    /// API Controller for submitting Rookery Censuses.
     /// </summary>
-    public class WaterbirdForagingSurveyController : SurveyControllerBase<WaterbirdForagingModel>
+    public class RookeryCensusController : SurveyControllerBase<RookeryCensusModel>
     {
 
 
         /// <summary>
-        /// Creates a new instance of <see cref="WaterbirdForagingSurveyController"/>.
+        /// Creates a new instance of <see cref="RookeryCensusController"/>.
         /// </summary>
         /// <param name="domainManager">An instance of <see cref="IWorkLogDomainManager"/></param>
-        public WaterbirdForagingSurveyController(ISurveyManager domainManager) : base(domainManager)
+        public RookeryCensusController(ISurveyManager domainManager) : base(domainManager)
         {
         }
 
         /// <summary>
-        /// Retrieves the requested Waterbird Foraging Survey data.
+        /// Retrieves the requested Rookery Censuses data.
         /// </summary>
         /// <param name="surveyIdentifier">
         /// Unique identifier for the survey resource to retrieve.
@@ -36,89 +33,84 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// </returns>
         [HttpGet]
         [Authorize]
-        [Route("api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}")]
+        [Route("api/v1/RookeryCensus/{surveyIdentifier:Guid}")]
         public IHttpActionResult Get(Guid surveyIdentifier)
         {
-            return GetSurveyById(surveyIdentifier, SurveyType.Foraging);
+            return GetSurveyById(surveyIdentifier, SurveyType.Rookery);
         }
 
         /// <summary>
-        /// Retrieves a list of all Waterbird Foraging information, including both pending and completed surveys.
+        /// Retrieves a list of all Rookery Census information, including both pending and completed surveys.
         /// </summary>
         /// <returns>
         /// 200 with a list of <see cref="Domain.Entities.SurveyListItem"/>
         /// </returns>
         /// <example>
-        /// GET api/v1/WaterbirdForagingSurvey/
-        /// GET api/v1/WaterbirdForagingSurvey/?userId={userId}
+        /// GET api/v1/RookeryCensus/
+        /// GET api/v1/RookeryCensus/?userId={userId}
         /// </example>
         [HttpGet]
         [Authorize]
         public IHttpActionResult Get([FromUri]int? userId = null)
         {
-            return GetSurveysByType(SurveyType.Foraging, userId);
+            return GetSurveysByType(SurveyType.Rookery, userId);
         }
 
         /// <summary>
         /// Retrieves all completed surveys for data export.
         /// </summary>
         /// <returns>
-        /// 200 with a list of <see cref="ForagingSurveyExportItem"/>
+        /// 200 with a list of <see cref="RookeryCensusExportItem"/>
         /// </returns>
         [HttpGet]
         [Authorize]
-        [Route("api/v1/waterbirdforagingsurvey/export")]
+        [Route("api/v1/RookeryCensus/export")]
         public IHttpActionResult Export()
         {
-            return Ok(_domainManager.ExportAllForagingSurveys());
+            return Ok(_domainManager.ExportAllRookeryCensuses());
         }
 
         /// <summary>
-        /// Creates a new waterbird foraging survey record
+        /// Creates a new Rookery Census record
         /// </summary>
-        /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>
+        /// <param name="input">An instance of <see cref="RookeryCensusModel"/></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public IHttpActionResult Post([FromBody]WaterbirdForagingModel input)
+        public IHttpActionResult Post([FromBody]RookeryCensusModel input)
         {
             return Create(input);
         }
 
         /// <summary>
-        /// Updates an existing new waterbird foraging survey record
+        /// Updates an existing new Rookery Census record
         /// </summary>
         /// <param name="surveyIdentifier"></param>
-        /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>
+        /// <param name="input">An instance of <see cref="RookeryCensusModel"/></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}")]
+        [Route("api/v1/RookeryCensus/{surveyIdentifier:Guid}")]
         [Authorize]
-        public IHttpActionResult Put(Guid surveyIdentifier, [FromBody]WaterbirdForagingModel input)
+        public IHttpActionResult Put(Guid surveyIdentifier, [FromBody]RookeryCensusModel input)
         {
             return Update(surveyIdentifier, input);
         }
 
 
 
-        protected override WaterbirdForagingModel Map(ISurvey input)
+        protected override RookeryCensusModel Map(ISurvey input)
         {
-            var entity = new WaterbirdForagingModel
+            var entity = new RookeryCensusModel
             {
                 AccessPointId = input.AccessPointId,
                 SiteTypeId = input.AssessmentId,
                 DisturbanceComments = input.DisturbanceComments,
                 SurveyComments = input.GeneralComments,
                 LocationId = input.LocationId,
-                Temperature = input.StartTemperature,
                 SurveyIdentifier = input.SurveyIdentifier,
-                TideId = input.TideId,
                 VantagePointId = input.VantagePointId,
-                WeatherId = input.WeatherId,
-                WindSpeed = input.WindSpeed,
                 SurveyId = input.Id,
                 Observers = input.Observers,
-                WaterHeightId = input.WaterHeightId,
                 StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
                 StartTime = input.StartDate.HasValue ? input.StartDate.Value.ToShortTimeString() : string.Empty,
                 EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty,
@@ -129,13 +121,11 @@ namespace FlightNode.DataCollection.Services.Controllers
             {
                 entity.Add(new ObservationModel
                 {
-                    Adults = o.Bin1,
-                    Juveniles = o.Bin2,
+                    Adults = o.Bin3,
+                    NestsPresent = o.NestPresent,
+                    FledglingsPresent = o.FledglingPresent,
+                    ChicksPresent = o.ChicksPresent,
                     BirdSpeciesId = o.BirdSpeciesId,
-                    FeedingId = o.FeedingSuccessRate,
-                    HabitatId = o.HabitatTypeId,
-                    PrimaryActivityId = o.PrimaryActivityId,
-                    SecondaryActivityId = o.SecondaryActivityId,
                     ObservationId = o.Id
                 });
             }
@@ -148,29 +138,29 @@ namespace FlightNode.DataCollection.Services.Controllers
             return entity;
         }
 
-        protected override SurveyPending MapToPendingSurvey(WaterbirdForagingModel input, Guid identifier)
+        protected override SurveyPending MapToPendingSurvey(RookeryCensusModel input, Guid identifier)
         {
 
             var entity = new SurveyPending();
-            MapForagingInputIntoSurvey(entity, input, identifier);
+            MapRookeryCensusIntoSurvey(entity, input, identifier);
             MapObservationsIntoSurvey(entity, input, identifier);
             MapDisturbancesIntoSurvey(entity, input, identifier);
 
             return entity;
         }
 
-        protected override SurveyCompleted MapToCompletedSurvey(WaterbirdForagingModel input, Guid identifier)
+        protected override SurveyCompleted MapToCompletedSurvey(RookeryCensusModel input, Guid identifier)
         {
 
             var entity = new SurveyCompleted();
-            MapForagingInputIntoSurvey(entity, input, identifier);
+            MapRookeryCensusIntoSurvey(entity, input, identifier);
             MapObservationsIntoSurvey(entity, input, identifier);
             MapDisturbancesIntoSurvey(entity, input, identifier);
 
             return entity;
         }
 
-        private void MapForagingInputIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        private void MapRookeryCensusIntoSurvey(ISurvey survey, RookeryCensusModel input, Guid identifier)
         {
             survey.AccessPointId = input.AccessPointId;
             survey.AssessmentId = input.SiteTypeId;
@@ -178,41 +168,34 @@ namespace FlightNode.DataCollection.Services.Controllers
             survey.EndTemperature = null;
             survey.GeneralComments = input.SurveyComments;
             survey.LocationId = input.LocationId;
-            survey.StartTemperature = input.Temperature;
             survey.SurveyIdentifier = identifier;
-            survey.TideId = input.TideId;
-            survey.SurveyTypeId = SurveyType.Foraging;
+            survey.SurveyTypeId = SurveyType.Rookery;
             survey.VantagePointId = input.VantagePointId;
-            survey.WeatherId = input.WeatherId;
-            survey.WindSpeed = input.WindSpeed;
             survey.SubmittedBy = this.LookupUserId();
             survey.Observers = input.Observers;
             survey.Id = input.SurveyId;
-            survey.WaterHeightId = input.WaterHeightId;
             survey.StartDate = ParseDateTime(input.StartDate, input.StartTime);
             survey.EndDate = ParseDateTime(input.StartDate, input.EndTime);
         }
 
-        private void MapObservationsIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        private void MapObservationsIntoSurvey(ISurvey survey, RookeryCensusModel input, Guid identifier)
         {
             foreach (var o in input.Observations)
             {
                 survey.Add(new Observation
                 {
-                    Bin1 = o.Adults,
-                    Bin2 = o.Juveniles ?? 0,
+                    Bin3 = o.Adults,
+                    NestPresent = o.NestsPresent,
+                    FledglingPresent = o.FledglingsPresent,
+                    ChicksPresent = o.ChicksPresent,
                     BirdSpeciesId = o.BirdSpeciesId,
-                    FeedingSuccessRate = o.FeedingId,
-                    HabitatTypeId = o.HabitatId,
-                    PrimaryActivityId = o.PrimaryActivityId,
-                    SecondaryActivityId = o.SecondaryActivityId,
                     SurveyIdentifier = identifier,
                     Id = o.ObservationId
                 });
             }
         }
 
-        private void MapDisturbancesIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        private void MapDisturbancesIntoSurvey(ISurvey survey, RookeryCensusModel input, Guid identifier)
         {
             foreach (var d in input.Disturbances)
             {

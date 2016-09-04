@@ -16,14 +16,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
         {
             protected MockRepository MockRepository { get; set; }
             protected Mock<ISurveyPersistence> SurveyPersistenceMock { get; set; }
-            protected WaterbirdForagingManager Manager { get; set; }
+            protected SurveyManager Manager { get; set; }
 
             public Fixture()
             {
                 MockRepository = new MockRepository(MockBehavior.Strict);
                 SurveyPersistenceMock = MockRepository.Create<ISurveyPersistence>();
 
-                Manager = new WaterbirdForagingManager(SurveyPersistenceMock.Object);
+                Manager = new SurveyManager(SurveyPersistenceMock.Object);
             }
 
             public void Dispose()
@@ -50,7 +50,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(1, result.Count);
             }
@@ -60,7 +60,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal("Pending", result.First().Status);
             }
@@ -70,7 +70,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(identifier, result.First().SurveyIdentifier);
             }
@@ -80,7 +80,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(siteName, result.First().SiteName);
             }
@@ -90,7 +90,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(siteCode, result.First().SiteCode);
             }
@@ -100,7 +100,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(startDate, result.First().StartDate);
             }
@@ -110,7 +110,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(expectedName, result.First().SubmittedBy);
             }
@@ -171,7 +171,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(1, result.Count);
             }
@@ -181,7 +181,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal("Complete", result.First().Status);
             }
@@ -191,7 +191,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(identifier, result.First().SurveyIdentifier);
             }
@@ -201,7 +201,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(siteName, result.First().SiteName);
             }
@@ -211,7 +211,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(siteCode, result.First().SiteCode);
             }
@@ -221,7 +221,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(startDate, result.First().StartDate);
             }
@@ -231,7 +231,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(expectedName, result.First().SubmittedBy);
             }
@@ -291,11 +291,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
 
                 Assert.Equal(2, result.Count);
             }
-            
+
 
             private void ArrangeTest()
             {
@@ -360,11 +360,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyType.Foraging);
 
                 Assert.Equal(0, result.Count);
             }
-            
+
             private void ArrangeTest()
             {
                 var survey = new SurveyPending
@@ -420,7 +420,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetForagingSurveyList();
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyType.Foraging);
 
                 Assert.Equal(0, result.Count);
             }

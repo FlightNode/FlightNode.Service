@@ -140,6 +140,7 @@
     <Compile Include="Domain\Entities\EnumBase.cs" />
     <Compile Include="Domain\Entities\FeedingSuccessRates.cs" />
     <Compile Include="Domain\Entities\ForagingListItem.cs" />
+    <Compile Include="Domain\Entities\RookeryCensusExportItem.cs" />
     <Compile Include="Domain\Entities\ForagingSurveyExportItem.cs" />
     <Compile Include="Domain\Entities\ISurvey.cs" />
     <Compile Include="Domain\Entities\SiteAssessment.cs" />
@@ -172,7 +173,7 @@
     <Compile Include="Domain\Interfaces\Persistence\IBirdSpeciesPersistence.cs" />
     <Compile Include="Domain\Managers\SurveyTypeManager.cs" />
     <Compile Include="Domain\Managers\BirdSpeciesManager.cs" />
-    <Compile Include="Domain\Managers\WaterbirdForagingManager.cs" />
+    <Compile Include="Domain\Managers\SurveyManager.cs" />
     <Compile Include="ExtensionDelegate.cs" />
     <Compile Include="Infrastructure\Customization\CreateViewOperation.cs" />
     <Compile Include="Infrastructure\Customization\CustomSqlServerMigrationSqlGenerator.cs" />
@@ -249,6 +250,10 @@
     <Compile Include="Migrations\201607171547481_ForagingSurveyQueries1.Designer.cs">
       <DependentUpon>201607171547481_ForagingSurveyQueries1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609032223538_RookeryCensusExport.cs" />
+    <Compile Include="Migrations\201609032223538_RookeryCensusExport.Designer.cs">
+      <DependentUpon>201609032223538_RookeryCensusExport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
@@ -269,7 +274,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Services\Controllers\EnumsController.cs" />
+    <Compile Include="Services\Controllers\SurveyControllerBase.cs" />
     <Compile Include="Services\Controllers\SurveyTypeController.cs" />
+    <Compile Include="Services\Controllers\RookeryCensusController.cs" />
     <Compile Include="Services\Controllers\WaterbirdForagingSurveyController.cs" />
     <Compile Include="Services\Controllers\WorkLogController.cs" />
     <Compile Include="Services\Controllers\BirdSpeciesController.cs" />
@@ -278,8 +285,8 @@
     <Compile Include="Services\Models\LocationModel.cs" />
     <Compile Include="Services\Controllers\LocationsController.cs" />
     <Compile Include="Services\Models\Survey\DisturbanceModel.cs" />
+    <Compile Include="Services\Models\Survey\ISurveyModel.cs" />
     <Compile Include="Services\Models\Survey\ObservationModel.cs" />
-    <Compile Include="Services\Models\Survey\WaterbirdForagingListItem.cs" />
     <Compile Include="Services\Models\Survey\WaterbirdForagingModel.cs" />
     <Compile Include="Services\Models\Survey\RookeryCensusModel.cs" />
     <Compile Include="Services\Models\Worklog\MyWorkLogModel.cs" />
@@ -367,6 +374,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607171547481_ForagingSurveyQueries1.resx">
       <DependentUpon>201607171547481_ForagingSurveyQueries1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609032223538_RookeryCensusExport.resx">
+      <DependentUpon>201609032223538_RookeryCensusExport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

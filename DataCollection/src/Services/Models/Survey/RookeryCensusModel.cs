@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FlightNode.DataCollection.Services.Models.Rookery
+namespace FlightNode.DataCollection.Services.Models.Survey
 {
-    public class RookeryCensusModel
+    public class RookeryCensusModel : ISurveyModel
     {
-        public Guid SurveyIdentifer { get; set; }
+        public Guid? SurveyIdentifier { get; set; }
 
-        public int Step { get; set; }
+        public bool Updating { get; set; }
+
+        public bool FinishedEditing { get; set; }
 
         public int LocationId { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public string StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public string StartTime { get; set; }
 
-        public int SiteTypeId { get; set; }
+        public string EndTime { get; set; }
 
-        public int TideInfoId { get; set; }
+        public int? SiteTypeId { get; set; }
+        
+        public string Observers { get; set; }
 
-        public int WeatherInfoId { get; set; }
+        public int? VantagePointId { get; set; }
 
-        public List<int> Observers { get; private set; }
-
-        public int VantagePointInfoId { get; set; }
-
-        public int AccessPointInfoId { get; set; }
+        public int? AccessPointId { get; set; }
 
         public string SurveyComments { get; set; }
 
@@ -35,12 +35,26 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
 
         public List<ObservationModel> Observations { get; set; }
 
+        public int SurveyId { get; set; }
+
+
         public RookeryCensusModel()
         {
-            SurveyIdentifer = Guid.Empty;
-            Observers = new List<int>();
+            SurveyIdentifier = Guid.Empty;
             Observations = new List<ObservationModel>();
             Disturbances = new List<DisturbanceModel>();
+        }
+
+        public RookeryCensusModel Add(ObservationModel observation)
+        {
+            Observations.Add(observation);
+            return this;
+        }
+
+        public RookeryCensusModel Add(DisturbanceModel disturbanceModel)
+        {
+            Disturbances.Add(disturbanceModel);
+            return this;
         }
     }
 }

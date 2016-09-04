@@ -132,6 +132,7 @@
     <Compile Include="DependencyResolution\UnityDependencyResolver.cs" />
     <Compile Include="DependencyResolution\UnityDependencyScope.cs" />
     <Compile Include="Filters\InvalidApiRequestExceptionFilter.cs" />
+    <Compile Include="Filters\JsonContentNegotiator.cs" />
     <Compile Include="Filters\NotImplExceptionFilter.cs" />
     <Compile Include="Filters\UnhandledExceptionFilter.cs" />
     <Compile Include="Filters\LoggingExceptionHandler.cs" />

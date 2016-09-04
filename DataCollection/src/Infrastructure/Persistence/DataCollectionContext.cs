@@ -109,8 +109,17 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             get
             {
-                // Because we don't need EF to handle this view, just map it with Dapper
-                return this.Database.Connection.Query<ForagingSurveyExportItem>("SELECT * FROM dbo.WaterbirdForagingExport");
+                // Because we don't need EF to handle this stored procedure, just map it with Dapper
+                return this.Database.Connection.Query<ForagingSurveyExportItem>("EXEC dbo.ExportForagingSurveyResults");
+            }
+        }
+
+        IEnumerable<RookeryCensusExportItem> ISurveyPersistence.RookeryCensusExport
+        {
+            get
+            {
+                // Because we don't need EF to handle this procedure, just map it with Dapper
+                return this.Database.Connection.Query<RookeryCensusExportItem>("EXEC dbo.ExportRookeryCensusResults");
             }
         }
         #endregion
@@ -255,7 +264,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             this.Configuration.LazyLoadingEnabled = false;
             this.Configuration.ProxyCreationEnabled = false;
-            
+
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -293,7 +302,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 .WithMany(x => x.Disturbances);
 
             modelBuilder.Entity<SurveyCompleted>().ToTable("SurveyCompleted");
-            
+
             modelBuilder.Entity<Weather>().ToTable("Weather");
             modelBuilder.Entity<Tide>().ToTable("Tides");
 

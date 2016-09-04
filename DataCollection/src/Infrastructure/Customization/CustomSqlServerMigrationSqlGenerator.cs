@@ -1,4 +1,5 @@
-﻿using System.Data.Entity.Migrations.Model;
+﻿using System;
+using System.Data.Entity.Migrations.Model;
 using System.Data.Entity.Migrations.Utilities;
 using System.Data.Entity.SqlServer;
 
@@ -9,29 +10,30 @@ namespace FlightNode.DataCollection.Infrastructure.Customization
     {
         protected override void Generate(MigrationOperation migrationOperation)
         {
+            using (IndentedTextWriter writer = Writer())
+            {
+                writer.WriteLine(CreateSqlStatement(migrationOperation));
+                Statement(writer);
+            }
+        }
+
+        private string CreateSqlStatement(MigrationOperation migrationOperation)
+        {
             var createViewOperation = migrationOperation as CreateViewOperation;
             if (createViewOperation != null)
             {
-                using (IndentedTextWriter writer = Writer())
-                {
-                    writer.WriteLine("CREATE VIEW {0} AS {1} ; ",
+                return string.Format("CREATE VIEW {0} AS {1} ; ",
                                       createViewOperation.ViewName,
                                       createViewOperation.ViewString);
-                    Statement(writer);
-                }
-
-                return;
             }
 
             var dropViewOperation = migrationOperation as DropViewOperation;
             if (dropViewOperation != null)
             {
-                using (IndentedTextWriter writer = Writer())
-                {
-                    writer.WriteLine("DROP VIEW {0};", dropViewOperation.ViewName);
-                    Statement(writer);
-                }
+                return string.Format("DROP VIEW {0};", dropViewOperation.ViewName);
             }
+
+            throw new InvalidOperationException("Invalid migration type: " + migrationOperation.GetType().FullName);
         }
     }
 }
