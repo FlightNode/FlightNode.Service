@@ -7,6 +7,7 @@ using log4net;
 using Flurl;
 using FlightNode.Common.Api.Models;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace FligthNode.Common.Api.Controllers
 {
@@ -25,6 +26,7 @@ namespace FligthNode.Common.Api.Controllers
                 _logger = value;
             }
         }
+        // TODO: removall of this try catch stuff and just let the filters catch the exceptions
         protected async Task<IHttpActionResult> WrapWithTryCatchAsync(Func<Task<IHttpActionResult>> func)
         {
             try
@@ -127,7 +129,7 @@ namespace FligthNode.Common.Api.Controllers
         }
 
 
-
+        // TODO: replace any code using this with a call to CreatedAtRoute()
         protected IHttpActionResult Created<TModel>(TModel input, string id)
         {
             var locationHeader = this.Request
@@ -136,6 +138,12 @@ namespace FligthNode.Common.Api.Controllers
                 .AppendPathSegment(id);
 
             return Created(locationHeader, input);
+        }
+
+
+        protected IHttpActionResult Unprocessable()
+        {
+            return StatusCode((HttpStatusCode)422);
         }
     }
 }
