@@ -49,12 +49,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             input.Validate();
 
-            var existing = this.FindById(input.Id);
-            DoNotAllowUserToBeChanged(input, existing);
-
-            existing = MapInputToExisting(input, existing);
-
-            return base.UpdateAttachedObject(existing);
+            return base.Update(input);
         }
 
         private static WorkLog MapInputToExisting(WorkLog input, WorkLog existing)

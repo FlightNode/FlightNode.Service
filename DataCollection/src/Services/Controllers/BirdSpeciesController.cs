@@ -89,7 +89,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         ///   "description": "some location"
         /// }
         /// </example>
-        [Authorize(Roles = "Administrator,Coordinator")]
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public IHttpActionResult Post([FromBody]BirdSpecies input)
         {

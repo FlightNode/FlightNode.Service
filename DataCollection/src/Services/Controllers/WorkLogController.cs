@@ -43,7 +43,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/worklogs
         /// </example>
-        [Authorize(Roles = "Administrator,Coordinator,Lead")]
+        [Authorize(Roles = "Administrator")]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>
@@ -112,7 +112,7 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// <example>
         /// GET: /api/v1/worklogs/my
         /// </example>
-        [Authorize(Roles = "Administrator,Coordinator")]
+        [Authorize(Roles = "Administrator")]
         [Route("api/v1/worklogs/export")]
         public IHttpActionResult GetExport()
         {
