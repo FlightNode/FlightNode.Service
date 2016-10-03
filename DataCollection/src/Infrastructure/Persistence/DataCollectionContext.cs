@@ -170,12 +170,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             return await this.WaterHeights.ToListAsync();
         }
-
-        public async Task<IReadOnlyCollection<Tide>> GetTides()
-        {
-            return await this.Tides.ToListAsync();
-        }
-
+        
         public async Task<IReadOnlyCollection<DisturbanceType>> GetDisturbanceTypes()
         {
             return await this.DisturbanceTypes.ToListAsync();
@@ -234,8 +229,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DbSet<DisturbanceType> DisturbanceTypes { get; set; }
 
         public DbSet<Observation> Observations { get; set; }
-
-        public DbSet<Tide> Tides { get; set; }
 
         public DbSet<Weather> Weather { get; set; }
 
@@ -304,7 +297,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             modelBuilder.Entity<SurveyCompleted>().ToTable("SurveyCompleted");
 
             modelBuilder.Entity<Weather>().ToTable("Weather");
-            modelBuilder.Entity<Tide>().ToTable("Tides");
 
             modelBuilder.Entity<SurveyPending>().ToTable("SurveyPending");
 

@@ -152,7 +152,6 @@
     <Compile Include="Domain\Entities\HabitatType.cs" />
     <Compile Include="Domain\Entities\SurveyActivity.cs" />
     <Compile Include="Domain\Entities\SurveyPending.cs" />
-    <Compile Include="Domain\Entities\Tide.cs" />
     <Compile Include="Domain\Entities\WaterHeight.cs" />
     <Compile Include="Domain\Entities\Weather.cs" />
     <Compile Include="Domain\Entities\DisturbanceType.cs" />
@@ -253,6 +252,10 @@
     <Compile Include="Migrations\201609032223538_RookeryCensusExport.cs" />
     <Compile Include="Migrations\201609032223538_RookeryCensusExport.Designer.cs">
       <DependentUpon>201609032223538_RookeryCensusExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610030013014_WindDrivenTide.cs" />
+    <Compile Include="Migrations\201610030013014_WindDrivenTide.Designer.cs">
+      <DependentUpon>201610030013014_WindDrivenTide.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
@@ -377,6 +380,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609032223538_RookeryCensusExport.resx">
       <DependentUpon>201609032223538_RookeryCensusExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610030013014_WindDrivenTide.resx">
+      <DependentUpon>201610030013014_WindDrivenTide.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

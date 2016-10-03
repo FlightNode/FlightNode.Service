@@ -76,7 +76,7 @@ namespace FlightNode.DataCollection.Domain.Entities
         /// <summary>
         /// Gets or sets the Tide condition
         /// </summary>
-        public string Tide { get; set; }
+        public string TideIsWindDriven { get; set; }
 
         /// <summary>
         /// Gets or sets the Wind Speed

@@ -8,7 +8,6 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
     {
         Task<IReadOnlyCollection<Weather>> GetWeather();
         Task<IReadOnlyCollection<WaterHeight>> GetWaterHeights();
-        Task<IReadOnlyCollection<Tide>> GetTides();
         Task<IReadOnlyCollection<DisturbanceType>> GetDisturbanceTypes();
         Task<IReadOnlyCollection<HabitatType>> GetHabitatTypes();
         Task<IReadOnlyCollection<FeedingSuccessRate>> GetFeedingSuccessRates();

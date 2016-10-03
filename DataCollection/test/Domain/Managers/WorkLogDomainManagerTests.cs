@@ -2,6 +2,7 @@
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using FlightNode.DataCollection.Domain.Managers;
+using FlightNode.DataCollection.Infrastructure.Persistence;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -74,6 +75,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 base.WorkLogPersistenceMock.SetupGet(x => x.Collection)
                     .Returns(FakeSet);
+            }
+
+            protected void ExpectToUpdateEntity()
+            {
+                var entityMock = base.MockRepository.Create<IDbEntityEntryDecorator>();
+                entityMock.SetupSet(x => x.State = EntityState.Modified);
+
+                base.WorkLogPersistenceMock.Setup(x => x.Entry(It.IsAny<object>()))
+                    .Returns(entityMock.Object);
             }
         }
 
@@ -164,7 +174,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     BuildSystem().Create(item);
                 }
-                
+
                 [Fact]
                 public void ConfirmWorkHoursMustBeGreaterThanZero()
                 {
@@ -288,59 +298,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 Id = 3
             };
 
-            protected bool SetModifiedWasCalled = false;
-            
-            [Fact]
-            public void ConfirmMapsLocationId()
-            {
-                RunHappyPathTest();
-
-                // Assert - original object should have been modified to match item
-                Assert.Equal(item.LocationId, original.LocationId);
-            }
 
             [Fact]
-            public void ConfirmMapsWorkTypeId()
-            {
-                RunHappyPathTest();
-
-                // Assert - original object should have been modified to match item
-                Assert.Equal(item.WorkTypeId, original.WorkTypeId);
-            }
-
-            [Fact]
-            public void ConfirmMapsTravelTimeHours()
-            {
-                RunHappyPathTest();
-
-                // Assert - original object should have been modified to match item
-                Assert.Equal(item.TravelTimeHours, original.TravelTimeHours);
-            }
-
-            [Fact]
-            public void ConfirmMapsWorkDate()
-            {
-                RunHappyPathTest();
-
-                // Assert - original object should have been modified to match item
-                Assert.Equal(item.WorkDate, original.WorkDate);
-            }
-
-            [Fact]
-            public void ConfirmMapsWorkHours()
-            {
-                RunHappyPathTest();
-
-                // Assert - original object should have been modified to match item
-                Assert.Equal(item.WorkHours, original.WorkHours);
-            }
-
-            private void RunHappyPathTest()
+            public void RunHappyPathTest()
             {
                 // Arrange
                 base.SetupWorkLogsCollection();
                 base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(RECORD_COUNT);
+                ExpectToUpdateEntity();
 
                 // ... for validating that the userid was not changed
                 base.FakeSet.List.Add(original);
@@ -349,106 +315,82 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 BuildSystem().Update(item);
             }
 
-            [Fact]
-            public void NotAllowedToModifyTheUserId()
+
+            private void RunPositiveTest()
             {
-                // Arrange
                 base.SetupWorkLogsCollection();
+                WorkLogPersistenceMock.Setup(x => x.SaveChanges())
+                       .Returns(1);
+
 
                 // ... for validating that the userid was not changed
-                base.FakeSet.List.Add(differentUser);
+                base.SetupWorkLogsCollection();
+                base.FakeSet.List.Add(item);
 
-                // Act & Assert
-                Assert.Throws<ServerException>(() => BuildSystem().Update(item));
+                BuildSystem().Update(item);
             }
 
-            public class Validation : Update
+            private void RunNegativeTest(string memberName)
             {
-                private new WorkLog item = new WorkLog
+                try
                 {
-                    LocationId = 1,
-                    WorkTypeId = 1,
-                    TravelTimeHours = 1.0m,
-                    UserId = 1,
-                    WorkDate = DateTime.Parse("2015-11-12 6:04 PM"),
-                    WorkHours = 1.1m,
-                    Id = 3
-                };
-
-                private void RunPositiveTest()
-                {
-                    base.SetupWorkLogsCollection();
-                    WorkLogPersistenceMock.Setup(x => x.SaveChanges())
-                           .Returns(1);
-
-
-                    // ... for validating that the userid was not changed
-                    base.SetupWorkLogsCollection();
-                    base.FakeSet.List.Add(item);
-
                     BuildSystem().Update(item);
+                    throw new Exception("this should have failed");
                 }
-
-                private void RunNegativeTest(string memberName)
+                catch (DomainValidationException de)
                 {
-                    try
-                    {
-                        BuildSystem().Update(item);
-                        throw new Exception("this should have failed");
-                    }
-                    catch (DomainValidationException de)
-                    {
-                        Assert.True(de.ValidationResults.Any(x => x.MemberNames.Any(y => y == memberName)));
-                    }
+                    Assert.True(de.ValidationResults.Any(x => x.MemberNames.Any(y => y == memberName)));
                 }
+            }
 
-                [Fact]
-                public void ConfirmWorkHoursMustBeGreaterThanZero()
-                {
-                    item.WorkHours = 0.0m;
+            [Fact]
+            public void ConfirmWorkHoursMustBeGreaterThanZero()
+            {
+                item.WorkHours = 0.0m;
 
-                    RunNegativeTest("WorkHours");
-                }
+                RunNegativeTest("WorkHours");
+            }
 
-                [Fact]
-                public void ConfirmTravelTimeMustBeGreaterThanZero()
-                {
-                    item.TravelTimeHours = 0.0m;
+            [Fact]
+            public void ConfirmTravelTimeMustBeGreaterThanZero()
+            {
+                item.TravelTimeHours = 0.0m;
 
-                    RunNegativeTest("TravelTimeHours");
-                }
+                RunNegativeTest("TravelTimeHours");
+            }
 
-                [Fact]
-                public void ConfirmWorkHoursAcceptsUpTo24Hours()
-                {
-                    item.WorkHours = 24.0m;
+            [Fact]
+            public void ConfirmWorkHoursAcceptsUpTo24Hours()
+            {
+                item.WorkHours = 24.0m;
+                ExpectToUpdateEntity();
 
-                    RunPositiveTest();
-                }
+                RunPositiveTest();
+            }
 
-                [Fact]
-                public void ConfirmTravelTimeAcceptsUpTo24Hours()
-                {
-                    item.TravelTimeHours = 24.0m;
+            [Fact]
+            public void ConfirmTravelTimeAcceptsUpTo24Hours()
+            {
+                item.TravelTimeHours = 24.0m;
+                ExpectToUpdateEntity();
 
-                    RunPositiveTest();
-                }
+                RunPositiveTest();
+            }
 
-                [Fact]
-                public void ConfirmWorkHoursCannotBeMoreThan24()
-                {
-                    item.WorkHours = 24.01m;
+            [Fact]
+            public void ConfirmWorkHoursCannotBeMoreThan24()
+            {
+                item.WorkHours = 24.01m;
 
-                    RunNegativeTest("WorkHours");
-                }
+                RunNegativeTest("WorkHours");
+            }
 
-                [Fact]
-                public void ConfirmTravelTimeHoursCannotBeMoreThan24()
-                {
-                    item.TravelTimeHours = 24.01m;
+            [Fact]
+            public void ConfirmTravelTimeHoursCannotBeMoreThan24()
+            {
+                item.TravelTimeHours = 24.01m;
 
-                    RunNegativeTest("TravelTimeHours");
-                }
+                RunNegativeTest("TravelTimeHours");
             }
         }
 

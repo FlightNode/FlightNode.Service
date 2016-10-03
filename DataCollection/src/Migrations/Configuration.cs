@@ -19,7 +19,6 @@ namespace FlightNode.DataCollection.Domain.Migrations
         protected override void Seed(DataCollectionContext context)
         {
             LoadDisturbanceTypesForWaterbirdForaging(context);
-            LoadTidesForWaterbirdForaging(context);
             LoadWeatherForWaterbirdForaging(context);
             LoadHabitatTypes(context);
             LoadFeedingSuccessRates(context);
@@ -89,20 +88,13 @@ namespace FlightNode.DataCollection.Domain.Migrations
             context.Weather.AddOrUpdate(x => x.Description, new Weather { Description = "Drizzle" });
             context.Weather.AddOrUpdate(x => x.Description, new Weather { Description = "Overcast" });
             context.Weather.AddOrUpdate(x => x.Description, new Weather { Description = "Showers" });
-        }
-
-        private void LoadTidesForWaterbirdForaging(DataCollectionContext context)
-        {
-            context.Tides.AddOrUpdate(x => x.Description, new Tide { Description = "Appears High" });
-            context.Tides.AddOrUpdate(x => x.Description, new Tide { Description = "Normal" });
-            context.Tides.AddOrUpdate(x => x.Description, new Tide { Description = "Appears Low" });
-        }
+        }        
 
         private void LoadWaterHeightsForWaterbirdForaging(DataCollectionContext context)
         {
-            context.WaterHeights.AddOrUpdate(x => x.Description, new WaterHeight { Description = "Tidal" });
-            context.WaterHeights.AddOrUpdate(x => x.Description, new WaterHeight { Description = "Wind-driven" });
-            context.WaterHeights.AddOrUpdate(x => x.Description, new WaterHeight { Description = "Calm" });
+            context.WaterHeights.AddOrUpdate(x => x.Id, new WaterHeight { Id = 1, Description = "Appears High" });
+            context.WaterHeights.AddOrUpdate(x => x.Id, new WaterHeight { Id = 2, Description = "Normal" });
+            context.WaterHeights.AddOrUpdate(x => x.Id, new WaterHeight { Id = 3, Description = "Appears Low" });
         }
 
         private void LoadDisturbanceTypesForWaterbirdForaging(DataCollectionContext context)

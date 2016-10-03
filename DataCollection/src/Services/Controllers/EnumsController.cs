@@ -48,17 +48,6 @@ namespace FlightNode.DataCollection.Services.Controllers
             return Ok(values ?? new List<WaterHeight>());
         }
 
-
-        [HttpGet]
-        [Route("tides")]
-        public async Task<IHttpActionResult> Tides()
-        {
-            var values = await _repository.GetTides();
-
-            return Ok(values ?? new List<Tide>());
-        }
-
-
         [HttpGet]
         [Route("disturbancetypes")]
         public async Task<IHttpActionResult> DisturbanceTypes()

@@ -50,7 +50,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             protected const int STEP = 1;
             protected const string SURVEY_COMMENTS = "Survey comments";
             protected const int TEMPERATURE = 16;
-            protected const int TIDE = 17;
+            protected const bool WindDrivenTide = true;
             protected const int VANTAGE_POINT = 18;
             protected const int WEATHER = 19;
             protected const int WIND = 20;
@@ -97,7 +97,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                 domainResult.SubmittedBy = 14;
                 domainResult.SurveyIdentifier = IDENTIFIER;
                 domainResult.SurveyTypeId = 15;
-                domainResult.TideId = TIDE;
+                domainResult.WindDrivenTide = WindDrivenTide;
                 domainResult.VantagePointId = VANTAGE_POINT;
                 domainResult.WeatherId = WEATHER;
                 domainResult.WindSpeed = WIND;
@@ -117,7 +117,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                     SiteTypeId = SITE_TYPE_ID,
                     SurveyComments = SURVEY_COMMENTS,
                     Temperature = TEMPERATURE,
-                    TideId = TIDE,
+                    WindDrivenTide = WindDrivenTide,
                     VantagePointId = VANTAGE_POINT,
                     WeatherId = WEATHER,
                     WindSpeed = WIND,
@@ -159,7 +159,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                     AssessmentId = SITE_TYPE_ID,
                     GeneralComments = SURVEY_COMMENTS,
                     StartTemperature = TEMPERATURE,
-                    TideId = TIDE,
+                    WindDrivenTide = WindDrivenTide,
                     VantagePointId = VANTAGE_POINT,
                     WeatherId = WEATHER,
                     WindSpeed = WIND,
@@ -467,7 +467,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
                 var result = RunHappyPath(domain);
 
-                Assert.Equal(domain.TideId, result.TideId);
+                Assert.Equal(domain.WindDrivenTide, result.WindDrivenTide);
             }
 
             [Fact]
@@ -650,7 +650,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                 public void MapsTide()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => TIDE == y.TideId)));
+                    MockDomainManager.Verify(x => x.Create(It.Is<SurveyPending>(y => WindDrivenTide == y.WindDrivenTide)));
                 }
 
                 [Fact]
@@ -1031,7 +1031,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                 public void MapsTide()
                 {
                     RunPositiveTest();
-                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => TIDE == y.TideId)));
+                    MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WindDrivenTide == y.WindDrivenTide)));
                 }
 
                 [Fact]

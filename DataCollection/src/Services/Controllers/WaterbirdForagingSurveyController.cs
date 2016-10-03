@@ -112,7 +112,8 @@ namespace FlightNode.DataCollection.Services.Controllers
                 LocationId = input.LocationId,
                 Temperature = input.StartTemperature,
                 SurveyIdentifier = input.SurveyIdentifier,
-                TideId = input.TideId,
+                WindDrivenTide = input.WindDrivenTide,
+                TimeLowTide = input.TimeOfLowTide.HasValue ? input.TimeOfLowTide.Value.ToShortTimeString() : string.Empty,
                 VantagePointId = input.VantagePointId,
                 WeatherId = input.WeatherId,
                 WindSpeed = input.WindSpeed,
@@ -180,7 +181,7 @@ namespace FlightNode.DataCollection.Services.Controllers
             survey.LocationId = input.LocationId;
             survey.StartTemperature = input.Temperature;
             survey.SurveyIdentifier = identifier;
-            survey.TideId = input.TideId;
+            survey.WindDrivenTide = input.WindDrivenTide;
             survey.SurveyTypeId = SurveyType.Foraging;
             survey.VantagePointId = input.VantagePointId;
             survey.WeatherId = input.WeatherId;
@@ -191,6 +192,15 @@ namespace FlightNode.DataCollection.Services.Controllers
             survey.WaterHeightId = input.WaterHeightId;
             survey.StartDate = ParseDateTime(input.StartDate, input.StartTime);
             survey.EndDate = ParseDateTime(input.StartDate, input.EndTime);
+
+            var tempDate = DateTime.MaxValue;
+            if (DateTime.TryParse(input.TimeLowTide, out tempDate))
+            {
+                survey.TimeOfLowTide = tempDate;
+            } else
+            {
+                survey.TimeOfLowTide = null;
+            }
         }
 
         private void MapObservationsIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)

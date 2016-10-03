@@ -119,7 +119,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
             protected const int STEP = 15;
             protected const string SURVEY_COMMENTS = "Survey comments";
             protected const int TEMPERATURE = 16;
-            protected const int TIDE = 17;
+            protected const bool WindDrivenTide = true;
             protected const int VANTAGE_POINT = 18;
             protected const int WEATHER = 19;
             protected const int WIND = 20;
@@ -145,7 +145,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                     SubmittedBy = USER_ID,
                     SurveyIdentifier = IDENTIFIER,
                     SurveyTypeId = SURVEY_TYPE_ID,
-                    TideId = TIDE,
+                    WindDrivenTide = WindDrivenTide,
                     TimeOfLowTide = LOW_TIDE,
                     VantagePointId = VANTAGE_POINT,
                     WeatherId = WEATHER,
@@ -261,9 +261,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 }
 
                 [Fact]
-                public void MapsTideId()
+                public void MapsWindDrivenTide()
                 {
-                    Assert.Equal(TIDE, RunTest().TideId);
+                    Assert.Equal(WindDrivenTide, RunTest().WindDrivenTide);
                 }
 
                 [Fact]

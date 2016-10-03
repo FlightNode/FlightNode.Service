@@ -44,7 +44,7 @@ namespace FlightNode.DataCollection.Domain.Entities
                 SubmittedBy = this.SubmittedBy,
                 SurveyIdentifier = this.SurveyIdentifier,
                 SurveyTypeId = this.SurveyTypeId,
-                TideId = this.TideId,
+                WindDrivenTide = this.WindDrivenTide,
                 TimeOfLowTide = this.TimeOfLowTide,
                 VantagePointId = this.VantagePointId,
                 WeatherId = this.WeatherId,

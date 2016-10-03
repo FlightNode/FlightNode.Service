@@ -48,8 +48,8 @@ namespace FlightNode.DataCollection.Domain.Entities
         public int? EndTemperature { get; set; }
 
         public int? WindSpeed { get; set; }
-
-        public int? TideId { get; set; }
+        
+        public bool? WindDrivenTide { get; set; }
 
         public int? WaterHeightId { get; set; }
 

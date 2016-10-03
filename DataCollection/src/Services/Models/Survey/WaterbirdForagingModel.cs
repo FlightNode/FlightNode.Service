@@ -22,7 +22,9 @@ namespace FlightNode.DataCollection.Services.Models.Survey
 
         public int? SiteTypeId { get; set; }
 
-        public int? TideId { get; set; }
+        public string TimeLowTide { get; set; }
+
+        public bool? WindDrivenTide { get; set; }
 
         public int? WaterHeightId { get; set; }
 
