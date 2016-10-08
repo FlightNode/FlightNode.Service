@@ -123,7 +123,8 @@ namespace FlightNode.DataCollection.Services.Controllers
                 StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
                 StartTime = input.StartDate.HasValue ? input.StartDate.Value.ToShortTimeString() : string.Empty,
                 EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty,
-                Updating = input.Completed
+                Updating = input.Completed,
+                WindDirection = input.WindDirection
             };
 
             foreach (var o in input.Observations)
@@ -192,6 +193,7 @@ namespace FlightNode.DataCollection.Services.Controllers
             survey.WaterHeightId = input.WaterHeightId;
             survey.StartDate = ParseDateTime(input.StartDate, input.StartTime);
             survey.EndDate = ParseDateTime(input.StartDate, input.EndTime);
+            survey.WindDirection = input.WindDirection;
 
             var tempDate = DateTime.MaxValue;
             if (DateTime.TryParse(input.TimeLowTide, out tempDate))

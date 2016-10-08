@@ -34,6 +34,8 @@ namespace FlightNode.DataCollection.Services.Models.Survey
 
         public int? WindSpeed { get; set; }
 
+        public int? WindDirection { get; set; }
+
         public string Observers { get; set; }
 
         public int? VantagePointId { get; set; }

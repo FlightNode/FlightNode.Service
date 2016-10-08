@@ -48,6 +48,8 @@ namespace FlightNode.DataCollection.Domain.Entities
         public int? EndTemperature { get; set; }
 
         public int? WindSpeed { get; set; }
+
+        public int? WindDirection { get; set; }
         
         public bool? WindDrivenTide { get; set; }
 
@@ -68,10 +70,13 @@ namespace FlightNode.DataCollection.Domain.Entities
         [NotMapped]
         public string LocationName { get; set; }
 
+        public DateTime CreateDate { get; set; }
+
         public SurveyBase()
         {
             Observations = new List<Observation>();
             Disturbances = new List<Disturbance>();
+            CreateDate = DateTime.Now;
         }
     }
 }

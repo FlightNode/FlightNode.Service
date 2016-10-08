@@ -161,6 +161,8 @@
     <Compile Include="Domain\Entities\SurveyCompleted.cs" />
     <Compile Include="Domain\Entities\SurveyType.cs" />
     <Compile Include="Domain\Entities\ValidationHelper.cs" />
+    <Compile Include="Domain\Entities\WindDirection.cs" />
+    <Compile Include="Domain\Entities\WindSpeed.cs" />
     <Compile Include="Domain\Entities\WorkLog.cs" />
     <Compile Include="Domain\Entities\WorkLogReportRecord.cs" />
     <Compile Include="Domain\Entities\WorkType.cs" />
@@ -256,6 +258,14 @@
     <Compile Include="Migrations\201610030013014_WindDrivenTide.cs" />
     <Compile Include="Migrations\201610030013014_WindDrivenTide.Designer.cs">
       <DependentUpon>201610030013014_WindDrivenTide.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610050330278_Survey-CreateDate.cs" />
+    <Compile Include="Migrations\201610050330278_Survey-CreateDate.Designer.cs">
+      <DependentUpon>201610050330278_Survey-CreateDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610081838559_WindSpeedAndDirection.cs" />
+    <Compile Include="Migrations\201610081838559_WindSpeedAndDirection.Designer.cs">
+      <DependentUpon>201610081838559_WindSpeedAndDirection.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
@@ -383,6 +393,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610030013014_WindDrivenTide.resx">
       <DependentUpon>201610030013014_WindDrivenTide.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610050330278_Survey-CreateDate.resx">
+      <DependentUpon>201610050330278_Survey-CreateDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610081838559_WindSpeedAndDirection.resx">
+      <DependentUpon>201610081838559_WindSpeedAndDirection.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

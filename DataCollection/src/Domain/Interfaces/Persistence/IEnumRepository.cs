@@ -15,5 +15,7 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
         Task<IReadOnlyCollection<SiteAssessment>> GetSiteAssessments();
         Task<IReadOnlyCollection<VantagePoint>> GetVantagePoints();
         Task<IReadOnlyCollection<AccessPoint>> GetAccessPoints();
+        Task<IReadOnlyCollection<WindSpeed>> GetWindSpeeds();
+        Task<IReadOnlyCollection<WindDirection>> GetWindDirections();
     }
 }

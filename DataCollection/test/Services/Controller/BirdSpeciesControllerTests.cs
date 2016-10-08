@@ -7,13 +7,10 @@ using Ploeh.AutoFixture;
 using Moq;
 using FlightNode.DataCollection.Domain.Managers;
 using FlightNode.DataCollection.Domain.Entities;
-using FlightNode.DataCollection.Services.Models;
 using Xunit;
 using System.Net.Http;
 using System.Net;
-using FlightNode.Common.Exceptions;
 using log4net;
-using FlightNode.Common.Api.Models;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 {
@@ -226,38 +223,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 
                 domainManagerMock.Verify(x => x.AddSpeciesToSurveyType(Constants.SpeciesId, It.IsAny<int>()));
             }
-
-            [Fact]
-            public void DoesNotExistExceptionCauses404NotFound()
-            {
-                const string message = "Species does not exist";
-                ArrangeForThrowOfDoesNotExistException(message);
-                ArrangeForDebugLogging();
-
-                var response = Act();
-
-                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-            }
-
-            [Fact]
-            public void DoesNotExistExceptionTellsUsWhatHappened()
-            {
-                const string message = "Species does not exist";
-                ArrangeForThrowOfDoesNotExistException(message);
-                ArrangeForDebugLogging();
-
-                var response = Act();
-
-                Assert.Equal(message, ReadResult<MessageModel>(response).Message);
-            }
-
-            private void ArrangeForThrowOfDoesNotExistException(string message)
-            {
-                Fixture.Freeze<Mock<IBirdSpeciesDomainManager>>()
-                    .Setup(x => x.AddSpeciesToSurveyType(It.IsAny<int>(), It.IsAny<int>()))
-                    .Throws(new DoesNotExistException(message));
-            }
-
+            
             private Mock<IBirdSpeciesDomainManager> ArrangeDomainCallToAddSpeciesToSurveyType()
             {
                 var domainManagerMock = Fixture.Freeze<Mock<IBirdSpeciesDomainManager>>();
@@ -305,39 +271,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
                 domainManagerMock.Verify(x => x.RemoveSpeciesFromSurveyType(Constants.SpeciesId, It.IsAny<int>()));
             }
 
-
-
-            [Fact]
-            public void DoesNotExistExceptionCauses404NotFound()
-            {
-                const string message = "Species does not exist";
-                ArrangeForThrowOfDoesNotExistException(message);
-                ArrangeForDebugLogging();
-
-                var response = Act();
-
-                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-            }
-
-            [Fact]
-            public void DoesNotExistExceptionTellsUsWhatHappened()
-            {
-                const string message = "Species does not exist";
-                ArrangeForThrowOfDoesNotExistException(message);
-                ArrangeForDebugLogging();
-
-                var response = Act();
-
-                Assert.Equal(message, ReadResult<MessageModel>(response).Message);
-            }
-
-
-            private void ArrangeForThrowOfDoesNotExistException(string message)
-            {
-                Fixture.Freeze<Mock<IBirdSpeciesDomainManager>>()
-                    .Setup(x => x.RemoveSpeciesFromSurveyType(It.IsAny<int>(), It.IsAny<int>()))
-                    .Throws(new DoesNotExistException(message));
-            }
+     
 
             private Mock<IBirdSpeciesDomainManager> ArrangeDomainCallToRemoveSpeciesFromSurveyType()
             {

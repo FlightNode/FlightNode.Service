@@ -44,19 +44,17 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Authorize]
         public IHttpActionResult Get([FromUri]BirdQuery query)
         {
-            return WrapWithTryCatch(() =>
+            IEnumerable<BirdSpecies> birds = null;
+            if (query.SurveyTypeId > 0)
             {
-                IEnumerable<BirdSpecies> birds = null;
-                if (query.SurveyTypeId > 0)
-                {
-                    birds = _domainManager.GetBirdSpeciesBySurveyTypeId(query.SurveyTypeId);
-                }
-                else {
-                    birds = _domainManager.FindAll();
-                }
+                birds = _domainManager.GetBirdSpeciesBySurveyTypeId(query.SurveyTypeId);
+            }
+            else
+            {
+                birds = _domainManager.FindAll();
+            }
 
-                return base.Ok(birds);
-            });
+            return base.Ok(birds);
         }
 
         /// <summary>
@@ -70,12 +68,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Authorize]
         public IHttpActionResult Get(int id)
         {
-            return WrapWithTryCatch(() =>
-            {
-                var x = _domainManager.FindById(id);
+            var x = _domainManager.FindById(id);
 
-                return Ok(x);
-            });
+            return Ok(x);
         }
 
         /// <summary>
@@ -98,12 +93,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                 throw new ArgumentNullException();
             }
 
-            return WrapWithTryCatch(() =>
-            {
-                input = _domainManager.Create(input);
+            input = _domainManager.Create(input);
 
-                return Created(input, input.Id.ToString());
-            });
+            return Created(input, input.Id.ToString());
         }
 
         /// <summary>
@@ -127,14 +119,11 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                 throw new ArgumentNullException();
             }
 
-            return WrapWithTryCatch(() =>
-            {
-                // TODO: PUT requests should return the modified object
+            // TODO: PUT requests should return the modified object
 
-                _domainManager.Update(input);
+            _domainManager.Update(input);
 
-                return NoContent();
-            });
+            return NoContent();
         }
 
         /// <summary>
@@ -148,18 +137,15 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Route("birdspecies/simple")]
         public IHttpActionResult GetSimpleList()
         {
-            return WrapWithTryCatch(() =>
+            var worktTypes = _domainManager.FindAll();
+
+            var models = worktTypes.Select(x => new SimpleListItem
             {
-                var worktTypes = _domainManager.FindAll();
-
-                var models = worktTypes.Select(x => new SimpleListItem
-                {
-                    Value = x.CommonName + " | <i>" + x.Species + "</i>",
-                    Id = x.Id
-                });
-
-                return Ok(models);
+                Value = x.CommonName + " | <i>" + x.Species + "</i>",
+                Id = x.Id
             });
+
+            return Ok(models);
         }
 
         /// <summary>
@@ -176,12 +162,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [HttpPost]
         public IHttpActionResult PostSurveyType(int speciesId, int surveyTypeId)
         {
-            return WrapWithTryCatch(() =>
-            {
-                _domainManager.AddSpeciesToSurveyType(speciesId, surveyTypeId);
+            _domainManager.AddSpeciesToSurveyType(speciesId, surveyTypeId);
 
-                return NoContent();
-            });
+            return NoContent();
         }
 
 
@@ -199,12 +182,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [HttpDelete]
         public IHttpActionResult DeleteSurveyType(int speciesId, int surveyTypeId)
         {
-            return WrapWithTryCatch(() =>
-            {
-                _domainManager.RemoveSpeciesFromSurveyType(speciesId, surveyTypeId);
+            _domainManager.RemoveSpeciesFromSurveyType(speciesId, surveyTypeId);
 
-                return NoContent();
-            });
+            return NoContent();
         }
     }
 }

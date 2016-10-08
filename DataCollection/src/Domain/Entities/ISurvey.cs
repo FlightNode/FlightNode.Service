@@ -42,6 +42,8 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         int? WindSpeed { get; set; }
 
+        int? WindDirection { get; set; }
+
         bool? WindDrivenTide { get; set; }
 
         DateTime? TimeOfLowTide { get; set; }

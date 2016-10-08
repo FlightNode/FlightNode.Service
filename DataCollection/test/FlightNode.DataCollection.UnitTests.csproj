@@ -145,8 +145,11 @@
     <Compile Include="Services\Controller\BirdSpeciesControllerTests.cs" />
     <Compile Include="Services\Controller\LoggingControllerBaseFixture.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WaterbirdForagingSurveyControllerTests.cs" />
+    <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenCreatingAForagingSurvey.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenExportingData.cs" />
+    <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenGettingASingleForagingSurvey.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenGettingTheListOfForagingSurveys.cs" />
+    <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenUpdatingAForagingSurvey.cs" />
     <Compile Include="Services\Controller\WorkLogsControllerTests.cs" />
     <Compile Include="Services\Controller\WorkTypeControllerTests.cs" />
     <Compile Include="Services\Controller\LocationControllerTests.cs" />

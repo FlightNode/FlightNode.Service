@@ -161,6 +161,17 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         #endregion
 
         #region IEnumRepository
+
+        public async Task<IReadOnlyCollection<WindDirection>> GetWindDirections()
+        {
+            return await this.WindDirections.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<WindSpeed>> GetWindSpeeds()
+        {
+            return await this.WindSpeed.ToListAsync();
+        }
+
         public async Task<IReadOnlyCollection<Weather>> GetWeather()
         {
             return await this.Weather.ToListAsync();
@@ -249,6 +260,10 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DbSet<WorkLogReportRecord> WorkLogReportRecords { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<WindDirection> WindDirections { get; set; }
+
+        public DbSet<WindSpeed> WindSpeed { get; set; }
         #endregion
 
 
@@ -294,11 +309,15 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 .HasRequired(x => x.DisturbanceType)
                 .WithMany(x => x.Disturbances);
 
-            modelBuilder.Entity<SurveyCompleted>().ToTable("SurveyCompleted");
+            modelBuilder.Entity<SurveyCompleted>()
+                .ToTable("SurveyCompleted")
+                .Ignore(survey => survey.CreateDate);
 
             modelBuilder.Entity<Weather>().ToTable("Weather");
 
-            modelBuilder.Entity<SurveyPending>().ToTable("SurveyPending");
+            modelBuilder.Entity<SurveyPending>()
+                .ToTable("SurveyPending")
+                .Ignore(survey => survey.CreateDate);
 
             modelBuilder.Entity<HabitatType>().ToTable("HabitatTypes");
             modelBuilder.Entity<SurveyActivity>().ToTable("SurveyActivities");
