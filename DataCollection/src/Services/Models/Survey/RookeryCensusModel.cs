@@ -18,7 +18,7 @@ namespace FlightNode.DataCollection.Services.Models.Survey
         public string StartTime { get; set; }
 
         public string EndTime { get; set; }
-
+        public decimal? PrepTimeHours { get; set; }
         public int? SiteTypeId { get; set; }
         
         public string Observers { get; set; }
@@ -36,6 +36,8 @@ namespace FlightNode.DataCollection.Services.Models.Survey
         public List<ObservationModel> Observations { get; set; }
 
         public int SurveyId { get; set; }
+
+        public int SubmittedBy { get; set; }
 
 
         public RookeryCensusModel()

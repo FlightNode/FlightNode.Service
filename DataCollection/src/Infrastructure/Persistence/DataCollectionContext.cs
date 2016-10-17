@@ -139,6 +139,13 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 .AsNoTracking();
         }
 
+        ICrudSet<User> IWorkLogPersistence.Users
+        {
+            get
+            {
+                return new CrudSetDecorator<User>(Users);
+            }
+        }
         #endregion
 
 

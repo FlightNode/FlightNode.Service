@@ -114,7 +114,9 @@ namespace FlightNode.DataCollection.Services.Controllers
                 StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
                 StartTime = input.StartDate.HasValue ? input.StartDate.Value.ToShortTimeString() : string.Empty,
                 EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty,
-                Updating = input.Completed
+                Updating = input.Completed,
+                PrepTimeHours = input.PrepTimeHours,
+                SubmittedBy = input.SubmittedBy
             };
 
             foreach (var o in input.Observations)
@@ -176,6 +178,8 @@ namespace FlightNode.DataCollection.Services.Controllers
             survey.Id = input.SurveyId;
             survey.StartDate = ParseDateTime(input.StartDate, input.StartTime);
             survey.EndDate = ParseDateTime(input.StartDate, input.EndTime);
+            survey.PrepTimeHours = input.PrepTimeHours;
+            survey.SubmittedBy = input.SubmittedBy;
         }
 
         private void MapObservationsIntoSurvey(ISurvey survey, RookeryCensusModel input, Guid identifier)

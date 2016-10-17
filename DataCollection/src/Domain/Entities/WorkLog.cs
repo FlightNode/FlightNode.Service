@@ -32,5 +32,17 @@ namespace FlightNode.DataCollection.Domain.Entities
         public int NumberOfVolunteers { get; set; }
 
         public string TasksCompleted { get; set; }
+    
+    }
+
+    /// <summary>
+    /// Used to map additional information when retrieving a <see cref="WorkLog"/> record, but never with inserts/updates.
+    /// </summary>
+    public class WorkLogWithVolunteerName : WorkLog
+    {
+        public string VolunteerName { get; set; }
+
     }
 }
+
+

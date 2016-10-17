@@ -18,6 +18,8 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         DateTime? EndDate { get; set; }
 
+        decimal? PrepTimeHours { get; set; }
+
         int? AssessmentId { get; set; }
 
         int? VantagePointId { get; set; }

@@ -133,7 +133,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
             context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Personal watercraft (jetski, windsurfer, etc.)" });
             context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Humans on foot" });
             context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Noise (specify source)" });
-            context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Other (list)" });
+            context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Other (describe in comment box)" });
         }
     }
 }

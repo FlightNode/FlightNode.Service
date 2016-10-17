@@ -122,11 +122,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
             protected const bool WindDrivenTide = true;
             protected const int VANTAGE_POINT = 18;
             protected const int WEATHER = 19;
-            protected const int WIND = 20;
+            protected const int WindSpeed = 20;
             protected const int END_TEMPERATURE = 21;
             protected const int USER_ID = 22;
             protected const int SURVEY_TYPE_ID = 23;
             protected const string Observers = "a, b, and c";
+            protected const int WindDirection = 3;
+            protected const decimal PrepTimeHours = 0.01m;
 
 
             protected SurveyPending CreateDefault()
@@ -149,8 +151,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                     TimeOfLowTide = LOW_TIDE,
                     VantagePointId = VANTAGE_POINT,
                     WeatherId = WEATHER,
-                    WindSpeed = WIND,
-                    Observers = Observers
+                    WindSpeed = WindSpeed,
+                    Observers = Observers,
+                    WindDirection = WindDirection,
+                    PrepTimeHours = PrepTimeHours
                 };
                 
                 result.Add(new Disturbance
@@ -180,6 +184,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 private SurveyCompleted RunTest()
                 {
                     return CreateDefault().ToSurveyCompleted();
+                }
+
+                [Fact]
+                public void MapsPrepTime()
+                {
+                    Assert.Equal(PrepTimeHours, RunTest().PrepTimeHours);
+                }
+
+
+                [Fact]
+                public void MapsWindDirection()
+                {
+                    Assert.Equal(WindDirection, RunTest().WindDirection);
                 }
 
                 [Fact]
@@ -287,7 +304,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 [Fact]
                 public void MapsWindSpeed()
                 {
-                    Assert.Equal(WIND, RunTest().WindSpeed);
+                    Assert.Equal(WindSpeed, RunTest().WindSpeed);
                 }
 
                 [Fact]

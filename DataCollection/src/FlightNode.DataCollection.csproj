@@ -267,6 +267,10 @@
     <Compile Include="Migrations\201610081838559_WindSpeedAndDirection.Designer.cs">
       <DependentUpon>201610081838559_WindSpeedAndDirection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610161902227_SurveyPrepTime.cs" />
+    <Compile Include="Migrations\201610161902227_SurveyPrepTime.Designer.cs">
+      <DependentUpon>201610161902227_SurveyPrepTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
@@ -399,6 +403,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610081838559_WindSpeedAndDirection.resx">
       <DependentUpon>201610081838559_WindSpeedAndDirection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610161902227_SurveyPrepTime.resx">
+      <DependentUpon>201610161902227_SurveyPrepTime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

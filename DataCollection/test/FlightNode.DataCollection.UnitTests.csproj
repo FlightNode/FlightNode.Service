@@ -144,15 +144,27 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Controller\BirdSpeciesControllerTests.cs" />
     <Compile Include="Services\Controller\LoggingControllerBaseFixture.cs" />
+    <Compile Include="Services\Controller\RookeryCensusControllerTests\RookeryCensusControllerTests.cs" />
+    <Compile Include="Services\Controller\RookeryCensusControllerTests\WhenCreatingARookeryCensus.cs" />
+    <Compile Include="Services\Controller\RookeryCensusControllerTests\WhenExportingData.cs" />
+    <Compile Include="Services\Controller\RookeryCensusControllerTests\WhenGettingASingleRookeryCensus.cs" />
+    <Compile Include="Services\Controller\RookeryCensusControllerTests\WhenGettingTheListOfRookryCensuses.cs" />
+    <Compile Include="Services\Controller\RookeryCensusControllerTests\WhenUpdatingARookeryCensus.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WaterbirdForagingSurveyControllerTests.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenCreatingAForagingSurvey.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenExportingData.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenGettingASingleForagingSurvey.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenGettingTheListOfForagingSurveys.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenUpdatingAForagingSurvey.cs" />
-    <Compile Include="Services\Controller\WorkLogsControllerTests.cs" />
     <Compile Include="Services\Controller\WorkTypeControllerTests.cs" />
     <Compile Include="Services\Controller\LocationControllerTests.cs" />
+    <Compile Include="Services\WorkLogControllerTests\ArgumentTests.cs" />
+    <Compile Include="Services\WorkLogControllerTests\WhenCreatingAWorkLogEntry.cs" />
+    <Compile Include="Services\WorkLogControllerTests\WhenExportingAllData.cs" />
+    <Compile Include="Services\WorkLogControllerTests\WhenGettingAllEntries.cs" />
+    <Compile Include="Services\WorkLogControllerTests\WhenGettingASingleWorkLogEntry.cs" />
+    <Compile Include="Services\WorkLogControllerTests\WhenGettingMyOwnLogs.cs" />
+    <Compile Include="Services\WorkLogControllerTests\WhenUpdateAWorkLogEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

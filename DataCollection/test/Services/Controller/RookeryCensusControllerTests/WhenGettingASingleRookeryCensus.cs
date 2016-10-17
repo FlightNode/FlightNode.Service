@@ -5,9 +5,9 @@ using System.Web.Http;
 using System.Web.Http.Results;
 using Xunit;
 
-namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.WaterbirdForagingSurveyControllerTests
+namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.RookeryCensusControllerTests
 {
-    public class WhenGettingASingleForagingSurvey : Fixture
+    public class WhenGettingASingleRookeryCensus : Fixture
     {
         [Fact]
         public void MapsPrepTimeHours()
@@ -23,22 +23,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             var domain = BuildDefaultSurvey();
             var result = RunHappyPath(domain);
             Assert.Equal(domain.SubmittedBy, result.SubmittedBy);
-        }
-
-        [Fact]
-        public void MapsWindDirection()
-        {
-            var domain = BuildDefaultSurvey();
-            var result = RunHappyPath(domain);
-            Assert.Equal(domain.WindDirection, result.WindDirection);
-        }
-
-        [Fact]
-        public void MapsWaterHeightId()
-        {
-            var domain = BuildDefaultSurvey();
-            var result = RunHappyPath(domain);
-            Assert.Equal(domain.WaterHeightId, result.WaterHeightId);
         }
 
         [Fact]
@@ -150,17 +134,38 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             var result = RunHappyPath(domain);
 
-            Assert.Equal(domain.Observations.First().Bin1, result.Observations.First().Adults);
+            Assert.Equal(domain.Observations.First().Bin3, result.Observations.First().Adults);
         }
 
         [Fact]
-        public void MapsObservation_Juveniles()
+        public void MapsObservationChicksPresent()
         {
             var domain = BuildDefaultSurvey();
 
             var result = RunHappyPath(domain);
 
-            Assert.Equal(domain.Observations.First().Bin2, result.Observations.First().Juveniles);
+            Assert.Equal(ChicksPresent, result.Observations.First().ChicksPresent);
+        }
+
+        [Fact]
+        public void MapsObservationNestsPresent()
+        {
+            var domain = BuildDefaultSurvey();
+
+            var result = RunHappyPath(domain);
+
+            Assert.Equal(NestsPresent, result.Observations.First().NestsPresent);
+        }
+
+
+        [Fact]
+        public void MapsObservationFledglingsPresent()
+        {
+            var domain = BuildDefaultSurvey();
+
+            var result = RunHappyPath(domain);
+
+            Assert.Equal(FledglingsPresent, result.Observations.First().FledglingsPresent);
         }
 
         [Fact]
@@ -183,18 +188,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             Assert.Equal(domain.Observations.First().FeedingSuccessRate, result.Observations.First().FeedingId);
         }
 
-
-
-        [Fact]
-        public void MapsObservation_HabitatId()
-        {
-            var domain = BuildDefaultSurvey();
-
-            var result = RunHappyPath(domain);
-
-            Assert.Equal(domain.Observations.First().HabitatTypeId, result.Observations.First().HabitatId);
-        }
-
+        
         [Fact]
         public void MapsObservation_ObservationId()
         {
@@ -204,27 +198,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             Assert.Equal(domain.Observations.First().Id, result.Observations.First().ObservationId);
         }
-
-        [Fact]
-        public void MapsObservation_PrimaryActivityId()
-        {
-            var domain = BuildDefaultSurvey();
-
-            var result = RunHappyPath(domain);
-
-            Assert.Equal(domain.Observations.First().PrimaryActivityId, result.Observations.First().PrimaryActivityId);
-        }
-
-        [Fact]
-        public void MapsObservation_SecondaryActivityId()
-        {
-            var domain = BuildDefaultSurvey();
-
-            var result = RunHappyPath(domain);
-
-            Assert.Equal(domain.Observations.First().SecondaryActivityId, result.Observations.First().SecondaryActivityId);
-        }
-
 
         [Fact]
         public void MapsStartDate()
@@ -268,25 +241,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             Assert.Equal(domain.SurveyIdentifier, result.SurveyIdentifier);
         }
 
-        [Fact]
-        public void MapsTemperature()
-        {
-            var domain = BuildDefaultSurvey();
-
-            var result = RunHappyPath(domain);
-
-            Assert.Equal(domain.StartTemperature, result.Temperature);
-        }
-
-        [Fact]
-        public void MapsTideInfoId()
-        {
-            var domain = BuildDefaultSurvey();
-
-            var result = RunHappyPath(domain);
-
-            Assert.Equal(domain.WindDrivenTide, result.WindDrivenTide);
-        }
 
         [Fact]
         public void MapsVantagePointInfoId()
@@ -298,25 +252,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             Assert.Equal(domain.VantagePointId, result.VantagePointId);
         }
 
-        [Fact]
-        public void MapsWeatherInfoId()
-        {
-            var domain = BuildDefaultSurvey();
-
-            var result = RunHappyPath(domain);
-
-            Assert.Equal(domain.WeatherId, result.WeatherId);
-        }
-
-        [Fact]
-        public void MapsWindSpeed()
-        {
-            var domain = BuildDefaultSurvey();
-
-            var result = RunHappyPath(domain);
-
-            Assert.Equal(domain.WindSpeed, result.WindSpeed);
-        }
 
         [Fact]
         public void MapsObservers()
@@ -326,11 +261,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             Assert.Equal(domain.Observers, result.Observers);
         }
 
-        private WaterbirdForagingModel RunHappyPath(ISurvey domain)
+        private RookeryCensusModel RunHappyPath(ISurvey domain)
         {
-            SetupMockResult(domain, SurveyType.Foraging);
+            SetupMockResult(domain, SurveyType.Rookery);
 
-            var result = (RunTest() as OkNegotiatedContentResult<WaterbirdForagingModel>)
+            var result = (RunTest() as OkNegotiatedContentResult<RookeryCensusModel>)
                             .Content;
             return result;
         }
@@ -340,10 +275,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
         [Fact]
         public void MatchingItemGeneratesStatus200()
         {
-            SetupMockResult(BuildDefaultSurvey(), SurveyType.Foraging);
+            SetupMockResult(BuildDefaultSurvey(), SurveyType.Rookery);
 
             var result = RunTest();
-            Assert.IsType<OkNegotiatedContentResult<WaterbirdForagingModel>>(result);
+            Assert.IsType<OkNegotiatedContentResult<RookeryCensusModel>>(result);
         }
 
         [Fact]
@@ -351,7 +286,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
         {
             //
             // Arrange
-            SetupMockResult(null, SurveyType.Foraging);
+            SetupMockResult(null, SurveyType.Rookery);
             //
             // Act
             var result = RunTest();

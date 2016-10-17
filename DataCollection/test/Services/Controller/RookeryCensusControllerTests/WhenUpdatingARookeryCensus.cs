@@ -1,6 +1,5 @@
 ﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Services.Models.Survey;
-using FligthNode.Common.Api.Controllers;
 using Moq;
 using System;
 using System.Linq;
@@ -8,9 +7,9 @@ using System.Net;
 using System.Net.Http;
 using Xunit;
 
-namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.WaterbirdForagingSurveyControllerTests
+namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.RookeryCensusControllerTests
 {
-    public class WhenUpdatingAForagingSurvey
+    public class WhenUpdatingARookeryCensus
     {
         public class HappyPath : Fixture
         {
@@ -34,14 +33,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             {
                 RunPositiveTest();
                 MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(sp => sp.SubmittedBy == SubmittedBy)));
-            }
-
-            [Fact]
-            public void MapsWaterHeightId()
-            {
-                RunPositiveTest();
-
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WaterHeightId == y.WaterHeightId)));
             }
 
             [Fact]
@@ -97,19 +88,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                 MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SURVEY_COMMENTS == y.GeneralComments)));
             }
 
-            [Fact]
-            public void MapsTemperature()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => TEMPERATURE == y.StartTemperature)));
-            }
-
-            [Fact]
-            public void MapsTide()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WindDrivenTide == y.WindDrivenTide)));
-            }
 
             [Fact]
             public void MapsVantagePoint()
@@ -118,27 +96,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                 MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => VANTAGE_POINT == y.VantagePointId)));
             }
 
-            [Fact]
-            public void MapsWeather()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WEATHER == y.WeatherId)));
-            }
-
-            [Fact]
-            public void MapsWindSpeed()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WindSpeed == y.WindSpeed)));
-            }
-
-
-            [Fact]
-            public void MapsWindDirection()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => WindDirection == y.WindDirection)));
-            }
 
             [Fact]
             public void MapsDisturbedBehavior()
@@ -204,33 +161,34 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             }
 
             [Fact]
-            public void MapAdultsToBin1()
+            public void MapAdultsToBin3()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ADULTS == y.Observations.First().Bin1)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => NumberOfAdults == y.Observations.First().Bin3)));
             }
 
 
             [Fact]
-            public void MapJuvenilesToBin2()
+            public void MapChicksPresent()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => JUVENILES == y.Observations.First().Bin2)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ChicksPresent == y.Observations.First().ChicksPresent)));
             }
 
             [Fact]
-            public void MapPrimaryBehavior()
+            public void MapNestsPresent()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => PRIMARY_ACTIVITY_ID == y.Observations.First().PrimaryActivityId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => NestsPresent == y.Observations.First().NestPresent)));
             }
 
             [Fact]
-            public void MapSecondaryBehavior()
+            public void MapFledglingsPresent()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SECONDARY_ACTIVITY_ID == y.Observations.First().SecondaryActivityId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => FledglingsPresent == y.Observations.First().FledglingPresent)));
             }
+            
 
             [Fact]
             public void MapSpeciesId()
@@ -240,24 +198,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             }
 
             [Fact]
-            public void MapsFeedingId()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => FEEDING_ID == y.Observations.First().FeedingSuccessRate)));
-            }
-
-            [Fact]
-            public void MapsHabitatId()
-            {
-                RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => HABITAT_ID == y.Observations.First().HabitatTypeId)));
-            }
-
-            [Fact]
             public void MapsSurveyTypeId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyType.Foraging == y.SurveyTypeId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyType.Rookery == y.SurveyTypeId)));
             }
 
             [Fact]
@@ -283,7 +227,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             {
                 //
                 // Arrange
-                WaterbirdForagingModel input = CreateDefautInput();
+                RookeryCensusModel input = CreateDefautInput();
                 input.SurveyIdentifier = IDENTIFIER;
 
                 MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>()))
@@ -331,7 +275,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
                 //
                 // Arrange
-                WaterbirdForagingModel input = CreateDefautInput();
+                RookeryCensusModel input = CreateDefautInput();
 
                 //
                 // Act

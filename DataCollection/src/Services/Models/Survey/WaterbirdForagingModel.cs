@@ -17,6 +17,7 @@ namespace FlightNode.DataCollection.Services.Models.Survey
         public string StartDate { get; set; }
 
         public string StartTime { get; set; }
+        public decimal? PrepTimeHours { get; set; }
 
         public string EndTime { get; set; }
 
@@ -51,8 +52,8 @@ namespace FlightNode.DataCollection.Services.Models.Survey
         public List<ObservationModel> Observations { get; set; }
 
         public int SurveyId { get; set; }
+        public int SubmittedBy { get; set; }
 
-        
         public WaterbirdForagingModel()
         {
             SurveyIdentifier = Guid.Empty;

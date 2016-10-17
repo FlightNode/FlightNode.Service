@@ -46,14 +46,11 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Authorize(Roles = "Administrator")]
         public IHttpActionResult Get()
         {
-            return WrapWithTryCatch(() =>
-            {
-                var locations = _domainManager.FindAll();
+            var locations = _domainManager.FindAll();
 
-                var models = locations.Select(Map);
+            var models = locations.Select(Map);
 
-                return Ok(models);
-            });
+            return Ok(models);
         }
 
         /// <summary>
@@ -67,14 +64,11 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Authorize]
         public IHttpActionResult Get(int id)
         {
-            return WrapWithTryCatch(() =>
-            {
-                var x = _domainManager.FindById(id);
+            var x = _domainManager.FindById(id);
 
-                WorkLogModel model = Map(x);
+            var model = MapWithVolunteerName(x);
 
-                return Ok(model);
-            });
+            return Ok(model);
         }
 
 
@@ -90,14 +84,11 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [HttpGet]
         public IHttpActionResult GetMyLogs()
         {
-            return WrapWithTryCatch(() =>
-            {
-                int userId = RetrieveCurrentUserId();
+            int userId = RetrieveCurrentUserId();
 
-                var data = _domainManager.GetForUser(userId)
-                                    .ToList();
-                return Ok(data);
-            });
+            var data = _domainManager.GetForUser(userId)
+                                .ToList();
+            return Ok(data);
         }
 
         private int RetrieveCurrentUserId()
@@ -116,13 +107,10 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Route("api/v1/worklogs/export")]
         public IHttpActionResult GetExport()
         {
-            return WrapWithTryCatch(() =>
-            {
-                var data = _domainManager.GetReport()
-                                    .ToList();
-                
-                return Ok(data);
-            });
+            var data = _domainManager.GetReport()
+                                .ToList();
+
+            return Ok(data);
         }
 
         /// <summary>
@@ -157,21 +145,18 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                 throw new ArgumentNullException();
             }
 
-            return WrapWithTryCatch(() =>
-            {
-                input.Sanitize(_sanitizer);
+            input.Sanitize(_sanitizer);
 
-                var WorkLog = Map(input);
+            var WorkLog = Map(input);
 
-                WorkLog = _domainManager.Create(WorkLog);
+            WorkLog = _domainManager.Create(WorkLog);
 
-                var locationHeader = this.Request
-                    .RequestUri
-                    .ToString()
-                    .AppendPathSegment(WorkLog.Id.ToString());
+            var locationHeader = this.Request
+                .RequestUri
+                .ToString()
+                .AppendPathSegment(WorkLog.Id.ToString());
 
-                return Created(locationHeader, WorkLog);
-            });
+            return Created(locationHeader, WorkLog);
         }
 
         /// <summary>
@@ -208,31 +193,35 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                 throw new ArgumentNullException();
             }
 
-            return WrapWithTryCatch(() =>
-            {
-                input.Sanitize(_sanitizer);
+            input.Sanitize(_sanitizer);
 
-                var location = Map(input);
+            var location = Map(input);
 
-                _domainManager.Update(location);
+            _domainManager.Update(location);
 
-                return NoContent();
-            });
+            return NoContent();
         }
 
-        private static WorkLogModel Map(WorkLog x)
+        private static WorkLogModel MapWithVolunteerName(WorkLogWithVolunteerName workLogEntry)
+        {
+            var model = Map(workLogEntry);
+            model.VolunteerName = workLogEntry.VolunteerName;
+            return model;
+        }
+
+        private static WorkLogModel Map(WorkLog workLogEntry)
         {
             return new WorkLogModel
             {
-                LocationId = x.LocationId,
-                TravelTimeHours = x.TravelTimeHours,
-                UserId = x.UserId,
-                WorkDate = x.WorkDate,
-                WorkHours = x.WorkHours,
-                WorkTypeId = x.WorkTypeId,
-                Id = x.Id,
-                TasksCompleted = x.TasksCompleted,
-                NumberOfVolunteers = x.NumberOfVolunteers
+                LocationId = workLogEntry.LocationId,
+                TravelTimeHours = workLogEntry.TravelTimeHours,
+                UserId = workLogEntry.UserId,
+                WorkDate = workLogEntry.WorkDate,
+                WorkHours = workLogEntry.WorkHours,
+                WorkTypeId = workLogEntry.WorkTypeId,
+                Id = workLogEntry.Id,
+                TasksCompleted = workLogEntry.TasksCompleted,
+                NumberOfVolunteers = workLogEntry.NumberOfVolunteers
             };
         }
         private static WorkLog Map(WorkLogModel x)
