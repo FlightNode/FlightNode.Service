@@ -353,6 +353,41 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var result = BuildSystem().FindById(id);
                 return result;
             }
+
+            [Fact]
+            public void ConfirmQueriesByIdValue()
+            {
+                // Arrange
+                SetupFakeDbSets();
+                FakeSet.List.Add(new WorkLog
+                {
+                    Id = id,
+                    UserId = VolunteerId,
+                    LocationId = LocationId,
+                    NumberOfVolunteers = NumberOfVolunteers,
+                    TasksCompleted = TasksCompleted,
+                    TravelTimeHours = TravelTimeHours,
+                    WorkDate = WorkDate,
+                    WorkHours = WorkHours,
+                    WorkTypeId = WorkTypeId
+                });
+
+                SetupUserSet();
+                UsersSet.List.Add(new User
+                {
+                    Id = VolunteerId,
+                    GivenName = volunteerFirstName,
+                    FamilyName = volunteerLastName
+                });
+
+                // Act
+                Action act = () => BuildSystem().FindById(id + 1909);
+
+                // Assert
+                Assert.Throws<DoesNotExistException>(act);
+            }
+
+
         }
 
         public class Update : CreateFakeSet

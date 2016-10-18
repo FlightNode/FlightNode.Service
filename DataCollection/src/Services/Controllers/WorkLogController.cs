@@ -64,9 +64,14 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Authorize]
         public IHttpActionResult Get(int id)
         {
-            var x = _domainManager.FindById(id);
+            var record = _domainManager.FindById(id);
 
-            var model = MapWithVolunteerName(x);
+            if (record == null)
+            {
+                return NotFound();
+            }
+
+            var model = MapWithVolunteerName(record);
 
             return Ok(model);
         }

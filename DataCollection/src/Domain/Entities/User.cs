@@ -1,4 +1,5 @@
 ﻿using FlightNode.Common.BaseClasses;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
@@ -25,13 +26,5 @@ namespace FlightNode.DataCollection.Domain.Entities
         /// Gets or sets the Family ("last") name.
         /// </summary>
         public string FamilyName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Full Name as trimmed concatenation of Given and Family names.
-        /// </summary>
-        public string GetFullName()
-        {
-            return ((GivenName ?? "") + " " + (FamilyName ?? "")).Trim();
-        }
     }
 }

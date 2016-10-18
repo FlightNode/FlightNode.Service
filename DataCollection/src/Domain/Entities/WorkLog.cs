@@ -1,6 +1,7 @@
 ﻿using FlightNode.Common.BaseClasses;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Domain.Entities
 {
@@ -38,6 +39,7 @@ namespace FlightNode.DataCollection.Domain.Entities
     /// <summary>
     /// Used to map additional information when retrieving a <see cref="WorkLog"/> record, but never with inserts/updates.
     /// </summary>
+    [NotMapped]
     public class WorkLogWithVolunteerName : WorkLog
     {
         public string VolunteerName { get; set; }

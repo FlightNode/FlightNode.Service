@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
@@ -336,10 +337,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             modelBuilder.Entity<WaterHeight>().ToTable("WaterHeights");
 
             modelBuilder.Entity<WorkLogReportRecord>().ToTable("WorkLogReport")
-                .HasKey(x => x.Id);
-
-            modelBuilder.Entity<User>().ToTable("Users");
-        }
+                .HasKey(x => x.Id);        }
 
 
         public static DataCollectionContext Create()

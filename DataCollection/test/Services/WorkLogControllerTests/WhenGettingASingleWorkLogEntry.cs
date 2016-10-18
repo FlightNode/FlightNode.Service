@@ -70,6 +70,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerT
             Assert.Equal(id, RunPositiveTest().Id);
         }
 
+
         private WorkLogModel RunPositiveTest()
         {
             // Arrange 

@@ -55,7 +55,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public new WorkLogWithVolunteerName FindById(int id)
         {
-            return WorkLogPersistence.Collection
+            var record = WorkLogPersistence.Collection
                 .Join(WorkLogPersistence.Users,
                     workLog => workLog.UserId,
                     user => user.Id,
@@ -69,12 +69,19 @@ namespace FlightNode.DataCollection.Domain.Managers
                     TasksCompleted = x.workLog.TasksCompleted,
                     TravelTimeHours = x.workLog.TravelTimeHours,
                     UserId = x.workLog.UserId,
-                    VolunteerName = x.user.GetFullName(),
+                    VolunteerName = x.user.GivenName + " " + x.user.FamilyName,
                     WorkDate = x.workLog.WorkDate,
                     WorkHours = x.workLog.WorkHours,
                     WorkTypeId = x.workLog.WorkTypeId
                 })
-                .FirstOrDefault();
+                .FirstOrDefault(wl => wl.Id == id);
+
+            if (record == null)
+            {
+                throw new DoesNotExistException("Activity Log ID " + id);
+            }
+
+            return record;
         }
 
         private static WorkLog MapInputToExisting(WorkLog input, WorkLog existing)
