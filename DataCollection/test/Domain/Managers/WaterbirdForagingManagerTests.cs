@@ -81,6 +81,45 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             }
         }
 
+        public class Delete : CreateFakeSet
+        {
+            [Fact]
+            public void GivenRecordExistsThenReturnTrue()
+            {
+                // Arrange
+                var survey = new SurveyPending { SurveyIdentifier = IDENTIFIER };
+                FakeSurveysPending.Add(survey);
+
+                SurveyPersistenceMock.Setup(x => x.SurveysPending)
+                    .Returns(FakeSurveysPending);
+
+                SurveyPersistenceMock.Setup(x => x.SaveChanges())
+                    .Returns(1);
+
+                // Act
+                var result = BuildSystem().Delete(IDENTIFIER);
+
+                // Assert
+                Assert.True(result);
+            }
+
+            [Fact]
+            public void GivenRecordDoesNotExistsThenReturnFalse()
+            {
+                // Arrange
+                
+                SurveyPersistenceMock.Setup(x => x.SurveysPending)
+                    .Returns(FakeSurveysPending);
+                
+
+                // Act
+                var result = BuildSystem().Delete(IDENTIFIER);
+
+                // Assert
+                Assert.False(result);
+            }
+        }
+
         public class Create : Fixture
         {
             protected const int SURVEY_ID = 23;
@@ -604,7 +643,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakePendingSet();
                 UseFakeCompletedSet();
 
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER,1);
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, 1);
 
                 Assert.Null(result);
             }
@@ -763,7 +802,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeDisturbances();
                 UseFakeObservations();
 
-                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER,  SurveyTypeId = SurveyType.Rookery };
+                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysCompleted.Add(completed);
 
                 var disturbance = new Disturbance { SurveyIdentifier = IDENTIFIER };

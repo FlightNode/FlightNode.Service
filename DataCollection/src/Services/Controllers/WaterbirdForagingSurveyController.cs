@@ -5,6 +5,7 @@ using FlightNode.DataCollection.Services.Models.Survey;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace FlightNode.DataCollection.Services.Controllers
@@ -14,7 +15,7 @@ namespace FlightNode.DataCollection.Services.Controllers
     /// </summary>
     public class WaterbirdForagingSurveyController : SurveyControllerBase<WaterbirdForagingModel>
     {
-
+        private const string IdentifierRoute = "api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}";
 
         /// <summary>
         /// Creates a new instance of <see cref="WaterbirdForagingSurveyController"/>.
@@ -36,7 +37,7 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// </returns>
         [HttpGet]
         [Authorize]
-        [Route("api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}")]
+        [Route(IdentifierRoute)]
         public IHttpActionResult Get(Guid surveyIdentifier)
         {
             return GetSurveyById(surveyIdentifier, SurveyType.Foraging);
@@ -96,10 +97,44 @@ namespace FlightNode.DataCollection.Services.Controllers
         [Authorize]
         public IHttpActionResult Put(Guid surveyIdentifier, [FromBody]WaterbirdForagingModel input)
         {
+            Validate(input);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Update(surveyIdentifier, input);
         }
 
 
+
+        /// <summary>
+        /// Deletes a survey.
+        /// </summary>
+        /// <param name="surveyIdentifier">Survey identifier</param>
+        /// <returns>
+        /// 204 if successful
+        /// 404 if not found
+        /// 500 if an exception occurs
+        /// </returns>
+        [HttpDelete]
+        [Authorize]
+        [Route(IdentifierRoute)]
+        public IHttpActionResult Delete([FromUri] Guid surveyIdentifier)
+        {
+            // TODO: add protection so that malicious user can't delete
+            // anything but own records, unless an administrator
+
+            if (_domainManager.FindBySurveyId(surveyIdentifier, SurveyType.Foraging) != null)
+            {
+                if (_domainManager.Delete(surveyIdentifier))
+                {
+                    return NoContent();
+                }
+            }
+
+            return NotFound();
+        }
 
         protected override WaterbirdForagingModel Map(ISurvey input)
         {
@@ -176,6 +211,16 @@ namespace FlightNode.DataCollection.Services.Controllers
 
         private void MapForagingInputIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
         {
+
+            // This function exposes an architectural problem: by focusing 
+            // validation in the businesslogic layer, we've neglected to 
+            // validate input data transfer objects that must be translated 
+            // into business objects. Thus we do not get any validation of the
+            // formatting on a date string, for example.
+
+            // Added validation to the startdate field through model attribute.
+            // TODO: time validation, maybe some other fields.
+
             survey.AccessPointId = input.AccessPointId;
             survey.AssessmentId = input.SiteTypeId;
             survey.DisturbanceComments = input.DisturbanceComments;
@@ -202,7 +247,8 @@ namespace FlightNode.DataCollection.Services.Controllers
             if (DateTime.TryParse(input.TimeLowTide, out tempDate))
             {
                 survey.TimeOfLowTide = tempDate;
-            } else
+            }
+            else
             {
                 survey.TimeOfLowTide = null;
             }

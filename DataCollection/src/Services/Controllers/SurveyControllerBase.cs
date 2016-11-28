@@ -4,6 +4,8 @@ using FlightNode.DataCollection.Services.Models.Survey;
 using FligthNode.Common.Api.Controllers;
 using Microsoft.AspNet.Identity;
 using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Web.Http;
 
 namespace FlightNode.DataCollection.Services.Controllers
@@ -108,9 +110,11 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// <returns></returns>
         protected IHttpActionResult Update(Guid surveyIdentifier, TSurveyModel input)
         {
+
             if (input == null)
             {
-                return BadRequest("null input");
+                var request = Request.ToString();
+                throw new InvalidOperationException("null input received. Request: " + request);
             }
 
             if (surveyIdentifier == Guid.Empty)
@@ -190,6 +194,9 @@ namespace FlightNode.DataCollection.Services.Controllers
             {
                 combined = dateOnly + "T" + timeOnly;
             }
+
+            combined = Regex.Replace(combined,"([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})", "$3-$1-$2");
+
 
             DateTime dateTime;
             if (DateTime.TryParse(combined, out dateTime))

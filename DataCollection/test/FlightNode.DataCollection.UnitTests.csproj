@@ -152,12 +152,15 @@
     <Compile Include="Services\Controller\RookeryCensusControllerTests\WhenUpdatingARookeryCensus.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WaterbirdForagingSurveyControllerTests.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenCreatingAForagingSurvey.cs" />
+    <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenDeletingASurvey.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenExportingData.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenGettingASingleForagingSurvey.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenGettingTheListOfForagingSurveys.cs" />
     <Compile Include="Services\Controller\WaterbirdForagingSurveyControllerTests\WhenUpdatingAForagingSurvey.cs" />
     <Compile Include="Services\Controller\WorkTypeControllerTests.cs" />
     <Compile Include="Services\Controller\LocationControllerTests.cs" />
+    <Compile Include="Services\Models\ModelValidator.cs" />
+    <Compile Include="Services\Models\Survey\WaterbirdForagingModelTests.cs" />
     <Compile Include="Services\WorkLogControllerTests\ArgumentTests.cs" />
     <Compile Include="Services\WorkLogControllerTests\WhenCreatingAWorkLogEntry.cs" />
     <Compile Include="Services\WorkLogControllerTests\WhenExportingAllData.cs" />

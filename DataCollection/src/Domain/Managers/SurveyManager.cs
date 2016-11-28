@@ -12,6 +12,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         SurveyPending Create(SurveyPending waterbirdForagingModel);
         Guid NewIdentifier();
         SurveyPending Update(SurveyPending entity);
+        bool Delete(Guid guid);
         ISurvey FindBySurveyId(Guid guid, int surveyTypeId);
         IReadOnlyList<ISurvey> FindBySubmitterIdAndSurveyType(int userId, int surveyTypeId);
         SurveyCompleted Finish(SurveyPending survey);
@@ -408,5 +409,27 @@ namespace FlightNode.DataCollection.Domain.Managers
             });
         }
 
+        /// <summary>
+        /// Deletes a pending survey (deleting completed surveys is not allowed).
+        /// </summary>
+        /// <param name="identifier">Survey identifier</param>
+        /// <returns>
+        /// True if successful
+        /// </returns>
+        public bool Delete(Guid identifier)
+        {
+            var record = _persistence.SurveysPending.FirstOrDefault(x => x.SurveyIdentifier == identifier);
+            if (record != null)
+            {
+                _persistence.SurveysPending.Attach(record);
+                _persistence.SurveysPending.Remove(record);
+                if (_persistence.SaveChanges() > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

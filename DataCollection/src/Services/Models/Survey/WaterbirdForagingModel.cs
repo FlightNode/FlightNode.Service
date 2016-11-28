@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlightNode.DataCollection.Services.Models.Survey
 {
@@ -13,10 +14,12 @@ namespace FlightNode.DataCollection.Services.Models.Survey
         public bool FinishedEditing { get; set; }
 
         public int LocationId { get; set; }
-
+        
+        [RegularExpression("[0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}")]
         public string StartDate { get; set; }
 
         public string StartTime { get; set; }
+
         public decimal? PrepTimeHours { get; set; }
 
         public string EndTime { get; set; }

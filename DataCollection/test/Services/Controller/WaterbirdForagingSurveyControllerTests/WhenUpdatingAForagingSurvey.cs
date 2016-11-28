@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web.Http.Results;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.WaterbirdForagingSurveyControllerTests
@@ -73,6 +74,29 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             public void MapsStartDate()
             {
                 RunPositiveTest();
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(START_DATE, y.StartDate.Value))));
+            }
+
+            [Fact]
+            public void MapsStartDateWhenItIsInStandardUsFormat()
+            {
+                //
+                // Arrange
+                WaterbirdForagingModel input = CreateDefautInput();
+                input.SurveyIdentifier = IDENTIFIER;
+                input.StartDate = StartDateStringUsFormat;
+
+                MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>()))
+                    .Returns<SurveyPending>(actual => actual);
+
+                var system = BuildSystem();
+
+                //
+                // Act
+                var result = system.Put(IDENTIFIER, input);
+
+                // Assert
+                Assert.IsType<OkNegotiatedContentResult<WaterbirdForagingModel>>(result);
                 MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(START_DATE, y.StartDate.Value))));
             }
 
