@@ -64,6 +64,11 @@ namespace FlightNode.DataCollection.Domain.Entities
         public string EndDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the Prep Time
+        /// </summary>
+        public string PrepTimeHours { get; set; }
+
+        /// <summary>
         /// Gets or sets the Vantage Point
         /// </summary>
         public string VantagePoint { get; set; }

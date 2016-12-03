@@ -64,6 +64,11 @@ namespace FlightNode.DataCollection.Domain.Entities
         public string EndDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the Prep Time
+        /// </summary>
+        public string PrepTimeHours { get; set; }
+
+        /// <summary>
         /// Gets or sets the Starting Temperature
         /// </summary>
         public string StartTemperature { get; set; }
@@ -76,12 +81,27 @@ namespace FlightNode.DataCollection.Domain.Entities
         /// <summary>
         /// Gets or sets the Tide condition
         /// </summary>
-        public string TideIsWindDriven { get; set; }
+        public string WindDrivenTide { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Time of Low Tide
+        /// </summary>
+        public string TimeOfLowTide { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Water Height
+        /// </summary>
+        public string WaterHeight { get; set; }
 
         /// <summary>
         /// Gets or sets the Wind Speed
         /// </summary>
         public string WindSpeed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Wind Direction
+        /// </summary>
+        public string WindDirection { get; set; }
 
         /// <summary>
         /// Gets or sets the Vantage Point
