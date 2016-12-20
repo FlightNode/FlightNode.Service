@@ -48,17 +48,6 @@ namespace FlightNode.DataCollection.Services.Controllers
             return Ok(values ?? new List<WaterHeight>());
         }
 
-
-        [HttpGet]
-        [Route("tides")]
-        public async Task<IHttpActionResult> Tides()
-        {
-            var values = await _repository.GetTides();
-
-            return Ok(values ?? new List<Tide>());
-        }
-
-
         [HttpGet]
         [Route("disturbancetypes")]
         public async Task<IHttpActionResult> DisturbanceTypes()
@@ -128,5 +117,23 @@ namespace FlightNode.DataCollection.Services.Controllers
             return Ok(values ?? new List<AccessPoint>());
         }
 
+        [HttpGet]
+        [Route("windspeeds")]
+        public async Task<IHttpActionResult> WindSpeeds()
+        {
+            var values = await _repository.GetWindSpeeds();
+
+            return Ok(values ?? new List<WindSpeed>());
+        }
+
+
+        [HttpGet]
+        [Route("winddirections")]
+        public async Task<IHttpActionResult> WindDirections()
+        {
+            var values = await _repository.GetWindDirections();
+
+            return Ok(values ?? new List<WindDirection>());
+        }
     }
 }

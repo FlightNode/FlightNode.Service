@@ -1,14 +1,12 @@
 using FlightNode.Common.Api.Filters;
 using FlightNode.Identity.App;
-using Microsoft.Owin.FileSystems;
-using Microsoft.Owin.StaticFiles;
 using Newtonsoft.Json.Serialization;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace FligthNode.Service.App
+namespace FlightNode.Service.App
 {
     public static class WebApiConfig
     {
@@ -29,20 +27,33 @@ namespace FligthNode.Service.App
                 _hasAlreadyRun = true;
             }
 
-            //var policy = new EnableCorsAttribute(FlightNode.Service.Properties.Settings.Default.CorsOrigins, "*", "*");
-            //config.EnableCors(policy);
+            var policy = new EnableCorsAttribute(FlightNode.Service.Properties.Settings.Default.CorsOrigins, "*", "*");
+            config.EnableCors(policy);
 
             config = ConfigureRoutes(config);
             config = ConfigureFilters(config);
             config.DependencyResolver = UnityConfig.RegisterComponents();
-            
+
+            DisableDetailedErrorResponses();
+
             SetupJsonFormatting(config);
+        }
+
+        private static void DisableDetailedErrorResponses()
+        {
+            GlobalConfiguration.Configuration.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Never;
         }
 
         private static void SetupJsonFormatting(HttpConfiguration config)
         {
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
-            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jsonFormatter.SerializerSettings = new Newtonsoft.Json.JsonSerializerSettings
+            {
+                // Restore if JSON logging is needed
+                //TraceWriter = new Log4NetTracer(),
+                //Converters = { new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter() },
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
         }
 
         private static HttpConfiguration ConfigureRoutes(HttpConfiguration config)
@@ -62,7 +73,6 @@ namespace FligthNode.Service.App
         {
             config.Filters.Add(new NotImplementedExceptionAttribute());
             config.Filters.Add(new InvalidApiRequestExceptionFilter());
-            config.Filters.Add(new UnhandledExceptionFilterAttribute());
 
             return config;
         }

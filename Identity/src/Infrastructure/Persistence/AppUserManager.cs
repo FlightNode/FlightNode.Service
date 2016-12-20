@@ -50,7 +50,10 @@ namespace FlightNode.Identity.Infrastructure.Persistence
             {
                 manager.UserTokenProvider =
                     new DataProtectorTokenProvider<User, int>(
-                        dataProtectionProvider.Create("ASP.NET Identity"));
+                        dataProtectionProvider.Create("ASP.NET Identity"))
+                    {
+                        TokenLifespan = TimeSpan.FromHours(24)
+                    };
             }
             return manager;
         }
@@ -68,10 +71,10 @@ namespace FlightNode.Identity.Infrastructure.Persistence
             manager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
+                RequireNonLetterOrDigit = false,
                 RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
+                RequireLowercase = false,
+                RequireUppercase = false,
             };
             return manager;
         }

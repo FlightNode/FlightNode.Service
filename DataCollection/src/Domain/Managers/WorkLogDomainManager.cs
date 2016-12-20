@@ -3,7 +3,7 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace FlightNode.DataCollection.Domain.Managers
 {
@@ -11,6 +11,7 @@ namespace FlightNode.DataCollection.Domain.Managers
     {
         IEnumerable<WorkLogReportRecord> GetReport();
         IEnumerable<WorkLogReportRecord> GetForUser(int userId);
+        new WorkLogWithVolunteerName FindById(int id);
     }
 
     public class WorkLogDomainManager : DomainManagerBase<WorkLog>, IWorkLogDomainManager
@@ -49,12 +50,38 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             input.Validate();
 
-            var existing = this.FindById(input.Id);
-            DoNotAllowUserToBeChanged(input, existing);
+            return base.Update(input);
+        }
 
-            existing = MapInputToExisting(input, existing);
+        public new WorkLogWithVolunteerName FindById(int id)
+        {
+            var record = WorkLogPersistence.Collection
+                .Join(WorkLogPersistence.Users,
+                    workLog => workLog.UserId,
+                    user => user.Id,
+                    (workLog, user) => new { workLog, user}
+                )
+                .Select(x => new WorkLogWithVolunteerName
+                {
+                    Id = x.workLog.Id,
+                    LocationId = x.workLog.LocationId,
+                    NumberOfVolunteers = x.workLog.NumberOfVolunteers,
+                    TasksCompleted = x.workLog.TasksCompleted,
+                    TravelTimeHours = x.workLog.TravelTimeHours,
+                    UserId = x.workLog.UserId,
+                    VolunteerName = x.user.GivenName + " " + x.user.FamilyName,
+                    WorkDate = x.workLog.WorkDate,
+                    WorkHours = x.workLog.WorkHours,
+                    WorkTypeId = x.workLog.WorkTypeId
+                })
+                .FirstOrDefault(wl => wl.Id == id);
 
-            return base.UpdateAttachedObject(existing);
+            if (record == null)
+            {
+                throw new DoesNotExistException("Activity Log ID " + id);
+            }
+
+            return record;
         }
 
         private static WorkLog MapInputToExisting(WorkLog input, WorkLog existing)
@@ -82,5 +109,6 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
             return WorkLogPersistence.GetWorkLogReportRecords(userId);
         }
+
     }
 }

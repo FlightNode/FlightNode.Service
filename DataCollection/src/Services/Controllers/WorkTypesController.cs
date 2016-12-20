@@ -39,8 +39,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Authorize]
         public IHttpActionResult Get()
         {
-            return WrapWithTryCatch(() =>
-            {
                 var locations = _domainManager.FindAll();
 
                 var models = locations.Select(x => new WorkTypeModel
@@ -50,7 +48,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                 });
 
                 return Ok(models);
-            });
         }
 
         /// <summary>
@@ -64,8 +61,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         [Authorize]
         public IHttpActionResult Get(int id)
         {
-            return WrapWithTryCatch(() =>
-            {
                 var x = _domainManager.FindById(id);
 
                 var model = new WorkTypeModel
@@ -75,7 +70,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                 };
 
                 return Ok(model);
-            });
         }
 
         /// <summary>
@@ -98,8 +92,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                 throw new ArgumentNullException();
             }
 
-            return WrapWithTryCatch(() =>
-            {
                 var workType = new WorkType
                 {
                     Description = input.Description
@@ -113,7 +105,6 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
                     .AppendPathSegment(workType.Id.ToString());
 
                 return Created(locationHeader, workType);
-            });
         }
 
         /// <summary>

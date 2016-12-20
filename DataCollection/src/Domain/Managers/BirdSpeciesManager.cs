@@ -32,7 +32,10 @@ namespace FlightNode.DataCollection.Domain.Managers
         }
 
 
-
+        /// <summary>
+        /// Creates a new <see cref="BirdSpeciesDomainManager"/>.
+        /// </summary>
+        /// <param name="birdSpeciesPersistence">Persistence provider</param>
         public BirdSpeciesDomainManager(IBirdSpeciesPersistence birdSpeciesPersistence) : base(birdSpeciesPersistence)
         {
         }

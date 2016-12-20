@@ -10,13 +10,15 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         int Id { get; set; }
 
-        bool Finished { get; }
+        bool Completed { get; }
 
         int LocationId { get; set; }
 
         DateTime? StartDate { get; set; }
 
         DateTime? EndDate { get; set; }
+
+        decimal? PrepTimeHours { get; set; }
 
         int? AssessmentId { get; set; }
 
@@ -42,7 +44,9 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         int? WindSpeed { get; set; }
 
-        int? TideId { get; set; }
+        int? WindDirection { get; set; }
+
+        bool? WindDrivenTide { get; set; }
 
         DateTime? TimeOfLowTide { get; set; }
 

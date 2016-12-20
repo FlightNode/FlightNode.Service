@@ -1,26 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace FlightNode.DataCollection.Services.Models.Rookery
+namespace FlightNode.DataCollection.Services.Models.Survey
 {
-    public class WaterbirdForagingModel 
+    public class WaterbirdForagingModel : ISurveyModel
     {
 
         public Guid? SurveyIdentifier { get; set; }
 
-        public bool Finished { get; set; }
+        public bool Updating { get; set; }
+
+        public bool FinishedEditing { get; set; }
 
         public int LocationId { get; set; }
-
+        
+        [RegularExpression("[0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}")]
         public string StartDate { get; set; }
 
         public string StartTime { get; set; }
+
+        public decimal? PrepTimeHours { get; set; }
 
         public string EndTime { get; set; }
 
         public int? SiteTypeId { get; set; }
 
-        public int? TideId { get; set; }
+        public string TimeLowTide { get; set; }
+
+        public bool? WindDrivenTide { get; set; }
 
         public int? WaterHeightId { get; set; }
 
@@ -29,6 +37,8 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
         public int? Temperature { get; set; }
 
         public int? WindSpeed { get; set; }
+
+        public int? WindDirection { get; set; }
 
         public string Observers { get; set; }
 
@@ -45,8 +55,8 @@ namespace FlightNode.DataCollection.Services.Models.Rookery
         public List<ObservationModel> Observations { get; set; }
 
         public int SurveyId { get; set; }
+        public int SubmittedBy { get; set; }
 
-        
         public WaterbirdForagingModel()
         {
             SurveyIdentifier = Guid.Empty;

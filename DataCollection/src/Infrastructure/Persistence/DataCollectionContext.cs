@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
@@ -58,6 +59,13 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         #endregion
 
         #region ISurveyPersistence
+        ICrudSet<User> ISurveyPersistence.Users
+        {
+            get
+            {
+                return new CrudSetDecorator<User>(this.Users);
+            }
+        }
 
         ICrudSet<Location> ISurveyPersistence.Locations
         {
@@ -97,6 +105,24 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 return new CrudSetDecorator<Observation>(this.Observations);
             }
         }
+
+        IEnumerable<ForagingSurveyExportItem> ISurveyPersistence.ForagingSurveyExport
+        {
+            get
+            {
+                // Because we don't need EF to handle this stored procedure, just map it with Dapper
+                return this.Database.Connection.Query<ForagingSurveyExportItem>("EXEC dbo.ExportForagingSurveyResults");
+            }
+        }
+
+        IEnumerable<RookeryCensusExportItem> ISurveyPersistence.RookeryCensusExport
+        {
+            get
+            {
+                // Because we don't need EF to handle this procedure, just map it with Dapper
+                return this.Database.Connection.Query<RookeryCensusExportItem>("EXEC dbo.ExportRookeryCensusResults");
+            }
+        }
         #endregion
 
 
@@ -114,6 +140,13 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 .AsNoTracking();
         }
 
+        ICrudSet<User> IWorkLogPersistence.Users
+        {
+            get
+            {
+                return new CrudSetDecorator<User>(Users);
+            }
+        }
         #endregion
 
 
@@ -136,6 +169,17 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         #endregion
 
         #region IEnumRepository
+
+        public async Task<IReadOnlyCollection<WindDirection>> GetWindDirections()
+        {
+            return await this.WindDirections.ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<WindSpeed>> GetWindSpeeds()
+        {
+            return await this.WindSpeed.ToListAsync();
+        }
+
         public async Task<IReadOnlyCollection<Weather>> GetWeather()
         {
             return await this.Weather.ToListAsync();
@@ -145,12 +189,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         {
             return await this.WaterHeights.ToListAsync();
         }
-
-        public async Task<IReadOnlyCollection<Tide>> GetTides()
-        {
-            return await this.Tides.ToListAsync();
-        }
-
+        
         public async Task<IReadOnlyCollection<DisturbanceType>> GetDisturbanceTypes()
         {
             return await this.DisturbanceTypes.ToListAsync();
@@ -210,8 +249,6 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
 
         public DbSet<Observation> Observations { get; set; }
 
-        public DbSet<Tide> Tides { get; set; }
-
         public DbSet<Weather> Weather { get; set; }
 
         public DbSet<HabitatType> HabitatTypes { get; set; }
@@ -229,6 +266,12 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DbSet<WaterHeight> WaterHeights { get; set; }
 
         public DbSet<WorkLogReportRecord> WorkLogReportRecords { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<WindDirection> WindDirections { get; set; }
+
+        public DbSet<WindSpeed> WindSpeed { get; set; }
         #endregion
 
 
@@ -274,12 +317,15 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
                 .HasRequired(x => x.DisturbanceType)
                 .WithMany(x => x.Disturbances);
 
-            modelBuilder.Entity<SurveyCompleted>().ToTable("SurveyCompleted");
-            
-            modelBuilder.Entity<Weather>().ToTable("Weather");
-            modelBuilder.Entity<Tide>().ToTable("Tides");
+            modelBuilder.Entity<SurveyCompleted>()
+                .ToTable("SurveyCompleted")
+                .Ignore(survey => survey.CreateDate);
 
-            modelBuilder.Entity<SurveyPending>().ToTable("SurveyPending");
+            modelBuilder.Entity<Weather>().ToTable("Weather");
+
+            modelBuilder.Entity<SurveyPending>()
+                .ToTable("SurveyPending")
+                .Ignore(survey => survey.CreateDate);
 
             modelBuilder.Entity<HabitatType>().ToTable("HabitatTypes");
             modelBuilder.Entity<SurveyActivity>().ToTable("SurveyActivities");
@@ -291,8 +337,7 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
             modelBuilder.Entity<WaterHeight>().ToTable("WaterHeights");
 
             modelBuilder.Entity<WorkLogReportRecord>().ToTable("WorkLogReport")
-                .HasKey<int>(x => x.Id);
-        }
+                .HasKey(x => x.Id);        }
 
 
         public static DataCollectionContext Create()

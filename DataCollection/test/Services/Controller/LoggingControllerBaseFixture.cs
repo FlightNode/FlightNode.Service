@@ -60,13 +60,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             MockRepository.VerifyAll();
         }
 
-
-
-        protected void ExpectToLogToError()
-        {
-            MockLogger.Setup(x => x.Error(It.IsAny<Exception>()));
-        }
-
+        
         protected void ExpectToLogToDebug()
         {
             MockLogger.Setup(x => x.Debug(It.IsAny<Exception>()));

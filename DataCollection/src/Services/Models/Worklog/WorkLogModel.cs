@@ -23,6 +23,8 @@ namespace FlightNode.DataCollection.Services.Models.WorkLog
 
         public string TasksCompleted { get; set; }
 
+        public string VolunteerName { get; set; }
+
 
         public void Sanitize(ISanitizer sanitizer)
         {

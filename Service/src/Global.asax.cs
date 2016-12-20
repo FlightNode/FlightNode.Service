@@ -1,9 +1,6 @@
 ﻿using System.Web.Http;
 using System.Linq;
 using log4net;
-using FligthNode.Service.App;
-using System.Web.Routing;
-using System.Web.Mvc;
 
 namespace FlightNode.Service.App
 {
@@ -29,8 +26,7 @@ namespace FlightNode.Service.App
             // WebApiConfig.Register to run twice. But, when running in IIS Express, we apparently
             // need to enable CORS earlier in the setup, which this effectively accomplishes.
             GlobalConfiguration.Configure(WebApiConfig.Register);
-
-            RegisterRoutes(RouteTable.Routes);
+          
         }
 
         protected void Application_BeginRequest()
@@ -40,16 +36,6 @@ namespace FlightNode.Service.App
                 Response.Flush();
             }
         }
-
-        public static void RegisterRoutes(RouteCollection routes)
-        {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
-            routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            );
-        }
+        
     }
 }

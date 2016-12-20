@@ -40,9 +40,9 @@ namespace FlightNode.DataCollection.Domain.Services.Controllers
         /// GET: /api/v1/locations
         /// </example>
         /// <remarks>
-        /// Only Administrators and Project Coordinators may access this endpoint.
+        /// Any authorized users can access this endpoint.
         /// </remarks>
-        [Authorize(Roles = "Administrator, Coordinator")]
+        [Authorize]
         public IHttpActionResult Get()
         {
             return WrapWithTryCatch(() =>

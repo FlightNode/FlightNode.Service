@@ -21,6 +21,9 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public DateTime? EndDate { get; set; }
 
+        [Range(0.001, 24.0)]
+        public decimal? PrepTimeHours { get; set; }
+
         public int? AssessmentId { get; set; }
 
         public int? VantagePointId { get; set; }
@@ -49,7 +52,9 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public int? WindSpeed { get; set; }
 
-        public int? TideId { get; set; }
+        public int? WindDirection { get; set; }
+        
+        public bool? WindDrivenTide { get; set; }
 
         public int? WaterHeightId { get; set; }
 
@@ -68,10 +73,13 @@ namespace FlightNode.DataCollection.Domain.Entities
         [NotMapped]
         public string LocationName { get; set; }
 
+        public DateTime CreateDate { get; set; }
+
         public SurveyBase()
         {
             Observations = new List<Observation>();
             Disturbances = new List<Disturbance>();
+            CreateDate = DateTime.Now;
         }
     }
 }

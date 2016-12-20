@@ -4,7 +4,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 {
     public class SurveyPending : SurveyBase, ISurvey
     {
-        public bool Finished {  get { return false; } }
+        public bool Completed {  get { return false; } }
 
         public SurveyPending Add(Observation item)
         {
@@ -44,12 +44,14 @@ namespace FlightNode.DataCollection.Domain.Entities
                 SubmittedBy = this.SubmittedBy,
                 SurveyIdentifier = this.SurveyIdentifier,
                 SurveyTypeId = this.SurveyTypeId,
-                TideId = this.TideId,
+                WindDrivenTide = this.WindDrivenTide,
                 TimeOfLowTide = this.TimeOfLowTide,
                 VantagePointId = this.VantagePointId,
                 WeatherId = this.WeatherId,
                 WindSpeed = this.WindSpeed,
-                WaterHeightId = this.WaterHeightId
+                WaterHeightId = this.WaterHeightId,
+                WindDirection = this.WindDirection,
+                PrepTimeHours = this.PrepTimeHours
             };
 
             completed.Observations.AddRange(this.Observations);

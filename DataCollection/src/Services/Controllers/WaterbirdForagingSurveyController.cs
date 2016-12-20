@@ -1,11 +1,11 @@
-﻿using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.Common.Exceptions;
+using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Managers;
-using FlightNode.DataCollection.Services.Models.Rookery;
 using FlightNode.DataCollection.Services.Models.Survey;
-using FligthNode.Common.Api.Controllers;
-using Microsoft.AspNet.Identity;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace FlightNode.DataCollection.Services.Controllers
@@ -13,27 +13,16 @@ namespace FlightNode.DataCollection.Services.Controllers
     /// <summary>
     /// API Controller for submitting Waterbird Foraging surveys.
     /// </summary>
-    public class WaterbirdForagingSurveyController : LoggingController
+    public class WaterbirdForagingSurveyController : SurveyControllerBase<WaterbirdForagingModel>
     {
-
-        private const string COMPLETE = "Complete";
-        private const string PENDING = "Pending";
-        private const string MISSING = "missing";
-
-        private readonly IWaterbirdForagingManager _domainManager;
+        private const string IdentifierRoute = "api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}";
 
         /// <summary>
         /// Creates a new instance of <see cref="WaterbirdForagingSurveyController"/>.
         /// </summary>
         /// <param name="domainManager">An instance of <see cref="IWorkLogDomainManager"/></param>
-        public WaterbirdForagingSurveyController(IWaterbirdForagingManager domainManager)
+        public WaterbirdForagingSurveyController(ISurveyManager domainManager) : base(domainManager)
         {
-            if (domainManager == null)
-            {
-                throw new ArgumentNullException(nameof(domainManager));
-            }
-
-            _domainManager = domainManager;
         }
 
         /// <summary>
@@ -43,65 +32,47 @@ namespace FlightNode.DataCollection.Services.Controllers
         /// Unique identifier for the survey resource to retrieve.
         /// </param>
         /// <returns>
-        /// <see cref="IHttpActionResult"/> containiing a <see cref="WaterbirdForagingModel"/> or status 404 if none found.
+        /// 200 with the survey data
+        /// 400 if not found
         /// </returns>
         [HttpGet]
         [Authorize]
+        [Route(IdentifierRoute)]
         public IHttpActionResult Get(Guid surveyIdentifier)
         {
-            return WrapWithTryCatch(() =>
-            {
-                var result = _domainManager.FindBySurveyId(surveyIdentifier);
-
-                if (result == null)
-                {
-                    return NotFound();
-                }
-
-                var model = Map(result);
-
-                return Ok(model);
-            });
+            return GetSurveyById(surveyIdentifier, SurveyType.Foraging);
         }
 
         /// <summary>
-        /// Retrieves a a list of Waterbird Foraging information for a given user / submitter.
+        /// Retrieves a list of all Waterbird Foraging information, including both pending and completed surveys.
         /// </summary>
-        /// <param name="userId">
-        /// UserId of the person who submitted the survey.
-        /// </param>
         /// <returns>
-        /// <see cref="IHttpActionResult"/> containing a list of <see cref="WaterbirdForagingListItem"/> or 404 if none found.
+        /// 200 with a list of <see cref="Domain.Entities.SurveyListItem"/>
+        /// </returns>
+        /// <example>
+        /// GET api/v1/WaterbirdForagingSurvey/
+        /// GET api/v1/WaterbirdForagingSurvey/?userId={userId}
+        /// </example>
+        [HttpGet]
+        [Authorize]
+        public IHttpActionResult Get([FromUri]int? userId = null)
+        {
+            return GetSurveysByType(SurveyType.Foraging, userId);
+        }
+
+        /// <summary>
+        /// Retrieves all completed surveys for data export.
+        /// </summary>
+        /// <returns>
+        /// 200 with a list of <see cref="ForagingSurveyExportItem"/>
         /// </returns>
         [HttpGet]
         [Authorize]
-        public IHttpActionResult Get(int userId)
+        [Route("api/v1/waterbirdforagingsurvey/export")]
+        public IHttpActionResult Export()
         {
-            return WrapWithTryCatch(() =>
-            {
-                var result = _domainManager.FindBySubmitterId(userId);
-
-                if (result == null || !result.Any())
-                {
-                    return NotFound();
-                }
-
-                var models = result.Select(x =>
-                {
-                    return new WaterbirdForagingListItem
-                    {
-                        Location = x.LocationName ?? MISSING,
-                        StartDate = x.StartDate.HasValue ? x.StartDate.Value.ToShortDateString() : MISSING,
-                        Status = x.Finished ? "Complete" : "Pending",
-                        SurveyComments = x.GeneralComments,
-                        SurveyIdentifier = x.SurveyIdentifier
-                    };
-                });
-
-                return Ok(models);
-            });
+            return Ok(_domainManager.ExportAllForagingSurveys());
         }
-
 
         /// <summary>
         /// Creates a new waterbird foraging survey record
@@ -112,26 +83,60 @@ namespace FlightNode.DataCollection.Services.Controllers
         [Authorize]
         public IHttpActionResult Post([FromBody]WaterbirdForagingModel input)
         {
-            if (input == null)
-            {
-                return BadRequest("null input");
-            }
-
-            return WrapWithTryCatch(() =>
-            {
-                var identifier = _domainManager.NewIdentifier();
-
-                SurveyPending entity = Map(input, identifier);
-
-                entity = _domainManager.Create(entity);
-
-                var result = Map(entity);
-
-                return Created(result, identifier.ToString());
-            });
+            return Create(input);
         }
 
-        private WaterbirdForagingModel Map(ISurvey input)
+        /// <summary>
+        /// Updates an existing new waterbird foraging survey record
+        /// </summary>
+        /// <param name="surveyIdentifier"></param>
+        /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}")]
+        [Authorize]
+        public IHttpActionResult Put(Guid surveyIdentifier, [FromBody]WaterbirdForagingModel input)
+        {
+            Validate(input);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Update(surveyIdentifier, input);
+        }
+
+
+
+        /// <summary>
+        /// Deletes a survey.
+        /// </summary>
+        /// <param name="surveyIdentifier">Survey identifier</param>
+        /// <returns>
+        /// 204 if successful
+        /// 404 if not found
+        /// 500 if an exception occurs
+        /// </returns>
+        [HttpDelete]
+        [Authorize]
+        [Route(IdentifierRoute)]
+        public IHttpActionResult Delete([FromUri] Guid surveyIdentifier)
+        {
+            // TODO: add protection so that malicious user can't delete
+            // anything but own records, unless an administrator
+
+            if (_domainManager.FindBySurveyId(surveyIdentifier, SurveyType.Foraging) != null)
+            {
+                if (_domainManager.Delete(surveyIdentifier))
+                {
+                    return NoContent();
+                }
+            }
+
+            return NotFound();
+        }
+
+        protected override WaterbirdForagingModel Map(ISurvey input)
         {
             var entity = new WaterbirdForagingModel
             {
@@ -142,7 +147,8 @@ namespace FlightNode.DataCollection.Services.Controllers
                 LocationId = input.LocationId,
                 Temperature = input.StartTemperature,
                 SurveyIdentifier = input.SurveyIdentifier,
-                TideId = input.TideId,
+                WindDrivenTide = input.WindDrivenTide,
+                TimeLowTide = input.TimeOfLowTide.HasValue ? input.TimeOfLowTide.Value.ToShortTimeString() : string.Empty,
                 VantagePointId = input.VantagePointId,
                 WeatherId = input.WeatherId,
                 WindSpeed = input.WindSpeed,
@@ -152,6 +158,10 @@ namespace FlightNode.DataCollection.Services.Controllers
                 StartDate = input.StartDate.HasValue ? input.StartDate.Value.ToShortDateString() : string.Empty,
                 StartTime = input.StartDate.HasValue ? input.StartDate.Value.ToShortTimeString() : string.Empty,
                 EndTime = input.EndDate.HasValue ? input.EndDate.Value.ToShortTimeString() : string.Empty,
+                Updating = input.Completed,
+                WindDirection = input.WindDirection,
+                SubmittedBy = input.SubmittedBy,
+                PrepTimeHours = input.PrepTimeHours
             };
 
             foreach (var o in input.Observations)
@@ -171,100 +181,87 @@ namespace FlightNode.DataCollection.Services.Controllers
 
             foreach (var d in input.Disturbances)
             {
-                entity.Add(new DisturbanceModel
-                {
-                    DisturbanceTypeId = d.DisturbanceTypeId,
-                    DurationMinutes = d.DurationMinutes,
-                    Quantity = d.Quantity,
-                    Behavior = d.Result,
-                    DisturbanceId = d.Id
-                });
+                entity.Add(Map(d));
             }
 
             return entity;
         }
 
-        /// <summary>
-        /// Updates an existing new waterbird foraging survey record
-        /// </summary>
-        /// <param name="surveyIdentifier"></param>
-        /// <param name="input">An instance of <see cref="WaterbirdForagingModel"/></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("api/v1/waterbirdforagingsurvey/{surveyIdentifier:Guid}")]
-        [Authorize]
-        public IHttpActionResult Put(Guid surveyIdentifier, [FromBody]WaterbirdForagingModel input)
+        protected override SurveyPending MapToPendingSurvey(WaterbirdForagingModel input, Guid identifier)
         {
-            if (input == null)
-            {
-                return BadRequest("null input");
-            }
 
-            if (surveyIdentifier == Guid.Empty)
-            {
-                return BadRequest("Invalid Survey Identifier");
-            }
+            var entity = new SurveyPending();
+            MapForagingInputIntoSurvey(entity, input, identifier);
+            MapObservationsIntoSurvey(entity, input, identifier);
+            MapDisturbancesIntoSurvey(entity, input, identifier);
 
-            return WrapWithTryCatch(() =>
-            {
-                SurveyPending entity = Map(input, surveyIdentifier);
-
-                WaterbirdForagingModel result;
-
-                if (input.Finished)
-                {
-                    _domainManager.Finish(entity);
-
-                    var newentity = (SurveyCompleted)_domainManager.FindBySurveyId(surveyIdentifier);
-                    result = Map(newentity);
-                }
-                else
-                {
-                    _domainManager.Update(entity);
-
-                    entity = (SurveyPending)_domainManager.FindBySurveyId(surveyIdentifier);
-                    result = Map(entity);
-                }
-
-
-
-                return Ok(result);
-            });
+            return entity;
         }
 
-        private SurveyPending Map(WaterbirdForagingModel input, Guid identifier)
+        protected override SurveyCompleted MapToCompletedSurvey(WaterbirdForagingModel input, Guid identifier)
         {
 
-            var entity = new SurveyPending
-            {
-                AccessPointId = input.AccessPointId,
-                AssessmentId = input.SiteTypeId,
-                DisturbanceComments = input.DisturbanceComments,
-                EndTemperature = null,
-                GeneralComments = input.SurveyComments,
-                LocationId = input.LocationId,
-                StartTemperature = input.Temperature,
-                SurveyIdentifier = identifier,
-                TideId = input.TideId,
-                SurveyTypeId = SurveyType.TERN_FORAGING,
-                VantagePointId = input.VantagePointId,
-                WeatherId = input.WeatherId,
-                WindSpeed = input.WindSpeed,
-                SubmittedBy = this.LookupUserId(),
-                Observers = input.Observers,
-                Id = input.SurveyId,
-                WaterHeightId = input.WaterHeightId,
-                StartDate = ParseDateTime(input.StartDate, input.StartTime),
-                EndDate = ParseDateTime(input.StartDate, input.EndTime),
-            };
-            
+            var entity = new SurveyCompleted();
+            MapForagingInputIntoSurvey(entity, input, identifier);
+            MapObservationsIntoSurvey(entity, input, identifier);
+            MapDisturbancesIntoSurvey(entity, input, identifier);
 
+            return entity;
+        }
+
+        private void MapForagingInputIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        {
+
+            // This function exposes an architectural problem: by focusing 
+            // validation in the businesslogic layer, we've neglected to 
+            // validate input data transfer objects that must be translated 
+            // into business objects. Thus we do not get any validation of the
+            // formatting on a date string, for example.
+
+            // Added validation to the startdate field through model attribute.
+            // TODO: time validation, maybe some other fields.
+
+            survey.AccessPointId = input.AccessPointId;
+            survey.AssessmentId = input.SiteTypeId;
+            survey.DisturbanceComments = input.DisturbanceComments;
+            survey.EndTemperature = null;
+            survey.GeneralComments = input.SurveyComments;
+            survey.LocationId = input.LocationId;
+            survey.StartTemperature = input.Temperature;
+            survey.SurveyIdentifier = identifier;
+            survey.WindDrivenTide = input.WindDrivenTide;
+            survey.SurveyTypeId = SurveyType.Foraging;
+            survey.VantagePointId = input.VantagePointId;
+            survey.WeatherId = input.WeatherId;
+            survey.WindSpeed = input.WindSpeed;
+            survey.SubmittedBy = input.SubmittedBy;
+            survey.Observers = input.Observers;
+            survey.Id = input.SurveyId;
+            survey.WaterHeightId = input.WaterHeightId;
+            survey.StartDate = ParseDateTime(input.StartDate, input.StartTime);
+            survey.EndDate = ParseDateTime(input.StartDate, input.EndTime);
+            survey.WindDirection = input.WindDirection;
+            survey.PrepTimeHours = input.PrepTimeHours;
+
+            var tempDate = DateTime.MaxValue;
+            if (DateTime.TryParse(input.TimeLowTide, out tempDate))
+            {
+                survey.TimeOfLowTide = tempDate;
+            }
+            else
+            {
+                survey.TimeOfLowTide = null;
+            }
+        }
+
+        private void MapObservationsIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        {
             foreach (var o in input.Observations)
             {
-                entity.Add(new Observation
+                survey.Add(new Observation
                 {
                     Bin1 = o.Adults,
-                    Bin2 = o.Juveniles,
+                    Bin2 = o.Juveniles ?? 0,
                     BirdSpeciesId = o.BirdSpeciesId,
                     FeedingSuccessRate = o.FeedingId,
                     HabitatTypeId = o.HabitatId,
@@ -274,53 +271,14 @@ namespace FlightNode.DataCollection.Services.Controllers
                     Id = o.ObservationId
                 });
             }
+        }
 
+        private void MapDisturbancesIntoSurvey(ISurvey survey, WaterbirdForagingModel input, Guid identifier)
+        {
             foreach (var d in input.Disturbances)
             {
-                entity.Add(new Disturbance
-                {
-                    DisturbanceTypeId = d.DisturbanceTypeId,
-                    DurationMinutes = d.DurationMinutes,
-                    Quantity = d.Quantity,
-                    Result = d.Behavior,
-                    SurveyIdentifier = identifier,
-                    Id = d.DisturbanceId
-                });
+                survey.Add(Map(d, identifier));
             }
-
-            return entity;
-        }
-
-        private DateTime? ParseDateTime(string date, string time)
-        {
-            date = date ?? string.Empty;
-            time = time ?? string.Empty;
-
-            var dateOnly = date.Contains("T") ? date.Split('T')[0] : date;
-            var timeOnly = time.Contains("T") ? time.Split('T')[1] : time;
-
-            string combined;
-            if (timeOnly.Contains("M"))
-            {
-                combined = dateOnly + " " + timeOnly;
-            }
-            else
-            {
-                combined = dateOnly + "T" + timeOnly;
-            }
-
-            DateTime dateTime;
-            if (DateTime.TryParse(combined, out dateTime))
-            {
-                return dateTime;
-            }
-
-            return null;
-        }
-
-        private int RetrieveCurrentUserId()
-        {
-            return User.Identity.GetUserId<int>();
         }
     }
 }

@@ -2,6 +2,7 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Infrastructure.Customization;
 using FlightNode.DataCollection.Infrastructure.Persistence;
 using System.Data.Entity.Migrations;
+using System;
 
 namespace FlightNode.DataCollection.Domain.Migrations
 {
@@ -12,14 +13,13 @@ namespace FlightNode.DataCollection.Domain.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
             SetSqlGenerator("System.Data.SqlClient", new CustomSqlServerMigrationSqlGenerator());
         }
 
         protected override void Seed(DataCollectionContext context)
         {
             LoadDisturbanceTypesForWaterbirdForaging(context);
-            LoadTidesForWaterbirdForaging(context);
             LoadWeatherForWaterbirdForaging(context);
             LoadHabitatTypes(context);
             LoadFeedingSuccessRates(context);
@@ -28,6 +28,28 @@ namespace FlightNode.DataCollection.Domain.Migrations
             LoadVantagePoints(context);
             LoadAccessPoints(context);
             LoadWaterHeightsForWaterbirdForaging(context);
+            LoadWindDirection(context);
+            LoadWindSpeeds(context);
+        }
+
+        private void LoadWindSpeeds(DataCollectionContext context)
+        {
+            context.WindSpeed.AddOrUpdate(x => x.Id, WindSpeed.FiveToTen);
+            context.WindSpeed.AddOrUpdate(x => x.Id, WindSpeed.MoreThanFifteen);
+            context.WindSpeed.AddOrUpdate(x => x.Id, WindSpeed.TenToFifteen);
+            context.WindSpeed.AddOrUpdate(x => x.Id, WindSpeed.ZeroToFive);
+        }
+
+        private void LoadWindDirection(DataCollectionContext context)
+        {
+            context.WindDirections.AddOrUpdate(x => x.Id, WindDirection.East);
+            context.WindDirections.AddOrUpdate(x => x.Id, WindDirection.North);
+            context.WindDirections.AddOrUpdate(x => x.Id, WindDirection.NorthEast);
+            context.WindDirections.AddOrUpdate(x => x.Id, WindDirection.NorthWest);
+            context.WindDirections.AddOrUpdate(x => x.Id, WindDirection.South);
+            context.WindDirections.AddOrUpdate(x => x.Id, WindDirection.SouthEast);
+            context.WindDirections.AddOrUpdate(x => x.Id, WindDirection.SouthWest);
+            context.WindDirections.AddOrUpdate(x => x.Id, WindDirection.West);
         }
 
         private void LoadAccessPoints(DataCollectionContext context)
@@ -56,6 +78,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
             context.SurveyActivities.AddOrUpdate(x => x.Description, new SurveyActivity { Description = "Preening" });
             context.SurveyActivities.AddOrUpdate(x => x.Description, new SurveyActivity { Description = "Loafing" });
             context.SurveyActivities.AddOrUpdate(x => x.Description, new SurveyActivity { Description = "Fly Over" });
+            context.SurveyActivities.AddOrUpdate(x => x.Description, new SurveyActivity { Description = "N/A" });
         }
 
         private void LoadFeedingSuccessRates(DataCollectionContext context)
@@ -63,6 +86,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
             context.FeedingSuccessRates.AddOrUpdate(x => x.Description, new FeedingSuccessRate { Description = "0-25% capture/strikes low success" });
             context.FeedingSuccessRates.AddOrUpdate(x => x.Description, new FeedingSuccessRate { Description = "25-50% capture/strikes medium success" });
             context.FeedingSuccessRates.AddOrUpdate(x => x.Description, new FeedingSuccessRate { Description = "50-75% capture/strikes high success" });
+            context.FeedingSuccessRates.AddOrUpdate(x => x.Description, new FeedingSuccessRate { Description = "N/A" });
         }
 
         private void LoadHabitatTypes(DataCollectionContext context)
@@ -79,6 +103,8 @@ namespace FlightNode.DataCollection.Domain.Migrations
             context.HabitatTypes.AddOrUpdate(x => x.Description, new HabitatType { Description = "OpenWater" });
             context.HabitatTypes.AddOrUpdate(x => x.Description, new HabitatType { Description = "Mudflat" });
             context.HabitatTypes.AddOrUpdate(x => x.Description, new HabitatType { Description = "Pond" });
+            context.HabitatTypes.AddOrUpdate(x => x.Description, new HabitatType { Description = "Shoreline" });
+            context.HabitatTypes.AddOrUpdate(x => x.Description, new HabitatType { Description = "N/A" });
         }
 
         private void LoadWeatherForWaterbirdForaging(DataCollectionContext context)
@@ -89,20 +115,13 @@ namespace FlightNode.DataCollection.Domain.Migrations
             context.Weather.AddOrUpdate(x => x.Description, new Weather { Description = "Drizzle" });
             context.Weather.AddOrUpdate(x => x.Description, new Weather { Description = "Overcast" });
             context.Weather.AddOrUpdate(x => x.Description, new Weather { Description = "Showers" });
-        }
-
-        private void LoadTidesForWaterbirdForaging(DataCollectionContext context)
-        {
-            context.Tides.AddOrUpdate(x => x.Description, new Tide { Description = "Appears High" });
-            context.Tides.AddOrUpdate(x => x.Description, new Tide { Description = "Normal" });
-            context.Tides.AddOrUpdate(x => x.Description, new Tide { Description = "Appears Low" });
-        }
+        }        
 
         private void LoadWaterHeightsForWaterbirdForaging(DataCollectionContext context)
         {
-            context.WaterHeights.AddOrUpdate(x => x.Description, new WaterHeight { Description = "Tidal" });
-            context.WaterHeights.AddOrUpdate(x => x.Description, new WaterHeight { Description = "Wind-driven" });
-            context.WaterHeights.AddOrUpdate(x => x.Description, new WaterHeight { Description = "Calm" });
+            context.WaterHeights.AddOrUpdate(x => x.Id, new WaterHeight { Id = 1, Description = "Appears High" });
+            context.WaterHeights.AddOrUpdate(x => x.Id, new WaterHeight { Id = 2, Description = "Normal" });
+            context.WaterHeights.AddOrUpdate(x => x.Id, new WaterHeight { Id = 3, Description = "Appears Low" });
         }
 
         private void LoadDisturbanceTypesForWaterbirdForaging(DataCollectionContext context)
@@ -114,7 +133,7 @@ namespace FlightNode.DataCollection.Domain.Migrations
             context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Personal watercraft (jetski, windsurfer, etc.)" });
             context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Humans on foot" });
             context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Noise (specify source)" });
-            context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Other (list)" });
+            context.DisturbanceTypes.AddOrUpdate(x => x.Description, new DisturbanceType { Description = "Other (describe in comment box)" });
         }
     }
 }

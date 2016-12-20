@@ -1,6 +1,7 @@
 ﻿using FlightNode.Common.BaseClasses;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Security.Claims;
@@ -104,8 +105,7 @@ namespace FlightNode.Identity.Domain.Entities
         /// </summary>
         [StringLength(10)]
         public string ZipCode { get; set; }
-
-
+        
         /// <summary>
         /// Creates a new <see cref="User"/>, initially in the inactive state.
         /// </summary>

@@ -1,5 +1,4 @@
-﻿using FligthNode.Service.App;
-using log4net;
+﻿using log4net;
 using Microsoft.Owin;
 using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.StaticFiles;

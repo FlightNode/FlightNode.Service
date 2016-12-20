@@ -23,10 +23,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
             protected Mock<ISurveyPersistence> SurveyPersistenceMock;
-            //protected Mock<ICrudSet<SurveyPending>> SurveyPendingSet;
-            //protected Mock<ICrudSet<SurveyCompleted>> SurveyCompletedSet;
-            //protected Mock<ICrudSet<Disturbance>> DisturbanceSet;
-            //protected Mock<ICrudSet<Observation>> ObservationSet;
             protected FakeDbSet<SurveyPending> SurveyPendingSet = new FakeDbSet<SurveyPending>();
             protected FakeDbSet<SurveyCompleted> SurveyCompletedSet = new FakeDbSet<SurveyCompleted>();
             protected FakeDbSet<Disturbance> DisturbanceSet = new FakeDbSet<Disturbance>();
@@ -38,9 +34,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 SurveyPersistenceMock = MockRepository.Create<ISurveyPersistence>();
             }
 
-            protected WaterbirdForagingManager BuildSystem()
+            protected SurveyManager BuildSystem()
             {
-                return new WaterbirdForagingManager(SurveyPersistenceMock.Object);
+                return new SurveyManager(SurveyPersistenceMock.Object);
             }
 
             public void Dispose()
@@ -50,23 +46,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected void SetupCrudSets()
             {
-                //DisturbanceSet = MockRepository.Create<ICrudSet<Disturbance>>();
-                //SurveyPersistenceMock.SetupGet(x => x.Disturbances)
-                //    .Returns(DisturbanceSet.Object);
                 SurveyPersistenceMock.SetupGet(x => x.Disturbances)
                     .Returns(DisturbanceSet);
 
-                //ObservationSet = MockRepository.Create<ICrudSet<Observation>>();
-                //SurveyPersistenceMock.SetupGet(x => x.Observations)
-                //    .Returns(ObservationSet.Object);
                 SurveyPersistenceMock.SetupGet(x => x.Observations)
                     .Returns(ObservationSet);
+            }
 
-                //SurveyPendingSet = MockRepository.Create<ICrudSet<SurveyPending>>();
-                //SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
-                //    .Returns(SurveyPendingSet.Object);
+            protected void ExpectToWorkWithPendingSurveys()
+            {
                 SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
                     .Returns(SurveyPendingSet);
+            }
+
+            protected void ExpectToWorkWithCompletedSurveys()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
+                    .Returns(SurveyCompletedSet);
             }
         }
 
@@ -81,7 +77,46 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void RejectsNullArgument()
             {
-                Assert.Throws<ArgumentNullException>(() => new WaterbirdForagingManager(null));
+                Assert.Throws<ArgumentNullException>(() => new SurveyManager(null));
+            }
+        }
+
+        public class Delete : CreateFakeSet
+        {
+            [Fact]
+            public void GivenRecordExistsThenReturnTrue()
+            {
+                // Arrange
+                var survey = new SurveyPending { SurveyIdentifier = IDENTIFIER };
+                FakeSurveysPending.Add(survey);
+
+                SurveyPersistenceMock.Setup(x => x.SurveysPending)
+                    .Returns(FakeSurveysPending);
+
+                SurveyPersistenceMock.Setup(x => x.SaveChanges())
+                    .Returns(1);
+
+                // Act
+                var result = BuildSystem().Delete(IDENTIFIER);
+
+                // Assert
+                Assert.True(result);
+            }
+
+            [Fact]
+            public void GivenRecordDoesNotExistsThenReturnFalse()
+            {
+                // Arrange
+                
+                SurveyPersistenceMock.Setup(x => x.SurveysPending)
+                    .Returns(FakeSurveysPending);
+                
+
+                // Act
+                var result = BuildSystem().Delete(IDENTIFIER);
+
+                // Assert
+                Assert.False(result);
             }
         }
 
@@ -94,7 +129,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public class HappyPath : Create
             {
-                
+
                 [Fact]
                 public void GivenValidInputThenSaveDisturbancesObservationsAndPendingSurvey()
                 {
@@ -109,6 +144,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
+                    ExpectToWorkWithPendingSurveys();
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
 
@@ -147,14 +183,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
-                    //DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                    //    .Returns(disturb);
+                    ExpectToWorkWithPendingSurveys();
                     DisturbanceSet.Add(disturb);
-                    //ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                    //    .Returns(observation);
                     ObservationSet.Add(observation);
-                    //SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                    //    .Returns(input);
                     SurveyPendingSet.Add(input);
 
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
@@ -220,11 +251,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 // Arrange
                 const int id = 3233;
 
-                var input = new SurveyPending();
-                input.SubmittedBy = id;
-                input.StartDate = DateTime.MinValue;
-                input.EndDate = DateTime.MaxValue;
-                input.WaterHeightId = 23;
+                var input = new SurveyPending
+                {
+                    SubmittedBy = id,
+                    StartDate = DateTime.MinValue,
+                    EndDate = DateTime.MaxValue,
+                    WaterHeightId = 23,
+                    SurveyIdentifier = Guid.Empty,
+                    Id = id
+                };
 
                 var observation = new Observation { Id = 1 };   // causes an update 
                 input.Observations.Add(observation);
@@ -234,13 +269,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Mocks
                 SetupCrudSets();
-
-                //DisturbanceSet.Setup(x => x.Add(It.IsAny<Disturbance>()))
-                //    .Callback((Disturbance actual) => Assert.Same(disturb, actual))
-                //    .Returns(disturb);
-                //ObservationSet.Setup(x => x.Add(It.IsAny<Observation>()))
-                //    .Callback((Observation actual) => Assert.Same(observation, actual))
-                //    .Returns(observation);
+                ExpectToWorkWithPendingSurveys();
                 SurveyPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(1);
 
@@ -255,25 +284,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     modifiedWasCalled++;
                 };
 
-
-                // Need to add the pending survey to EF and then remove it to achieve a delete
-                //SurveyPendingSet.Setup(x => x.Add(It.IsAny<SurveyPending>()))
-                //    .Returns(input);
-                //SurveyPendingSet.Setup(x => x.Remove(It.IsAny<SurveyPending>()))
-                //    .Callback((SurveyPending actual) => Assert.Same(input, actual))
-                //    .Returns(input);
+                // The pending survey needs to exist in order to delete it
+                SurveyPendingSet.Add(input);
 
                 // Now setup the new completed record
-                //SurveyCompletedSet = MockRepository.Create<ICrudSet<SurveyCompleted>>();
                 SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
                                         .Returns(SurveyCompletedSet);
-                //.Returns(SurveyCompletedSet.Object);
-                //SurveyCompletedSet.Setup(x => x.Add(It.IsAny<SurveyCompleted>()))
-                //    .Callback((SurveyCompleted actual) =>
-                //    {
-                //        input.Id = id;
-                //    })
-                //    .Returns(new SurveyCompleted());
+
 
                 //
                 // Act
@@ -295,9 +312,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         }
 
-        public class Update : Fixture
+        public class UpdatePending : Fixture
         {
-            public class ValidInput : Update
+            public class ValidInput : UpdatePending
             {
 
                 [Fact]
@@ -329,6 +346,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Mocks
                     SetupCrudSets();
+                    ExpectToWorkWithPendingSurveys();
                     SurveyPendingSet.Add(input);
                     SurveyPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
@@ -348,7 +366,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void RejectsNullArgument()
                 {
-                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null));
+                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null as SurveyPending));
                 }
 
 
@@ -387,7 +405,145 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 }
             }
 
-            public class InvalidInput : Update
+            public class InvalidInput : UpdatePending
+            {
+                private void RunNegativeTest(SurveyPending item, string memberName)
+                {
+                    try
+                    {
+                        ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) => { /* do nothing */ };
+
+                        BuildSystem().Update(item);
+                        throw new Exception("this should have failed");
+                    }
+                    catch (DomainValidationException de)
+                    {
+                        Assert.True(de.ValidationResults.Any(x => x.MemberNames.Any(y => y == memberName)));
+                    }
+                }
+
+                [Fact]
+                public void GeneralCommentsCannotBeLongerThan500Characters()
+                {
+                    //
+                    // Arrange
+                    var input = new SurveyPending();
+                    input.GeneralComments = "a".PadRight(501, 'a');
+
+                    //
+                    // Act
+                    RunNegativeTest(input, "GeneralComments");
+                }
+
+                [Fact]
+                public void DisturbanceCommentsCannotBeLongerThan500Characters()
+                {
+                    //
+                    // Arrange
+                    var input = new SurveyPending();
+                    input.DisturbanceComments = "a".PadRight(501, 'a');
+
+                    //
+                    // Act
+                    RunNegativeTest(input, "DisturbanceComments");
+                }
+            }
+        }
+
+        public class UpdateCompleted : Fixture
+        {
+            public class ValidInput : UpdateCompleted
+            {
+
+                [Fact]
+                public void SavesPendingSurvey()
+                {
+                    //
+                    // Arrange
+                    const int expectedCount = 3; // Observation, Disturbance, and Survey
+
+                    // Don't extract this to a method for reuse, with the variable at the 
+                    // class level. Will cause interacting tests.
+                    var modifiedWasCalled = 0;
+
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
+                    {
+                        modifiedWasCalled++;
+                    };
+
+
+                    const int id = 3233;
+
+                    var input = new SurveyCompleted { Id = id };
+                    var observation = new Observation { Id = 1 };
+                    input.Observations.Add(observation);
+                    var disturb = new Disturbance { Id = 2 };
+                    input.Disturbances.Add(disturb);
+
+
+
+                    // Mocks
+                    SetupCrudSets();
+                    ExpectToWorkWithCompletedSurveys();
+                    SurveyCompletedSet.Add(input);
+                    SurveyPersistenceMock.Setup(x => x.SaveChanges())
+                        .Returns(1);
+
+
+                    //
+                    // Act
+                    BuildSystem().Update(input);
+
+
+                    //
+                    // Assert
+                    Assert.Equal(expectedCount, modifiedWasCalled);
+                    Assert.Same(input, SurveyCompletedSet.First());
+                }
+
+                [Fact]
+                public void RejectsNullArgument()
+                {
+                    Assert.Throws<ArgumentNullException>(() => BuildSystem().Update(null as SurveyCompleted));
+                }
+
+
+
+                [Fact]
+                public void IgnoresExceptions()
+                {
+
+                    //
+                    // Arrange
+                    var input = new SurveyPending();
+                    var observation = new Observation();
+                    input.Observations.Add(observation);
+                    var disturb = new Disturbance();
+                    input.Disturbances.Add(disturb);
+
+
+
+                    // Don't extract this to a method for reuse, with the variable at the 
+                    // class level. Will cause interacting tests.
+                    var ModifiedWasCalled = 0;
+
+                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
+                    {
+                        ModifiedWasCalled++;
+                    };
+
+
+                    // Mocks
+                    SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
+                        .Throws<InvalidOperationException>();
+
+                    //
+                    // Act & Assert
+                    Assert.Throws<InvalidOperationException>(() => BuildSystem().Update(input));
+                }
+            }
+
+            public class InvalidInput : UpdateCompleted
             {
                 private void RunNegativeTest(SurveyPending item, string memberName)
                 {
@@ -441,6 +597,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             protected FakeDbSet<SurveyCompleted> FakeSurveysCompleted = new FakeDbSet<SurveyCompleted>();
             protected FakeDbSet<SurveyPending> FakeSurveysPending = new FakeDbSet<SurveyPending>();
             protected FakeDbSet<Location> FakeLocations = new FakeDbSet<Location>();
+            protected FakeDbSet<Observation> FakeObservations = new FakeDbSet<Observation>();
+            protected FakeDbSet<Disturbance> FakeDisturbances = new FakeDbSet<Disturbance>();
 
             protected void UseFakePendingSet()
             {
@@ -462,6 +620,18 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 FakeLocations.Add(new Location { Id = LOCATION_ID, SiteName = LOCATION_NAME });
             }
+
+            protected void UseFakeObservations()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.Observations)
+                    .Returns(FakeObservations);
+            }
+
+            protected void UseFakeDisturbances()
+            {
+                SurveyPersistenceMock.SetupGet(x => x.Disturbances)
+                    .Returns(FakeDisturbances);
+            }
         }
 
 
@@ -473,27 +643,104 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakePendingSet();
                 UseFakeCompletedSet();
 
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, 1);
 
                 Assert.Null(result);
             }
 
             [Fact]
-            public void FindAPendingSurvey()
+            public void FindAPendingForagingSurvey()
             {
                 //
                 // Arrange
                 UseFakePendingSet();
-                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER };
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Foraging };
+                var pending2 = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysPending.Add(pending);
+                FakeSurveysPending.Add(pending2);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Foraging);
 
                 //
                 // Assert
                 Assert.Same(pending, result);
+            }
+
+
+            [Fact]
+            public void FindAPendingRookerySurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var pending2 = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Foraging };
+                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                FakeSurveysPending.Add(pending);
+                FakeSurveysPending.Add(pending2);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+
+                //
+                // Assert
+                Assert.Same(pending, result);
+            }
+
+            [Fact]
+            public void LoadObservationsIntoPendingSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                FakeSurveysPending.Add(pending);
+
+                var observation = new Observation { SurveyIdentifier = IDENTIFIER };
+                FakeObservations.Add(observation);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+
+                //
+                // Assert
+                Assert.Same(observation, result.Observations.First());
+            }
+
+            [Fact]
+            public void LoadDisturbancesIntoPendingSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                FakeSurveysPending.Add(pending);
+
+                var disturbance = new Disturbance { SurveyIdentifier = IDENTIFIER };
+                FakeDisturbances.Add(disturbance);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+
+                //
+                // Assert
+                Assert.Same(disturbance, result.Disturbances.First());
             }
 
             [Fact]
@@ -503,23 +750,77 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 // Arrange
                 UseFakePendingSet();
                 UseFakeCompletedSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
 
-                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER };
+                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER);
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
 
                 //
                 // Assert
                 Assert.Same(completed, result);
             }
 
+
+            [Fact]
+            public void LoadObservationsIntoCompletedSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                FakeSurveysCompleted.Add(completed);
+
+                var observation = new Observation { SurveyIdentifier = IDENTIFIER };
+                FakeObservations.Add(observation);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+
+                //
+                // Assert
+                Assert.Same(observation, result.Observations.First());
+            }
+
+
+            [Fact]
+            public void LoadDisturbancesIntoCompletedSurvey()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeDisturbances();
+                UseFakeObservations();
+
+                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                FakeSurveysCompleted.Add(completed);
+
+                var disturbance = new Disturbance { SurveyIdentifier = IDENTIFIER };
+                FakeDisturbances.Add(disturbance);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+
+                //
+                // Assert
+                Assert.Same(disturbance, result.Disturbances.First());
+            }
+
             [Fact]
             public void IgnoreExceptions()
             {
-                Assert.Throws<MockException>(() => BuildSystem().FindBySurveyId(IDENTIFIER));
+                Assert.Throws<MockException>(() => BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery));
             }
         }
 
@@ -538,7 +839,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterId(USER_ID);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -554,12 +855,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysPending.Add(pending);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterId(USER_ID);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -575,12 +876,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterId(USER_ID);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -597,12 +898,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterId(USER_ID);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -618,12 +919,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var completed = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                var completed = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysPending.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterId(USER_ID);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -639,15 +940,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysPending.Add(pending);
 
-                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID };
+                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterId(USER_ID);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -655,10 +956,35 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 Assert.True(result.Contains(pending));
             }
 
+
+            [Fact]
+            public void GivenQueryForForagingThenDoNotReturnRookerySurveys()
+            {
+                //
+                // Arrange
+                UseFakePendingSet();
+                UseFakeCompletedSet();
+                UseFakeLocations();
+
+                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Rookery };
+                FakeSurveysPending.Add(pending);
+
+                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
+                FakeSurveysCompleted.Add(completed);
+
+                //
+                // Act
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
+
+                //
+                // Assert
+                Assert.False(result.Contains(pending));
+            }
+
             [Fact]
             public void IgnoreExceptions()
             {
-                Assert.Throws<MockException>(() => BuildSystem().FindBySubmitterId(USER_ID));
+                Assert.Throws<MockException>(() => BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging));
             }
         }
     }

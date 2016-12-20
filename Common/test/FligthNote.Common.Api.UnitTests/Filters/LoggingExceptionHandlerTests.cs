@@ -53,7 +53,10 @@ namespace FligthNote.Common.Api.UnitTests.Filters
                 system.Logger = loggerMock.Object;
 
                 var catchBlock = new ExceptionContextCatchBlock("a", true, true);
-                var excepContext = new ExceptionContext(exception, catchBlock);
+                var excepContext = new ExceptionContext(exception, catchBlock)
+                {
+                    Request = new System.Net.Http.HttpRequestMessage()
+                };
                 var handlerContext = new ExceptionHandlerContext(excepContext);
 
                 // Act

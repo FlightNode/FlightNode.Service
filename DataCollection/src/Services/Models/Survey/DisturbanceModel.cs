@@ -1,4 +1,4 @@
-﻿namespace FlightNode.DataCollection.Services.Models.Rookery
+﻿namespace FlightNode.DataCollection.Services.Models.Survey
 {
     public class DisturbanceModel
     {
