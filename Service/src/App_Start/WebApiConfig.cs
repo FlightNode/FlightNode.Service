@@ -27,8 +27,8 @@ namespace FlightNode.Service.App
                 _hasAlreadyRun = true;
             }
 
-            var policy = new EnableCorsAttribute(FlightNode.Service.Properties.Settings.Default.CorsOrigins, "*", "*");
-            config.EnableCors(policy);
+            //var policy = new EnableCorsAttribute(FlightNode.Service.Properties.Settings.Default.CorsOrigins, "*", "*");
+            //config.EnableCors(policy);
 
             config = ConfigureRoutes(config);
             config = ConfigureFilters(config);
