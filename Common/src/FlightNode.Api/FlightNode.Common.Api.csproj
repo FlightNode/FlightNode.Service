@@ -103,6 +103,7 @@
       <HintPath>..\..\..\Packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Cors">
       <HintPath>..\..\..\Packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
       <Private>True</Private>
@@ -136,6 +137,7 @@
     <Compile Include="Filters\NotImplExceptionFilter.cs" />
     <Compile Include="Filters\UnhandledExceptionFilter.cs" />
     <Compile Include="Filters\LoggingExceptionHandler.cs" />
+    <Compile Include="HttpRequestMessageExtension.cs" />
     <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\SimpleListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
