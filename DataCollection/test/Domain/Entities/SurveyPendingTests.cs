@@ -123,7 +123,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
             protected const int VANTAGE_POINT = 18;
             protected const int WEATHER = 19;
             protected const int WindSpeed = 20;
-            protected const int END_TEMPERATURE = 21;
             protected const int USER_ID = 22;
             protected const int SURVEY_TYPE_ID = 23;
             protected const string Observers = "a, b, and c";
@@ -139,11 +138,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                     AssessmentId = SITE_TYPE_ID,
                     DisturbanceComments = DISTURBED,
                     EndDate = END_DATE,
-                    EndTemperature = END_TEMPERATURE,
                     GeneralComments = SURVEY_COMMENTS,
                     LocationId = LOCATION_ID,
                     StartDate = START_DATE,
-                    StartTemperature = TEMPERATURE,
+                    Temperature = TEMPERATURE,
                     SubmittedBy = USER_ID,
                     SurveyIdentifier = IDENTIFIER,
                     SurveyTypeId = SURVEY_TYPE_ID,
@@ -229,11 +227,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                     Assert.Equal(END_DATE, RunTest().EndDate);
                 }
 
-                [Fact]
-                public void MapsEndTemperature()
-                {
-                    Assert.Equal(END_TEMPERATURE, RunTest().EndTemperature);
-                }
 
                 [Fact]
                 public void MapsGeneralComments()
@@ -254,9 +247,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 }
 
                 [Fact]
-                public void MapsStartTemperature()
+                public void MapsTemperature()
                 {
-                    Assert.Equal(TEMPERATURE, RunTest().StartTemperature);
+                    Assert.Equal(TEMPERATURE, RunTest().Temperature);
                 }
 
                 [Fact]

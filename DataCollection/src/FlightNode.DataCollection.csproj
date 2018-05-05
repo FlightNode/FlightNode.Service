@@ -283,6 +283,10 @@
     <Compile Include="Migrations\201612031818034_SurveyExportAfterNewColumnsAdded.Designer.cs">
       <DependentUpon>201612031818034_SurveyExportAfterNewColumnsAdded.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805051535127_DecimalTemperature.cs" />
+    <Compile Include="Migrations\201805051535127_DecimalTemperature.Designer.cs">
+      <DependentUpon>201805051535127_DecimalTemperature.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.cs" />
     <Compile Include="Migrations\201512070258005_DecSix.Designer.cs">
@@ -421,6 +425,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612031818034_SurveyExportAfterNewColumnsAdded.resx">
       <DependentUpon>201612031818034_SurveyExportAfterNewColumnsAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805051535127_DecimalTemperature.resx">
+      <DependentUpon>201805051535127_DecimalTemperature.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -147,7 +147,7 @@ namespace FlightNode.DataCollection.Services.Controllers
                 DisturbanceComments = input.DisturbanceComments,
                 SurveyComments = input.GeneralComments,
                 LocationId = input.LocationId,
-                Temperature = input.StartTemperature,
+                Temperature = input.Temperature,
                 SurveyIdentifier = input.SurveyIdentifier,
                 WindDrivenTide = input.WindDrivenTide,
                 TimeLowTide = input.TimeOfLowTide.HasValue ? input.TimeOfLowTide.Value.ToShortTimeString() : string.Empty,
@@ -226,10 +226,9 @@ namespace FlightNode.DataCollection.Services.Controllers
             survey.AccessPointId = input.AccessPointId;
             survey.AssessmentId = input.SiteTypeId;
             survey.DisturbanceComments = input.DisturbanceComments;
-            survey.EndTemperature = null;
             survey.GeneralComments = input.SurveyComments;
             survey.LocationId = input.LocationId;
-            survey.StartTemperature = input.Temperature;
+            survey.Temperature = input.Temperature;
             survey.SurveyIdentifier = identifier;
             survey.WindDrivenTide = input.WindDrivenTide;
             survey.SurveyTypeId = SurveyType.Foraging;
