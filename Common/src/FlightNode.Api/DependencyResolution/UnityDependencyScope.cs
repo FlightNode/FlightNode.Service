@@ -70,7 +70,7 @@ namespace FlightNode.Api.DependencyResolution
             {
                 return Container.Resolve(serviceType);
             }
-            catch (ResolutionFailedException res)
+            catch (ResolutionFailedException)
             {
                 // Any other exception might really be a problem, so let it escape.
                 return null;

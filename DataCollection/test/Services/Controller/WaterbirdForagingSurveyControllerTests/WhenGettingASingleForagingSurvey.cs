@@ -275,7 +275,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             var result = RunHappyPath(domain);
 
-            Assert.Equal(domain.StartTemperature, result.Temperature);
+            Assert.Equal(domain.Temperature, result.Temperature);
         }
 
         [Fact]

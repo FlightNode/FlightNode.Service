@@ -46,9 +46,7 @@ namespace FlightNode.DataCollection.Domain.Entities
 
         public int? WeatherId { get; set; }
 
-        public int? StartTemperature { get; set; }
-
-        public int? EndTemperature { get; set; }
+        public decimal? Temperature { get; set; }
 
         public int? WindSpeed { get; set; }
 

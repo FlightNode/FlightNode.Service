@@ -2,7 +2,6 @@ using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Infrastructure.Customization;
 using FlightNode.DataCollection.Infrastructure.Persistence;
 using System.Data.Entity.Migrations;
-using System;
 
 namespace FlightNode.DataCollection.Domain.Migrations
 {

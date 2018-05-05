@@ -41,7 +41,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
         protected const int SITE_TYPE_ID = 14;
         protected const int STEP = 1;
         protected const string SURVEY_COMMENTS = "Survey comments";
-        protected const int TEMPERATURE = 16;
+        protected const decimal TEMPERATURE = 16.0m;
         protected const bool WindDrivenTide = true;
         protected const int VANTAGE_POINT = 18;
         protected const int WEATHER = 19;
@@ -88,7 +88,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             });
             domainResult.Observers = Observers;
             domainResult.StartDate = START_DATE;
-            domainResult.StartTemperature = TEMPERATURE;
+            domainResult.Temperature = TEMPERATURE;
             domainResult.SubmittedBy = 14;
             domainResult.SurveyIdentifier = IDENTIFIER;
             domainResult.SurveyTypeId = 15;
@@ -120,7 +120,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                 WindSpeed = WindSpeed,
                 SurveyId = SURVEY_ID,
                 WaterHeightId = WaterHeightId,
-                StartDate = StartDateString,
+                StartDate = StartDateStringUsFormat,
                 StartTime = StartTimeString,
                 EndTime = EndTimeString,
                 Observers = Observers,
@@ -158,7 +158,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
                 LocationId = LOCATION_ID,
                 AssessmentId = SITE_TYPE_ID,
                 GeneralComments = SURVEY_COMMENTS,
-                StartTemperature = TEMPERATURE,
+                Temperature = TEMPERATURE,
                 WindDrivenTide = WindDrivenTide,
                 VantagePointId = VANTAGE_POINT,
                 WeatherId = WEATHER,

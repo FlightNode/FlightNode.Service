@@ -113,8 +113,7 @@ namespace FlightNode.DataCollection.Services.Controllers
 
             if (input == null)
             {
-                var request = Request.ToString();
-                throw new InvalidOperationException("null input received. Request: " + request);
+                return BadRequest("null input");
             }
 
             if (surveyIdentifier == Guid.Empty)

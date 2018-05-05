@@ -167,7 +167,6 @@ namespace FlightNode.DataCollection.Services.Controllers
             survey.AccessPointId = input.AccessPointId;
             survey.AssessmentId = input.SiteTypeId;
             survey.DisturbanceComments = input.DisturbanceComments;
-            survey.EndTemperature = null;
             survey.GeneralComments = input.SurveyComments;
             survey.LocationId = input.LocationId;
             survey.SurveyIdentifier = identifier;

@@ -34,7 +34,7 @@ namespace FlightNode.DataCollection.Services.Models.Survey
 
         public int? WeatherId { get; set; }
 
-        public int? Temperature { get; set; }
+        public decimal? Temperature { get; set; }
 
         public int? WindSpeed { get; set; }
 
