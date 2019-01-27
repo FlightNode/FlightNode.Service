@@ -9,7 +9,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public bool StateModifierWasCalled => CountSetModifiedStateCalls > 0;
 
-        public override void SetModifiedState<TEntity>(IPersistenceBase<TEntity> persistenceLayer, TEntity input)
+        public override void SetModifiedState(IModifiable persistenceLayer, object input)
         {
             CountSetModifiedStateCalls++;
         }

@@ -4,11 +4,14 @@ using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using FlightNode.DataCollection.Domain.Managers;
 using Moq;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 {
+    [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
     public class WaterbirdForagingManagerTests
     {
         public class Fixture : IDisposable
@@ -22,16 +25,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             protected FakeDbSet<SurveyCompleted> SurveyCompletedSet = new FakeDbSet<SurveyCompleted>();
             protected FakeDbSet<Disturbance> DisturbanceSet = new FakeDbSet<Disturbance>();
             protected FakeDbSet<Observation> ObservationSet = new FakeDbSet<Observation>();
-
+            protected FakeEfStateModifier EfStateModifier { get; set; }
 
             public Fixture()
             {
                 SurveyPersistenceMock = MockRepository.Create<ISurveyPersistence>();
+                EfStateModifier = new FakeEfStateModifier();
             }
 
             protected SurveyManager BuildSystem()
             {
-                return new SurveyManager(SurveyPersistenceMock.Object);
+                return new SurveyManager(SurveyPersistenceMock.Object) { StateModifier = EfStateModifier };
             }
 
             public void Dispose()
@@ -146,7 +150,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Act
-                    var result = BuildSystem().Create(input);
+                    BuildSystem().Create(input);
 
                     // Assert
                     Assert.Same(disturb, DisturbanceSet.First());
@@ -261,23 +265,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 var disturb = new Disturbance { Id = 2 };   // causes an update 
                 input.Disturbances.Add(disturb);
 
+                // .. three objects are being saved
+                const int expectedCount = 3;
 
                 // Mocks
                 SetupCrudSets();
                 ExpectToWorkWithPendingSurveys();
                 SurveyPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(1);
-
-
-
-                // bypass the EF update process
-                var modifiedWasCalled = 0;
-                const int expectedModifications = 3; // observation, disturbance, survey
-
-                ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
-                {
-                    modifiedWasCalled++;
-                };
 
                 // The pending survey needs to exist in order to delete it
                 SurveyPendingSet.Add(input);
@@ -293,7 +288,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 //
                 // Assert
-                Assert.Equal(expectedModifications, modifiedWasCalled);
+                EfStateModifier.CountSetModifiedStateCalls.Should().Be(expectedCount);
 
                 Assert.Equal(id, SurveyCompletedSet.First().SubmittedBy);
                 Assert.Equal(input.WaterHeightId, SurveyCompletedSet.First().WaterHeightId);
@@ -318,17 +313,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     //
                     // Arrange
                     const int expectedCount = 3; // Observation, Disturbance, and Survey
-
-                    // Don't extract this to a method for reuse, with the variable at the 
-                    // class level. Will cause interacting tests.
-                    var modifiedWasCalled = 0;
-
-                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
-                    {
-                        modifiedWasCalled++;
-                    };
-
-
                     const int id = 3233;
 
                     var input = new SurveyPending { Id = id };
@@ -354,7 +338,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(expectedCount, modifiedWasCalled);
+                    EfStateModifier.CountSetModifiedStateCalls.Should().Be(expectedCount);
                     Assert.Same(input, SurveyPendingSet.First());
                 }
 
@@ -379,17 +363,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     input.Disturbances.Add(disturb);
 
 
-
-                    // Don't extract this to a method for reuse, with the variable at the 
-                    // class level. Will cause interacting tests.
-                    var modifiedWasCalled = 0;
-
-                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
-                    {
-                        modifiedWasCalled++;
-                    };
-
-
                     // Mocks
                     SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
                         .Throws<InvalidOperationException>();
@@ -406,8 +379,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     try
                     {
-                        ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) => { /* do nothing */ };
-
                         BuildSystem().Update(item);
                         throw new Exception("this should have failed");
                     }
@@ -456,17 +427,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     //
                     // Arrange
                     const int expectedCount = 3; // Observation, Disturbance, and Survey
-
-                    // Don't extract this to a method for reuse, with the variable at the 
-                    // class level. Will cause interacting tests.
-                    var modifiedWasCalled = 0;
-
-                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
-                    {
-                        modifiedWasCalled++;
-                    };
-
-
                     const int id = 3233;
 
                     var input = new SurveyCompleted { Id = id };
@@ -492,7 +452,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    Assert.Equal(expectedCount, modifiedWasCalled);
+                    EfStateModifier.CountSetModifiedStateCalls.Should().Be(expectedCount);
                     Assert.Same(input, SurveyCompletedSet.First());
                 }
 
@@ -516,18 +476,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     var disturb = new Disturbance();
                     input.Disturbances.Add(disturb);
 
-
-
-                    // Don't extract this to a method for reuse, with the variable at the 
-                    // class level. Will cause interacting tests.
-                    var modifiedWasCalled = 0;
-
-                    ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
-                    {
-                        modifiedWasCalled++;
-                    };
-
-
                     // Mocks
                     SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
                         .Throws<InvalidOperationException>();
@@ -544,8 +492,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     try
                     {
-                        ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) => { /* do nothing */ };
-
                         BuildSystem().Update(item);
                         throw new Exception("this should have failed");
                     }

@@ -1,7 +1,6 @@
-﻿using FlightNode.DataCollection.Domain.Interfaces.Persistence;
-using FligthNode.Common.Api.Controllers;
-using Microsoft.AspNet.Identity;
+﻿using FligthNode.Common.Api.Controllers;
 using System;
+using Microsoft.AspNet.Identity;
 
 namespace FlightNode.DataCollection
 {
@@ -20,15 +19,15 @@ namespace FlightNode.DataCollection
 
 
 
-        public static Action<IModifiable, object> SetModifiedStateDelegate;
+        //public static Action<IModifiable, object> SetModifiedStateDelegate;
 
-        public static void SetModifiedStateOn(this IModifiable modifiable, object entry)
-        {
-            SetModifiedStateDelegate(modifiable, entry);
-        }
-        
+        //public static void SetModifiedStateOn(this IModifiable modifiable, object entry)
+        //{
+        //    SetModifiedStateDelegate(modifiable, entry);
+        //}
 
-        
+
+
         static ExtensionDelegate()
         {
             Init();
@@ -44,10 +43,10 @@ namespace FlightNode.DataCollection
                 return controller.User.Identity.GetUserId<int>();
             };
 
-            SetModifiedStateDelegate = (IModifiable persistenceLayer, object input) =>
-            {
-                persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
-            };
+            //SetModifiedStateDelegate = (IModifiable persistenceLayer, object input) =>
+            //{
+            //    persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
+            //};
         }
 
     }

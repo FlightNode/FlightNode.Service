@@ -89,7 +89,7 @@ namespace FlightNode.DataCollection.Domain.Managers
     /// </summary>
     public class EfStateModifier
     {
-        public virtual void SetModifiedState<TEntity>(IPersistenceBase<TEntity> persistenceLayer, TEntity input) where TEntity : class, IEntity
+        public virtual void SetModifiedState(IModifiable persistenceLayer, object input)
         {
             persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
         }

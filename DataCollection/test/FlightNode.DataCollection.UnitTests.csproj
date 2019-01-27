@@ -162,7 +162,7 @@
     <Compile Include="Domain\Managers\WaterBirdForaging\WhenGettingAListOfForagingSurveys.cs" />
     <Compile Include="Domain\Managers\WorkLogDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\WorkTypeDomainManagerTests.cs" />
-    <Compile Include="Domain\Managers\LocationDomainManagertests.cs" />
+    <Compile Include="Domain\Managers\LocationDomainManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Controller\BirdSpeciesControllerTests.cs" />
     <Compile Include="Services\Controller\LoggingControllerBaseFixture.cs" />

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 {
-    public class LocationDomainManagertests
+    public class LocationDomainManagerTests
     {
         public class Fixture : IDisposable
         {

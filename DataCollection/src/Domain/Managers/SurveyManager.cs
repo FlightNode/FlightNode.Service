@@ -1,5 +1,4 @@
-﻿using FlightNode.Common.Exceptions;
-using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System;
 using System.Collections.Generic;
@@ -25,9 +24,29 @@ namespace FlightNode.DataCollection.Domain.Managers
     /// <summary>
     /// Domain / business manager for waterbird foraging surveys.
     /// </summary>
+    /// <remarks>
+    /// This class doesn't inherit from <see cref="DomainManagerBase{TEntity}"/>
+    /// because it deals with both pending and completed surveys. Perhaps
+    /// duplicate code can be refactored away in the future.
+    /// </remarks>
     public class SurveyManager : ISurveyManager
     {
         private readonly ISurveyPersistence _persistence;
+
+        private EfStateModifier _efStateModifier;
+
+        /// <summary>
+        /// Injectable property to facilitate unit testing of the state modification.
+        /// </summary>
+        /// <remarks>
+        /// Need an instance per class, and need to be able to override. Property injection is a good solution.
+        /// </remarks>
+        public EfStateModifier StateModifier
+        {
+            get => _efStateModifier ?? (_efStateModifier = new EfStateModifier());
+            set => _efStateModifier = value;
+        }
+
 
         /// <summary>
         /// Constructs a new instance of <see cref="SurveyManager"/>
@@ -35,12 +54,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// <param name="persistence"></param>
         public SurveyManager(ISurveyPersistence persistence)
         {
-            if (persistence == null)
-            {
-                throw new ArgumentNullException("persistence");
-            }
-
-            _persistence = persistence;
+            _persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
         }
 
         /// <summary>
@@ -60,7 +74,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             if (survey == null)
             {
-                return survey;
+                return null;
             }
 
             // We are not currently setup to take advantage of EF's hydration option (.Include(path)),
@@ -362,7 +376,7 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             _persistence.SurveysPending.Add(survey);
-            _persistence.SetModifiedStateOn(survey);
+            StateModifier.SetModifiedState(_persistence, survey);
 
         }
 
@@ -378,7 +392,7 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             _persistence.SurveysCompleted.Add(survey);
-            _persistence.SetModifiedStateOn(survey);
+            StateModifier.SetModifiedState(_persistence, survey);
 
         }
 
@@ -391,7 +405,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                 //Set the state to Modified only if the object is already created.
                 if (x.Id > 0)
                 {
-                    _persistence.SetModifiedStateOn(x);
+                    StateModifier.SetModifiedState(_persistence, x);
                 }
             });
         }
@@ -404,7 +418,7 @@ namespace FlightNode.DataCollection.Domain.Managers
                 //Set the state to Modified only if the object is already created.
                 if (x.Id > 0)
                 {
-                    _persistence.SetModifiedStateOn(x);
+                    StateModifier.SetModifiedState(_persistence, x);
                 }
             });
         }
