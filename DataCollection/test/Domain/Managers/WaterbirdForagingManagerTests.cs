@@ -14,7 +14,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         public class Fixture : IDisposable
         {
 
-            protected readonly Guid IDENTIFIER = new Guid("a507f681-c111-447a-bc1f-195916891226");
+            protected readonly Guid Identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
 
             protected MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
             protected Mock<ISurveyPersistence> SurveyPersistenceMock;
@@ -82,7 +82,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             public void GivenRecordExistsThenReturnTrue()
             {
                 // Arrange
-                var survey = new SurveyPending { SurveyIdentifier = IDENTIFIER };
+                var survey = new SurveyPending { SurveyIdentifier = Identifier };
                 FakeSurveysPending.Add(survey);
 
                 SurveyPersistenceMock.Setup(x => x.SurveysPending)
@@ -92,7 +92,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     .Returns(1);
 
                 // Act
-                var result = BuildSystem().Delete(IDENTIFIER);
+                var result = BuildSystem().Delete(Identifier);
 
                 // Assert
                 Assert.True(result);
@@ -108,7 +108,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 
 
                 // Act
-                var result = BuildSystem().Delete(IDENTIFIER);
+                var result = BuildSystem().Delete(Identifier);
 
                 // Assert
                 Assert.False(result);
@@ -117,9 +117,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public class Create : Fixture
         {
-            protected const int SURVEY_ID = 23;
-            protected const int OBSERVATION_ID = 234;
-            protected const int DISTURBANCE_ID = 4643;
+            protected const int SurveyId = 23;
+            protected const int ObservationId = 234;
+            protected const int DisturbanceId = 4643;
 
 
             public class HappyPath : Create
@@ -382,11 +382,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Don't extract this to a method for reuse, with the variable at the 
                     // class level. Will cause interacting tests.
-                    var ModifiedWasCalled = 0;
+                    var modifiedWasCalled = 0;
 
                     ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
                     {
-                        ModifiedWasCalled++;
+                        modifiedWasCalled++;
                     };
 
 
@@ -520,11 +520,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     // Don't extract this to a method for reuse, with the variable at the 
                     // class level. Will cause interacting tests.
-                    var ModifiedWasCalled = 0;
+                    var modifiedWasCalled = 0;
 
                     ExtensionDelegate.SetModifiedStateDelegate = (IModifiable persistenceLayer, object i) =>
                     {
-                        ModifiedWasCalled++;
+                        modifiedWasCalled++;
                     };
 
 
@@ -585,8 +585,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public class CreateFakeSet : Fixture
         {
-            protected const int LOCATION_ID = 234234;
-            protected const string LOCATION_NAME = "fasdfasdf";
+            protected const int LocationId = 234234;
+            protected const string LocationName = "fasdfasdf";
 
 
             protected FakeDbSet<SurveyCompleted> FakeSurveysCompleted = new FakeDbSet<SurveyCompleted>();
@@ -613,7 +613,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     .Returns(FakeLocations);
 
 
-                FakeLocations.Add(new Location { Id = LOCATION_ID, SiteName = LOCATION_NAME });
+                FakeLocations.Add(new Location { Id = LocationId, SiteName = LocationName });
             }
 
             protected void UseFakeObservations()
@@ -638,7 +638,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakePendingSet();
                 UseFakeCompletedSet();
 
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER, 1);
+                var result = BuildSystem().FindBySurveyId(Identifier, 1);
 
                 Assert.Null(result);
             }
@@ -652,14 +652,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeDisturbances();
                 UseFakeObservations();
 
-                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Foraging };
-                var pending2 = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                var pending = new SurveyPending { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Foraging };
+                var pending2 = new SurveyPending { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysPending.Add(pending);
                 FakeSurveysPending.Add(pending2);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Foraging);
+                var result = BuildSystem().FindBySurveyId(Identifier, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -676,14 +676,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeDisturbances();
                 UseFakeObservations();
 
-                var pending2 = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Foraging };
-                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                var pending2 = new SurveyPending { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Foraging };
+                var pending = new SurveyPending { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysPending.Add(pending);
                 FakeSurveysPending.Add(pending2);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+                var result = BuildSystem().FindBySurveyId(Identifier, SurveyType.Rookery);
 
                 //
                 // Assert
@@ -699,15 +699,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeDisturbances();
                 UseFakeObservations();
 
-                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                var pending = new SurveyPending { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysPending.Add(pending);
 
-                var observation = new Observation { SurveyIdentifier = IDENTIFIER };
+                var observation = new Observation { SurveyIdentifier = Identifier };
                 FakeObservations.Add(observation);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+                var result = BuildSystem().FindBySurveyId(Identifier, SurveyType.Rookery);
 
                 //
                 // Assert
@@ -723,15 +723,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeDisturbances();
                 UseFakeObservations();
 
-                var pending = new SurveyPending { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                var pending = new SurveyPending { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysPending.Add(pending);
 
-                var disturbance = new Disturbance { SurveyIdentifier = IDENTIFIER };
+                var disturbance = new Disturbance { SurveyIdentifier = Identifier };
                 FakeDisturbances.Add(disturbance);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+                var result = BuildSystem().FindBySurveyId(Identifier, SurveyType.Rookery);
 
                 //
                 // Assert
@@ -748,12 +748,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeDisturbances();
                 UseFakeObservations();
 
-                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                var completed = new SurveyCompleted { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+                var result = BuildSystem().FindBySurveyId(Identifier, SurveyType.Rookery);
 
                 //
                 // Assert
@@ -771,15 +771,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeDisturbances();
                 UseFakeObservations();
 
-                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                var completed = new SurveyCompleted { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysCompleted.Add(completed);
 
-                var observation = new Observation { SurveyIdentifier = IDENTIFIER };
+                var observation = new Observation { SurveyIdentifier = Identifier };
                 FakeObservations.Add(observation);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+                var result = BuildSystem().FindBySurveyId(Identifier, SurveyType.Rookery);
 
                 //
                 // Assert
@@ -797,15 +797,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeDisturbances();
                 UseFakeObservations();
 
-                var completed = new SurveyCompleted { SurveyIdentifier = IDENTIFIER, SurveyTypeId = SurveyType.Rookery };
+                var completed = new SurveyCompleted { SurveyIdentifier = Identifier, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysCompleted.Add(completed);
 
-                var disturbance = new Disturbance { SurveyIdentifier = IDENTIFIER };
+                var disturbance = new Disturbance { SurveyIdentifier = Identifier };
                 FakeDisturbances.Add(disturbance);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery);
+                var result = BuildSystem().FindBySurveyId(Identifier, SurveyType.Rookery);
 
                 //
                 // Assert
@@ -815,14 +815,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void IgnoreExceptions()
             {
-                Assert.Throws<MockException>(() => BuildSystem().FindBySurveyId(IDENTIFIER, SurveyType.Rookery));
+                Assert.Throws<MockException>(() => BuildSystem().FindBySurveyId(Identifier, SurveyType.Rookery));
             }
         }
 
 
         public class FindBySubmitterId : CreateFakeSet
         {
-            private const int USER_ID = 234234;
+            private const int UserId = 234234;
 
             [Fact]
             public void ReturnEmptyListWhenSurveyDoesNotExist()
@@ -834,7 +834,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(UserId, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -850,12 +850,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
+                var pending = new SurveyPending { SubmittedBy = UserId, LocationId = LocationId, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysPending.Add(pending);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(UserId, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -871,12 +871,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
+                var completed = new SurveyCompleted { SubmittedBy = UserId, LocationId = LocationId, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(UserId, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -893,16 +893,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
+                var completed = new SurveyCompleted { SubmittedBy = UserId, LocationId = LocationId, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(UserId, SurveyType.Foraging);
 
                 //
                 // Assert
-                Assert.Equal(LOCATION_NAME, result.First().LocationName);
+                Assert.Equal(LocationName, result.First().LocationName);
             }
 
             [Fact]
@@ -914,16 +914,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var completed = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
+                var completed = new SurveyPending { SubmittedBy = UserId, LocationId = LocationId, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysPending.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(UserId, SurveyType.Foraging);
 
                 //
                 // Assert
-                Assert.Equal(LOCATION_NAME, result.First().LocationName);
+                Assert.Equal(LocationName, result.First().LocationName);
             }
 
             [Fact]
@@ -935,15 +935,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
+                var pending = new SurveyPending { SubmittedBy = UserId, LocationId = LocationId, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysPending.Add(pending);
 
-                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
+                var completed = new SurveyCompleted { SubmittedBy = UserId, LocationId = LocationId, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(UserId, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -961,15 +961,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UseFakeCompletedSet();
                 UseFakeLocations();
 
-                var pending = new SurveyPending { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Rookery };
+                var pending = new SurveyPending { SubmittedBy = UserId, LocationId = LocationId, SurveyTypeId = SurveyType.Rookery };
                 FakeSurveysPending.Add(pending);
 
-                var completed = new SurveyCompleted { SubmittedBy = USER_ID, LocationId = LOCATION_ID, SurveyTypeId = SurveyType.Foraging };
+                var completed = new SurveyCompleted { SubmittedBy = UserId, LocationId = LocationId, SurveyTypeId = SurveyType.Foraging };
                 FakeSurveysCompleted.Add(completed);
 
                 //
                 // Act
-                var result = BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging);
+                var result = BuildSystem().FindBySubmitterIdAndSurveyType(UserId, SurveyType.Foraging);
 
                 //
                 // Assert
@@ -979,7 +979,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void IgnoreExceptions()
             {
-                Assert.Throws<MockException>(() => BuildSystem().FindBySubmitterIdAndSurveyType(USER_ID, SurveyType.Foraging));
+                Assert.Throws<MockException>(() => BuildSystem().FindBySubmitterIdAndSurveyType(UserId, SurveyType.Foraging));
             }
         }
     }

@@ -1,24 +1,21 @@
-﻿using FlightNode.Common.Exceptions;
-using FlightNode.DataCollection.Domain.Entities;
-using FlightNode.DataCollection.Domain.Managers;
-using FlightNode.DataCollection.Domain.Services.Controllers;
-using FlightNode.DataCollection.Services.Models;
-using Moq;
-using log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using System.Web.Http.Results;
-using Xunit;
 using FlightNode.Common.Api.Models;
-using FlightNode.DataCollection.Domain.UnitTests.Services.Controller;
+using FlightNode.Common.Exceptions;
+using FlightNode.DataCollection.Domain.Entities;
+using FlightNode.DataCollection.Domain.Managers;
+using FlightNode.DataCollection.Domain.Services.Controllers;
+using FlightNode.DataCollection.Services.Models;
 using FlightNode.DataCollection.Services.Models.WorkLog;
+using Moq;
+using Xunit;
 
-namespace FlightNode.DataCollection.Domain.UnitTests.Services
+namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
 {
     public class WorkTypeControllerTests
     {
@@ -44,20 +41,20 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
         public class Get : Fixture
         {
-            private int id = 123;
-            private string description = "somewhere";
+            private int _id = 123;
+            private string _description = "somewhere";
 
             [Fact]
             public void ConfirmGetMapsDescription()
             {
-                Assert.Equal(description, RunPositiveTest().Description);
+                Assert.Equal(_description, RunPositiveTest().Description);
             }
 
 
             [Fact]
             public void ConfirmGetMapsId()
             {
-                Assert.Equal(id, RunPositiveTest().Id);
+                Assert.Equal(_id, RunPositiveTest().Id);
             }
             
 
@@ -66,17 +63,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 // Arrange 
                 var record = new WorkType
                 {
-                    Description = description,
-                    Id = id,
+                    Description = _description,
+                    Id = _id,
                     WorkLogs = null
                 };
 
-                MockDomainManager.Setup(x => x.FindById(It.Is<int>(y => y == id)))
+                MockDomainManager.Setup(x => x.FindById(It.Is<int>(y => y == _id)))
                     .Returns(record);
 
 
                 // Act
-                var result = BuildSystem().Get(id);
+                var result = BuildSystem().Get(_id);
 
                 var message = result.ExecuteAsync(new System.Threading.CancellationToken()).Result;
 
@@ -88,22 +85,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
         }
 
 
-        public class Get_All : Fixture
+        public class GetAll : Fixture
         {
-            private int id = 123;
-            private string description = "somewhere";
+            private int _id = 123;
+            private string _description = "somewhere";
 
             [Fact]
             public void ConfirmGetMapsDescription()
             {
-                Assert.Equal(description, RunPositiveTest().First().Description);
+                Assert.Equal(_description, RunPositiveTest().First().Description);
             }
 
 
             [Fact]
             public void ConfirmGetMapsId()
             {
-                Assert.Equal(id, RunPositiveTest().First().Id);
+                Assert.Equal(_id, RunPositiveTest().First().Id);
             }
             
             private List<WorkTypeModel> RunPositiveTest()
@@ -113,8 +110,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 {
                     new WorkType
                     {
-                        Description = description,
-                        Id = id,
+                        Description = _description,
+                        Id = _id,
                         WorkLogs = null
                     }
                 };
@@ -137,20 +134,20 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
         public class Post : Fixture
         {
-            private int id = 123;
-            private string description = "somewhere";
+            private int _id = 123;
+            private string _description = "somewhere";
 
             [Fact]
             public void ConfirmMapsDescription()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Create(It.Is<WorkType>(y => y.Description == description)));
+                MockDomainManager.Verify(x => x.Create(It.Is<WorkType>(y => y.Description == _description)));
             }
             
             [Fact]
             public void ConfirmUpdatesLocationHeader()
             {
-                var expected = "http://some/where/" + id.ToString();
+                var expected = "http://some/where/" + _id.ToString();
 
                 Assert.Equal(expected, RunPositiveTest().Headers.Location.ToString());
             }
@@ -161,24 +158,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 Assert.Equal(HttpStatusCode.Created, RunPositiveTest().StatusCode);
             }
 
-            private LocationModel GetTestResult()
-            {
-                return RunPositiveTest().Content.ReadAsAsync<LocationModel>().Result;
-            }
-
             private HttpResponseMessage RunPositiveTest()
             {
                 // Arrange 
                 var record = new WorkTypeModel
                 {
-                    Description = description,
+                    Description = _description,
                 };
 
                 MockDomainManager.Setup(x => x.Create(It.IsAny<WorkType>()))
                 .Returns((WorkType actual) =>
                 {
                     // inject an ID value so we can confirm that it is passed in the response
-                    actual.Id = id;
+                    actual.Id = _id;
                     return actual;
                 });
 
@@ -216,14 +208,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
         public class Put : Fixture
         {
-            private int id = 123;
-            private string description = "somewhere";
+            private int _id = 123;
+            private string _description = "somewhere";
 
             [Fact]
             public void ConfirmMapsDescription()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<WorkType>(y => y.Description == description)));
+                MockDomainManager.Verify(x => x.Update(It.Is<WorkType>(y => y.Description == _description)));
             }
             
 
@@ -231,7 +223,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             public void ConfirmMapsWorkTypeId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<WorkType>(y => y.Id == id)));
+                MockDomainManager.Verify(x => x.Update(It.Is<WorkType>(y => y.Id == _id)));
             }
 
             [Fact]
@@ -240,18 +232,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 Assert.Equal(HttpStatusCode.NoContent, RunPositiveTest().StatusCode);
             }
 
-            private WorkTypeModel GetTestResult()
-            {
-                return RunPositiveTest().Content.ReadAsAsync<WorkTypeModel>().Result;
-            }
 
             private HttpResponseMessage RunPositiveTest()
             {
                 // Arrange 
                 var record = new WorkTypeModel
                 {
-                    Description = description,
-                    Id = id
+                    Description = _description,
+                    Id = _id
                 };
 
                 MockDomainManager.Setup(x => x.Update(It.IsAny<WorkType>()))
@@ -300,10 +288,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             public class ValidationExceptionHandling : Fixture
             {
 
-                private const string message1 = "asdfasdfa";
-                private const string field1 = "fieeeeeld";
-                private const string message2 = "as8df7a89psdfp";
-                private const string field2 = "sdk;kl;hl;";
+                private const string Message1 = "asdfasdfa";
+                private const string Field1 = "fieeeeeld";
+                private const string Message2 = "as8df7a89psdfp";
+                private const string Field2 = "sdk;kl;hl;";
 
 
                 [Fact]
@@ -311,10 +299,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 {
                     Assert.True(
                         RunTest().ModelState
-                            .FirstOrDefault(x => x.Key == field1)
+                            .FirstOrDefault(x => x.Key == Field1)
                             .Value
                             .Errors
-                            .Any(x => x.ErrorMessage == message1)
+                            .Any(x => x.ErrorMessage == Message1)
                     );
                 }
 
@@ -323,10 +311,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 {
                     Assert.True(
                         RunTest().ModelState
-                            .FirstOrDefault(x => x.Key == field2)
+                            .FirstOrDefault(x => x.Key == Field2)
                             .Value
                             .Errors
-                            .Any(x => x.ErrorMessage == message2)
+                            .Any(x => x.ErrorMessage == Message2)
                     );
                 }
 
@@ -334,8 +322,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 {
                     var list = new List<ValidationResult>
                     {
-                        new ValidationResult(message1, new [] { field1 }),
-                        new ValidationResult(message2, new [] { field2 })
+                        new ValidationResult(Message1, new [] { Field1 }),
+                        new ValidationResult(Message2, new [] { Field2 })
                     };
 
                     var e = DomainValidationException.Create(list);
@@ -353,13 +341,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
 
         public class GetSimpleList : Fixture
         {
-            private const int id1 = 123;
-            private const int id2 = 52334;
-            private const string description1 = "somewhere";
-            private const string description2 = "else";
+            private const int Id1 = 123;
+            private const int Id2 = 52334;
+            private const string Description1 = "somewhere";
+            private const string Description2 = "else";
 
             [Fact]
-            public void ConfirmReturnsOKStatus()
+            public void ConfirmReturnsOkStatus()
             {
                 Assert.Equal(HttpStatusCode.OK, RunPositiveTest().StatusCode);
             }
@@ -367,13 +355,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
             [Fact]
             public void ConfirmReturnsFirstItem()
             {
-                Assert.Equal(description1, GetTestResults().FirstOrDefault(x => x.Id == id1).Value);
+                Assert.Equal(Description1, GetTestResults().FirstOrDefault(x => x.Id == Id1).Value);
             }
 
             [Fact]
             public void ConfirmReturnsSecondItem()
             {
-                Assert.Equal(description2, GetTestResults().FirstOrDefault(x => x.Id == id2).Value);
+                Assert.Equal(Description2, GetTestResults().FirstOrDefault(x => x.Id == Id2).Value);
             }
 
             private List<SimpleListItem> GetTestResults()
@@ -389,13 +377,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services
                 {
                     new WorkType
                     {
-                        Description = description1,
-                        Id = id1
+                        Description = Description1,
+                        Id = Id1
                     },
                     new WorkType
                     {
-                        Description = description2,
-                        Id = id2
+                        Description = Description2,
+                        Id = Id2
                     }
                 };
 

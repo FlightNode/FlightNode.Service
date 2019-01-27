@@ -6,6 +6,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
@@ -16,17 +17,18 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         {
             protected MockRepository MockRepository { get; set; }
             protected Mock<ILocationPersistence> LocationPersistenceMock { get; set; }
-
+            protected FakeEfStateModifier EfStateModifier { get; set; }
 
             public Fixture()
             {
                 MockRepository = new MockRepository(MockBehavior.Strict);
                 LocationPersistenceMock = MockRepository.Create<ILocationPersistence>();
+                EfStateModifier = new FakeEfStateModifier();
             }
 
             protected LocationDomainManager BuildSystem()
             {
-                return new LocationDomainManager(LocationPersistenceMock.Object);
+                return new LocationDomainManager(LocationPersistenceMock.Object) {StateModifier = EfStateModifier};
             }
 
             public void Dispose()
@@ -40,7 +42,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmHappyPath()
             {
-                base.BuildSystem();
+                BuildSystem();
             }
 
             [Fact]
@@ -69,7 +71,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected void SetupLocationsCollection()
             {
-                base.LocationPersistenceMock.SetupGet(x => x.Collection)
+                LocationPersistenceMock.SetupGet(x => x.Collection)
                     .Returns(FakeSet);
             }
 
@@ -91,7 +93,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public class Create : CreateFakeSet
         {
-            private const int RECORD_COUNT = 1;
+            private const int RecordCount = 1;
 
 
             [Fact]
@@ -101,13 +103,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 // Arrange
                 var item = BuildDefault();
                 var id = 34234;
-                base.SetupLocationsCollection();
-                base.LocationPersistenceMock.Setup(x => x.SaveChanges())
+                SetupLocationsCollection();
+                LocationPersistenceMock.Setup(x => x.SaveChanges())
                     .Callback(() => item.Id = id)
-                    .Returns(RECORD_COUNT);
+                    .Returns(RecordCount);
 
                 // Act
-                var result = BuildSystem().Create(item);
+                BuildSystem().Create(item);
 
                 // Assert
                 Assert.Equal(id, item.Id);
@@ -121,22 +123,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 // Arrange
                 var item = BuildDefault();
                 var id = 34234;
-                base.SetupLocationsCollection();
-                base.LocationPersistenceMock.Setup(x => x.SaveChanges())
+                SetupLocationsCollection();
+                LocationPersistenceMock.Setup(x => x.SaveChanges())
                     .Callback(() => item.Id = id)
-                    .Returns(RECORD_COUNT);
+                    .Returns(RecordCount);
 
                 // Act
-                var result = BuildSystem().Create(item);
+                BuildSystem().Create(item);
 
                 // Assert
-                Assert.Same(item, base.FakeSet.List[0]);
+                Assert.Same(item, FakeSet.List[0]);
             }
 
 
             public class Validation : CreateFakeSet
             {
 
+                // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
                 private void RunNegativeTest(Location item, string memberName)
                 {
                     try
@@ -152,7 +155,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 private void RunPositiveTest(Location item)
                 {
-                    base.SetupLocationsCollection();
+                    SetupLocationsCollection();
                     LocationPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
 
@@ -331,9 +334,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             public void ConfirmHappyPath()
             {
                 // Arrange
-                base.SetupLocationsCollection();
+                SetupLocationsCollection();
                 var one = new Location();
-                base.FakeSet.List.Add(one);
+                FakeSet.List.Add(one);
 
                 // Act
                 var result = BuildSystem().FindAll();
@@ -349,11 +352,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             public void ConfirmHappyPath()
             {
                 // Arrange
-                var id = 23423;
-                base.SetupLocationsCollection();
+                const int id = 23423;
+                SetupLocationsCollection();
                 var one = new Location();
                 var two = new Location { Id = id };
-                base.FakeSet.List.AddRange(new List<Location>() { one, two });
+                FakeSet.List.AddRange(new List<Location>() { one, two });
 
                 // Act
                 var result = BuildSystem().FindById(id);
@@ -365,17 +368,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public class Update : CreateFakeSet
         {
-            private const int RECORD_COUNT = 1;
+            private const int RecordCount = 1;
 
-            protected bool SetModifiedWasCalled = false;
-
-            protected void BypassEntryMethod()
-            {
-                DomainManagerBase<Location>.SetModifiedState = (IPersistenceBase<Location> persistenceLayer, Location input) =>
-                {
-                    SetModifiedWasCalled = true;
-                };
-            }
 
             [Fact]
             public void ConfirmHappyPath()
@@ -383,15 +377,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Arrange
                 var item = BuildDefault();
-                base.SetupLocationsCollection();
-                BypassEntryMethod();
-                base.LocationPersistenceMock.Setup(x => x.SaveChanges())
-                    .Returns(RECORD_COUNT);
+                SetupLocationsCollection();
+                
+                LocationPersistenceMock.Setup(x => x.SaveChanges())
+                    .Returns(RecordCount);
 
                 // Act
                 BuildSystem().Update(item);
 
-                Assert.True(SetModifiedWasCalled);
+                // Assert
+                EfStateModifier.StateModifierWasCalled.Should().BeTrue();
             }
 
             public class Validation : Update
@@ -399,14 +394,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 private void RunPositiveTest(Location item)
                 {
-                    base.SetupLocationsCollection();
-                    BypassEntryMethod();
+                    SetupLocationsCollection();
+                    
                     LocationPersistenceMock.Setup(x => x.SaveChanges())
                            .Returns(1);
 
                     BuildSystem().Update(item);
                 }
 
+                // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
                 private void RunNegativeTest(Location item, string memberName)
                 {
                     try

@@ -10,16 +10,27 @@ namespace FlightNode.DataCollection.Domain.Managers
     public abstract class DomainManagerBase<TEntity>
         where TEntity : class, IEntity
     {
-        protected readonly IPersistenceBase<TEntity> _persistence;
+        protected readonly IPersistenceBase<TEntity> Persistence;
+
+        private EfStateModifier _efStateModifier;
+
+        /// <summary>
+        /// Injectable property to facilitate unit testing of the state modification.
+        /// </summary>
+        /// <remarks>
+        /// Need an instance per class, and need to be able to override. Property injection is a good solution.
+        /// </remarks>
+        public EfStateModifier StateModifier
+        {
+            get => _efStateModifier ?? (_efStateModifier = new EfStateModifier());
+            set => _efStateModifier = value;
+        }
+
+
 
         protected DomainManagerBase(IPersistenceBase<TEntity> persistence)
         {
-            if (persistence == null)
-            {
-                throw new ArgumentNullException("persistence");
-            }
-
-            _persistence = persistence;
+            Persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
         }
 
 
@@ -27,13 +38,13 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
             if (input == null)
             {
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
             }
 
             input.Validate();
 
-            _persistence.Collection.Add(input);
-            _persistence.SaveChanges();
+            Persistence.Collection.Add(input);
+            Persistence.SaveChanges();
 
             // input will now have its primary key populated
             return input;
@@ -41,13 +52,13 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public virtual IEnumerable<TEntity> FindAll()
         {
-            return _persistence.Collection
+            return Persistence.Collection
                     .ToList();
         }
 
         public virtual TEntity FindById(int id)
         {
-            return _persistence.Collection.FirstOrDefault(x => x.Id == id);
+            return Persistence.Collection.FirstOrDefault(x => x.Id == id);
         }
 
         public virtual int UpdateAttachedObject(TEntity input)
@@ -55,27 +66,32 @@ namespace FlightNode.DataCollection.Domain.Managers
             input.Validate();
             
 
-            return _persistence.SaveChanges();            
+            return Persistence.SaveChanges();            
         }
 
         public virtual int Update(TEntity input)
         {
             input.Validate();
 
-            _persistence.Collection.Attach(input);
 
-            SetModifiedState(_persistence, input);
+            // TODO: re-evaluate the architecture. Is DomainManagerBase for the domain or persistence layer?
+            // If it is for the domain layer, it shouldn't know anything about EF internals!
+            Persistence.Collection.Attach(input);
 
-            return _persistence.SaveChanges();
+            StateModifier.SetModifiedState(Persistence, input);
+
+            return Persistence.SaveChanges();
         }
+    }
 
-        // This is an ugly hack because I can find no way to unit test the Entry() method, and 
-        // using Entry() and setting the Modified property seems to be the only way to convinc
-        // EF6 to save an object that was Attached, without having first retrieved the object 
-        // from the database (which would be a completely unnecessary db call).
-        public static Action<IPersistenceBase<TEntity>, TEntity> SetModifiedState = (IPersistenceBase<TEntity> persistenceLayer, TEntity input) =>
+    /// <summary>
+    /// Provides a facility to help set the an Entity Framework entity as modified within the EF entry state.
+    /// </summary>
+    public class EfStateModifier
+    {
+        public virtual void SetModifiedState<TEntity>(IPersistenceBase<TEntity> persistenceLayer, TEntity input) where TEntity : class, IEntity
         {
             persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
-        };
+        }
     }
 }

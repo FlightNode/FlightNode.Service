@@ -5,7 +5,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http.Results;
@@ -15,62 +14,61 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerT
 {
     public class WhenUpdateAWorkLogEntry : Fixture
     {
-        private const int id = 123;
-        private const string description = "somewhere";
-        private const decimal travelHours = 3.53m;
-        private const decimal workHours = 23.32m;
-        private readonly DateTime workDay = DateTime.Parse("2015-12-07 13:45");
-        private const int userId = 223;
-        private const int workTypeId = 3;
-        private const int locationId = 4;
+        private const int Id = 123;
+        private const decimal TravelHours = 3.53m;
+        private const decimal WorkHours = 23.32m;
+        private readonly DateTime _workDay = DateTime.Parse("2015-12-07 13:45");
+        private const int UserId = 223;
+        private const int WorkTypeId = 3;
+        private const int LocationId = 4;
 
         [Fact]
         public void ConfirmMapsId()
         {
             RunPositiveTest();
-            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.Id == id)));
+            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.Id == Id)));
         }
 
         [Fact]
         public void ConfirmMapsLocationId()
         {
             RunPositiveTest();
-            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.LocationId == locationId)));
+            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.LocationId == LocationId)));
         }
 
         [Fact]
         public void ConfirmMapsTravelTimeHours()
         {
             RunPositiveTest();
-            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.TravelTimeHours == travelHours)));
+            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.TravelTimeHours == TravelHours)));
         }
 
         [Fact]
         public void ConfirmMapsUserId()
         {
             RunPositiveTest();
-            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.UserId == userId)));
+            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.UserId == UserId)));
         }
 
         [Fact]
         public void ConfirmMapsWorkDate()
         {
             RunPositiveTest();
-            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.WorkDate == workDay)));
+            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.WorkDate == _workDay)));
         }
 
         [Fact]
         public void ConfirmMapsWorkHours()
         {
             RunPositiveTest();
-            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.WorkHours == workHours)));
+            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.WorkHours == WorkHours)));
         }
 
         [Fact]
         public void ConfirmMapsWorkTypeId()
         {
             RunPositiveTest();
-            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.WorkTypeId == workTypeId)));
+            MockDomainManager.Verify(x => x.Update(It.Is<WorkLog>(y => y.WorkTypeId == WorkTypeId)));
         }
 
 
@@ -80,23 +78,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerT
             Assert.Equal(HttpStatusCode.NoContent, RunPositiveTest().StatusCode);
         }
 
-        private WorkLogModel GetTestResult()
-        {
-            return RunPositiveTest().Content.ReadAsAsync<WorkLogModel>().Result;
-        }
 
         private HttpResponseMessage RunPositiveTest()
         {
             // Arrange 
             var record = new WorkLogModel
             {
-                LocationId = locationId,
-                TravelTimeHours = travelHours,
-                WorkTypeId = workTypeId,
-                WorkHours = workHours,
-                UserId = userId,
-                WorkDate = workDay,
-                Id = id
+                LocationId = LocationId,
+                TravelTimeHours = TravelHours,
+                WorkTypeId = WorkTypeId,
+                WorkHours = WorkHours,
+                UserId = UserId,
+                WorkDate = _workDay,
+                Id = Id
             };
 
             MockDomainManager.Setup(x => x.Update(It.IsAny<WorkLog>()))
@@ -114,18 +108,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerT
             return message;
 
         }
+        
 
-
-
-
-
-        private const string message1 = "asdfasdfa";
-        private const string field1 = "fieeeeeld";
-        private const string message2 = "as8df7a89psdfp";
-        private const string field2 = "sdk;kl;hl;";
-
-
- 
+        private const string Message1 = "asdfasdfa";
+        private const string Field1 = "fieeeeeld";
+        private const string Message2 = "as8df7a89psdfp";
+        private const string Field2 = "sdk;kl;hl;";
 
         [Fact]
         public void ConfirmDoesNotCactchDomainValidationException()
@@ -137,8 +125,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerT
         {
             var list = new List<ValidationResult>
                     {
-                        new ValidationResult(message1, new [] { field1 }),
-                        new ValidationResult(message2, new [] { field2 })
+                        new ValidationResult(Message1, new [] { Field1 }),
+                        new ValidationResult(Message2, new [] { Field2 })
                     };
 
             var e = DomainValidationException.Create(list);

@@ -6,62 +6,60 @@ using Xunit;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using FlightNode.Common.Exceptions;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerTests
 {
     public class WhenGettingAllEntries : Fixture
     {
-        private const int id = 123;
-        private const string description = "somewhere";
-        private const decimal travelHours = 3.53m;
-        private const decimal workHours = 23.32m;
-        private readonly DateTime workDay = DateTime.Parse("2015-12-07 13:45");
-        private const int userId = 223;
-        private const int workTypeId = 3;
-        private const int locationId = 4;
+        private const int Id = 123;
+        private const decimal TravelHours = 3.53m;
+        private const decimal WorkHours = 23.32m;
+        private readonly DateTime _workDay = DateTime.Parse("2015-12-07 13:45");
+        private const int UserId = 223;
+        private const int WorkTypeId = 3;
+        private const int LocationId = 4;
 
         [Fact]
         public void ConfirmGetMapsWorkTypeId()
         {
-            Assert.Equal(workTypeId, RunPositiveTest().First().WorkTypeId);
+            Assert.Equal(WorkTypeId, RunPositiveTest().First().WorkTypeId);
         }
 
 
         [Fact]
         public void ConfirmGetMapsWorkHours()
         {
-            Assert.Equal(workHours, RunPositiveTest().First().WorkHours);
+            Assert.Equal(WorkHours, RunPositiveTest().First().WorkHours);
         }
 
         [Fact]
         public void ConfirmGetMapsWorkDate()
         {
-            Assert.Equal(workDay, RunPositiveTest().First().WorkDate);
+            Assert.Equal(_workDay, RunPositiveTest().First().WorkDate);
         }
 
         [Fact]
         public void ConfirmGetMapsUserId()
         {
-            Assert.Equal(userId, RunPositiveTest().First().UserId);
+            Assert.Equal(UserId, RunPositiveTest().First().UserId);
         }
 
         [Fact]
         public void ConfirmGetMapsTravelTimeHours()
         {
-            Assert.Equal(travelHours, RunPositiveTest().First().TravelTimeHours);
+            Assert.Equal(TravelHours, RunPositiveTest().First().TravelTimeHours);
         }
 
         [Fact]
         public void ConfirmGetMapsLocationId()
         {
-            Assert.Equal(locationId, RunPositiveTest().First().LocationId);
+            Assert.Equal(LocationId, RunPositiveTest().First().LocationId);
         }
 
         [Fact]
         public void ConfirmGetMapsId()
         {
-            Assert.Equal(id, RunPositiveTest().First().Id);
+            Assert.Equal(Id, RunPositiveTest().First().Id);
         }
 
         private List<WorkLogModel> RunPositiveTest()
@@ -71,13 +69,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerT
                 {
                     new WorkLog
                     {
-                        LocationId = locationId,
-                        TravelTimeHours = travelHours,
-                        WorkTypeId = workTypeId,
-                        WorkHours = workHours,
-                        UserId = userId,
-                        WorkDate = workDay,
-                        Id = id
+                        LocationId = LocationId,
+                        TravelTimeHours = TravelHours,
+                        WorkTypeId = WorkTypeId,
+                        WorkHours = WorkHours,
+                        UserId = UserId,
+                        WorkDate = _workDay,
+                        Id = Id
                     }
                 };
 

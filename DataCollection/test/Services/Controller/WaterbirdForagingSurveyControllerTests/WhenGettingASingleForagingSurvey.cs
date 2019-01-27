@@ -363,7 +363,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
         private void SetupMockResult(ISurvey domainResult, int surveyTypeId)
         {
-            MockDomainManager.Setup(x => x.FindBySurveyId(IDENTIFIER, surveyTypeId))
+            MockDomainManager.Setup(x => x.FindBySurveyId(Identifier, surveyTypeId))
                 .Returns(domainResult);
         }
 
@@ -373,7 +373,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
             system.Logger = MockLogger.Object;
 
-            return system.Get(IDENTIFIER);
+            return system.Get(Identifier);
         }
     }
 }

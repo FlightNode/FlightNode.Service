@@ -10,47 +10,47 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
 
     public class Fixture : LoggingControllerBaseFixture<WaterbirdForagingSurveyController, ISurveyManager>
     {
-        protected readonly Guid IDENTIFIER = new Guid("a507f681-c111-447a-bc1f-195916891226");
-        protected const int ACCESS_POINT = 1;
-        protected const string DISTURBED = "disturbed";
-        protected const string DISTURBED_BEHAVIOR = "!#%#@#%";
-        protected const int DISTURBED_TYPE_ID = 2;
-        protected const int DISTURBED_DURATION = 234;
-        protected const int DISTURBED_QUANTITY = 3;
-        protected readonly DateTime END_DATE = new DateTime(2016, 6, 11, 20, 05, 0);
+        protected readonly Guid Identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
+        protected const int AccessPoint = 1;
+        protected const string Disturbed = "disturbed";
+        protected const string DisturbedBehavior = "!#%#@#%";
+        protected const int DisturbedTypeId = 2;
+        protected const int DisturbedDuration = 234;
+        protected const int DisturbedQuantity = 3;
+        protected readonly DateTime EndDate = new DateTime(2016, 6, 11, 20, 05, 0);
         protected const string EndDateString = "2016-06-11T05:00:00.000Z";
         protected const string EndDateStringShort = "2016-06-11";
         protected const string EndTimeString = "1970-01-01T20:05:00.000Z";
         protected const string EndTimeStringShort = "8:05 PM";
-        protected readonly DateTime START_DATE = new DateTime(2016, 6, 11, 18, 01, 0);
+        protected readonly DateTime StartDate = new DateTime(2016, 6, 11, 18, 01, 0);
         protected const string StartDateStringUsFormat = "06/11/2016";
         protected const string StartDateString = "2016-06-11T05:00:00.000Z";
         protected const string StartDateStringShort = "2016-06-11";
         protected const string StartTimeString = "1970-01-01T18:01:00.000Z";
         protected const string StartTimeStringShort = "6:01 PM";
-        protected const int LOCATION_ID = 4;
-        protected const int ADULTS = 6;
-        protected const int SPECIES_ID = 7;
-        protected const int FEEDING_ID = 8;
-        protected const int HABITAT_ID = 9;
-        protected const int JUVENILES = 10;
-        protected const int PRIMARY_ACTIVITY_ID = 11;
-        protected const int SECONDARY_ACTIVITY_ID = 12;
-        protected const int OBSERVER_ID = 13;
+        protected const int LocationId = 4;
+        protected const int Adults = 6;
+        protected const int SpeciesId = 7;
+        protected const int FeedingId = 8;
+        protected const int HabitatId = 9;
+        protected const int Juveniles = 10;
+        protected const int PrimaryActivityId = 11;
+        protected const int SecondaryActivityId = 12;
+        protected const int ObserverId = 13;
         protected const string Observers = "a, b, and c";
-        protected const int SITE_TYPE_ID = 14;
-        protected const int STEP = 1;
-        protected const string SURVEY_COMMENTS = "Survey comments";
-        protected const decimal TEMPERATURE = 16.0m;
+        protected const int SiteTypeId = 14;
+        protected const int Step = 1;
+        protected const string SurveyComments = "Survey comments";
+        protected const decimal Temperature = 16.0m;
         protected const bool WindDrivenTide = true;
-        protected const int VANTAGE_POINT = 18;
-        protected const int WEATHER = 19;
+        protected const int VantagePoint = 18;
+        protected const int Weather = 19;
         protected const int WindSpeed = 20;
         protected const int WindDirection = 201;
-        protected const int SURVEY_ID = 21;
-        protected const int OBSERVATION_ID = 22;
-        protected const int DISTURBANCE_ID = 23;
-        protected const string LOCATION_NAME = "Charlie's Pasture";
+        protected const int SurveyId = 21;
+        protected const int ObservationId = 22;
+        protected const int DisturbanceId = 23;
+        protected const string LocationName = "Charlie's Pasture";
         protected const int WaterHeightId = 24;
         protected const int SubmittedBy = 25;
         protected const decimal PrepTime = 23.99m;
@@ -58,45 +58,45 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
         protected ISurvey BuildDefaultSurvey()
         {
             var domainResult = new SurveyPending();
-            domainResult.AccessPointId = ACCESS_POINT;
-            domainResult.AssessmentId = SITE_TYPE_ID;
-            domainResult.DisturbanceComments = DISTURBED;
+            domainResult.AccessPointId = AccessPoint;
+            domainResult.AssessmentId = SiteTypeId;
+            domainResult.DisturbanceComments = Disturbed;
             domainResult.Disturbances.Add(new Disturbance
             {
-                Id = DISTURBANCE_ID,
-                DisturbanceTypeId = DISTURBED_TYPE_ID,
-                DurationMinutes = DISTURBED_DURATION,
-                Quantity = DISTURBED_QUANTITY,
-                Result = DISTURBED_BEHAVIOR,
-                SurveyIdentifier = IDENTIFIER
+                Id = DisturbanceId,
+                DisturbanceTypeId = DisturbedTypeId,
+                DurationMinutes = DisturbedDuration,
+                Quantity = DisturbedQuantity,
+                Result = DisturbedBehavior,
+                SurveyIdentifier = Identifier
             });
-            domainResult.EndDate = END_DATE;
-            domainResult.GeneralComments = SURVEY_COMMENTS;
-            domainResult.Id = SURVEY_ID;
-            domainResult.LocationId = LOCATION_ID;
+            domainResult.EndDate = EndDate;
+            domainResult.GeneralComments = SurveyComments;
+            domainResult.Id = SurveyId;
+            domainResult.LocationId = LocationId;
             domainResult.Observations.Add(new Observation
             {
-                Id = OBSERVATION_ID,
-                Bin1 = ADULTS,
-                Bin2 = JUVENILES,
-                BirdSpeciesId = SPECIES_ID,
-                FeedingSuccessRate = FEEDING_ID,
-                HabitatTypeId = HABITAT_ID,
-                PrimaryActivityId = PRIMARY_ACTIVITY_ID,
-                SecondaryActivityId = SECONDARY_ACTIVITY_ID,
-                SurveyIdentifier = IDENTIFIER
+                Id = ObservationId,
+                Bin1 = Adults,
+                Bin2 = Juveniles,
+                BirdSpeciesId = SpeciesId,
+                FeedingSuccessRate = FeedingId,
+                HabitatTypeId = HabitatId,
+                PrimaryActivityId = PrimaryActivityId,
+                SecondaryActivityId = SecondaryActivityId,
+                SurveyIdentifier = Identifier
             });
             domainResult.Observers = Observers;
-            domainResult.StartDate = START_DATE;
-            domainResult.Temperature = TEMPERATURE;
+            domainResult.StartDate = StartDate;
+            domainResult.Temperature = Temperature;
             domainResult.SubmittedBy = 14;
-            domainResult.SurveyIdentifier = IDENTIFIER;
+            domainResult.SurveyIdentifier = Identifier;
             domainResult.SurveyTypeId = 15;
             domainResult.WindDrivenTide = WindDrivenTide;
-            domainResult.VantagePointId = VANTAGE_POINT;
-            domainResult.WeatherId = WEATHER;
+            domainResult.VantagePointId = VantagePoint;
+            domainResult.WeatherId = Weather;
             domainResult.WindSpeed = WindSpeed;
-            domainResult.LocationName = LOCATION_NAME;
+            domainResult.LocationName = LocationName;
             domainResult.WaterHeightId = WaterHeightId;
             domainResult.WindDirection = WindDirection;
             domainResult.PrepTimeHours = PrepTime;
@@ -108,17 +108,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
         {
             var input = new WaterbirdForagingModel
             {
-                AccessPointId = ACCESS_POINT,
-                DisturbanceComments = DISTURBED,
-                LocationId = LOCATION_ID,
-                SiteTypeId = SITE_TYPE_ID,
-                SurveyComments = SURVEY_COMMENTS,
-                Temperature = TEMPERATURE,
+                AccessPointId = AccessPoint,
+                DisturbanceComments = Disturbed,
+                LocationId = LocationId,
+                SiteTypeId = SiteTypeId,
+                SurveyComments = SurveyComments,
+                Temperature = Temperature,
                 WindDrivenTide = WindDrivenTide,
-                VantagePointId = VANTAGE_POINT,
-                WeatherId = WEATHER,
+                VantagePointId = VantagePoint,
+                WeatherId = Weather,
                 WindSpeed = WindSpeed,
-                SurveyId = SURVEY_ID,
+                SurveyId = SurveyId,
                 WaterHeightId = WaterHeightId,
                 StartDate = StartDateStringUsFormat,
                 StartTime = StartTimeString,
@@ -130,22 +130,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             };
             input.Disturbances.Add(new DisturbanceModel
             {
-                Behavior = DISTURBED_BEHAVIOR,
-                DisturbanceTypeId = DISTURBED_TYPE_ID,
-                DurationMinutes = DISTURBED_DURATION,
-                Quantity = DISTURBED_QUANTITY,
-                DisturbanceId = DISTURBANCE_ID
+                Behavior = DisturbedBehavior,
+                DisturbanceTypeId = DisturbedTypeId,
+                DurationMinutes = DisturbedDuration,
+                Quantity = DisturbedQuantity,
+                DisturbanceId = DisturbanceId
             });
             input.Observations.Add(new ObservationModel
             {
-                Adults = ADULTS,
-                BirdSpeciesId = SPECIES_ID,
-                FeedingId = FEEDING_ID,
-                HabitatId = HABITAT_ID,
-                Juveniles = JUVENILES,
-                PrimaryActivityId = PRIMARY_ACTIVITY_ID,
-                SecondaryActivityId = SECONDARY_ACTIVITY_ID,
-                ObservationId = OBSERVATION_ID
+                Adults = Adults,
+                BirdSpeciesId = SpeciesId,
+                FeedingId = FeedingId,
+                HabitatId = HabitatId,
+                Juveniles = Juveniles,
+                PrimaryActivityId = PrimaryActivityId,
+                SecondaryActivityId = SecondaryActivityId,
+                ObservationId = ObservationId
             });
             return input;
         }
@@ -153,20 +153,20 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
         {
             var input = new SurveyPending
             {
-                AccessPointId = ACCESS_POINT,
-                DisturbanceComments = DISTURBED,
-                LocationId = LOCATION_ID,
-                AssessmentId = SITE_TYPE_ID,
-                GeneralComments = SURVEY_COMMENTS,
-                Temperature = TEMPERATURE,
+                AccessPointId = AccessPoint,
+                DisturbanceComments = Disturbed,
+                LocationId = LocationId,
+                AssessmentId = SiteTypeId,
+                GeneralComments = SurveyComments,
+                Temperature = Temperature,
                 WindDrivenTide = WindDrivenTide,
-                VantagePointId = VANTAGE_POINT,
-                WeatherId = WEATHER,
+                VantagePointId = VantagePoint,
+                WeatherId = Weather,
                 WindSpeed = WindSpeed,
-                Id = SURVEY_ID,
+                Id = SurveyId,
                 WaterHeightId = WaterHeightId,
-                StartDate = START_DATE,
-                EndDate = END_DATE,
+                StartDate = StartDate,
+                EndDate = EndDate,
                 Observers = Observers,
                 WindDirection = WindDirection,
                 SubmittedBy = SubmittedBy,
@@ -174,22 +174,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             };
             input.Disturbances.Add(new Disturbance
             {
-                Result = DISTURBED_BEHAVIOR,
-                DisturbanceTypeId = DISTURBED_TYPE_ID,
-                DurationMinutes = DISTURBED_DURATION,
-                Quantity = DISTURBED_QUANTITY,
-                Id = DISTURBANCE_ID
+                Result = DisturbedBehavior,
+                DisturbanceTypeId = DisturbedTypeId,
+                DurationMinutes = DisturbedDuration,
+                Quantity = DisturbedQuantity,
+                Id = DisturbanceId
             });
             input.Observations.Add(new Observation
             {
-                Bin1 = ADULTS,
-                BirdSpeciesId = SPECIES_ID,
-                FeedingSuccessRate = FEEDING_ID,
-                HabitatTypeId = HABITAT_ID,
-                Bin2 = JUVENILES,
-                PrimaryActivityId = PRIMARY_ACTIVITY_ID,
-                SecondaryActivityId = SECONDARY_ACTIVITY_ID,
-                Id = OBSERVATION_ID
+                Bin1 = Adults,
+                BirdSpeciesId = SpeciesId,
+                FeedingSuccessRate = FeedingId,
+                HabitatTypeId = HabitatId,
+                Bin2 = Juveniles,
+                PrimaryActivityId = PrimaryActivityId,
+                SecondaryActivityId = SecondaryActivityId,
+                Id = ObservationId
             });
             return input;
         }

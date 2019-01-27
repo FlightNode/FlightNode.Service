@@ -28,7 +28,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
             get
             {
-                return _persistence as IWorkLogPersistence;
+                return Persistence as IWorkLogPersistence;
             }
         }
 

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
@@ -43,7 +42,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmHappyPath()
             {
-                base.BuildSystem();
+                BuildSystem();
             }
 
             [Fact]
@@ -74,25 +73,25 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected void SetupFakeDbSets()
             {
-                base.WorkLogPersistenceMock.SetupGet(x => x.Collection)
+                WorkLogPersistenceMock.SetupGet(x => x.Collection)
                     .Returns(FakeSet);
 
             }
 
             protected void ExpectToUpdateEntity()
             {
-                var entityMock = base.MockRepository.Create<IDbEntityEntryDecorator>();
+                var entityMock = MockRepository.Create<IDbEntityEntryDecorator>();
                 entityMock.SetupSet(x => x.State = EntityState.Modified);
 
-                base.WorkLogPersistenceMock.Setup(x => x.Entry(It.IsAny<object>()))
+                WorkLogPersistenceMock.Setup(x => x.Entry(It.IsAny<object>()))
                     .Returns(entityMock.Object);
             }
         }
 
         public class Create : CreateFakeSet
         {
-            private const int RECORD_COUNT = 1;
-            private WorkLog item = new WorkLog
+            private const int RecordCount = 1;
+            private WorkLog _item = new WorkLog
             {
                 LocationId = 1,
                 WorkTypeId = 1,
@@ -110,16 +109,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Arrange
                 var id = 34234;
-                base.SetupFakeDbSets();
-                base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.LocationId = id)
-                    .Returns(RECORD_COUNT);
+                SetupFakeDbSets();
+                WorkLogPersistenceMock.Setup(x => x.SaveChanges())
+                    .Callback(() => _item.LocationId = id)
+                    .Returns(RecordCount);
 
                 // Act
-                var result = BuildSystem().Create(item);
+                var result = BuildSystem().Create(_item);
 
                 // Assert
-                Assert.Equal(id, item.LocationId);
+                Assert.Equal(id, _item.LocationId);
             }
 
 
@@ -129,22 +128,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Arrange
                 var id = 34234;
-                base.SetupFakeDbSets();
-                base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.LocationId = id)
-                    .Returns(RECORD_COUNT);
+                SetupFakeDbSets();
+                WorkLogPersistenceMock.Setup(x => x.SaveChanges())
+                    .Callback(() => _item.LocationId = id)
+                    .Returns(RecordCount);
 
                 // Act
-                var result = BuildSystem().Create(item);
+                var result = BuildSystem().Create(_item);
 
                 // Assert
-                Assert.Same(item, base.FakeSet.List[0]);
+                Assert.Same(_item, FakeSet.List[0]);
             }
 
 
             public class Validation : CreateFakeSet
             {
-                private WorkLog item = new WorkLog
+                private WorkLog _item = new WorkLog
                 {
                     LocationId = 1,
                     WorkTypeId = 1,
@@ -159,7 +158,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     try
                     {
-                        BuildSystem().Create(item);
+                        BuildSystem().Create(_item);
                         throw new Exception("this should have failed");
                     }
                     catch (DomainValidationException de)
@@ -170,17 +169,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 private void RunPositiveTest()
                 {
-                    base.SetupFakeDbSets();
+                    SetupFakeDbSets();
                     WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
 
-                    BuildSystem().Create(item);
+                    BuildSystem().Create(_item);
                 }
 
                 [Fact]
                 public void ConfirmWorkHoursMustBeGreaterThanZero()
                 {
-                    item.WorkHours = 0.0m;
+                    _item.WorkHours = 0.0m;
 
                     RunNegativeTest("WorkHours");
                 }
@@ -188,7 +187,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmTravelTimeMustBeGreaterThanZero()
                 {
-                    item.TravelTimeHours = 0.0m;
+                    _item.TravelTimeHours = 0.0m;
 
                     RunNegativeTest("TravelTimeHours");
                 }
@@ -196,7 +195,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmWorkHoursAcceptsUpTo24Hours()
                 {
-                    item.WorkHours = 24.0m;
+                    _item.WorkHours = 24.0m;
 
                     RunPositiveTest();
                 }
@@ -204,7 +203,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmTravelTimeAcceptsUpTo24Hours()
                 {
-                    item.TravelTimeHours = 24.0m;
+                    _item.TravelTimeHours = 24.0m;
 
                     RunPositiveTest();
                 }
@@ -212,7 +211,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmWorkHoursCannotBeMoreThan24()
                 {
-                    item.WorkHours = 24.01m;
+                    _item.WorkHours = 24.01m;
 
                     RunNegativeTest("WorkHours");
                 }
@@ -220,7 +219,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmTravelTimeHoursCannotBeMoreThan24()
                 {
-                    item.TravelTimeHours = 24.01m;
+                    _item.TravelTimeHours = 24.01m;
 
                     RunNegativeTest("TravelTimeHours");
                 }
@@ -234,9 +233,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             public void ConfirmHappyPath()
             {
                 // Arrange
-                base.SetupFakeDbSets();
+                SetupFakeDbSets();
                 var one = new WorkLog();
-                base.FakeSet.List.Add(one);
+                FakeSet.List.Add(one);
 
                 // Act
                 var result = BuildSystem().FindAll();
@@ -249,16 +248,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         public class FindById : CreateFakeSet
         {
 
-            const int id = 23423;
+            const int Id = 23423;
             const int VolunteerId = 883;
-            const string volunteerFirstName = "Juana";
-            const string volunteerLastName = "Coneja";
-            const string expectedName = "Juana Coneja";
+            const string VolunteerFirstName = "Juana";
+            const string VolunteerLastName = "Coneja";
+            const string ExpectedName = "Juana Coneja";
             const int LocationId = 993;
             const int NumberOfVolunteers = 9923;
             const string TasksCompleted = "asdfasdf";
             const decimal TravelTimeHours = 20.39m;
-            static DateTime WorkDate = new DateTime(2016, 10, 16);
+            static DateTime _workDate = new DateTime(2016, 10, 16);
             const int WorkHours = 93;
             const int WorkTypeId = 1;
 
@@ -267,14 +266,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             private void SetupUserSet()
             {
 
-                base.WorkLogPersistenceMock.SetupGet(x => x.Users)
+                WorkLogPersistenceMock.SetupGet(x => x.Users)
                     .Returns(UsersSet);
             }
 
             [Fact]
             public void ConfirmMapsVolunteerNameFromUserTable()
             {
-                Assert.Equal(expectedName, RunTest().VolunteerName);
+                Assert.Equal(ExpectedName, RunTest().VolunteerName);
             }
 
             [Fact]
@@ -310,7 +309,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmMapsWorkDate()
             {
-                Assert.Equal(WorkDate, RunTest().WorkDate);
+                Assert.Equal(_workDate, RunTest().WorkDate);
             }
 
             [Fact]
@@ -330,13 +329,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 // Arrange
                 SetupFakeDbSets();
                 FakeSet.List.Add(new WorkLog {
-                    Id = id,
+                    Id = Id,
                     UserId = VolunteerId,
                     LocationId = LocationId,
                     NumberOfVolunteers = NumberOfVolunteers,
                     TasksCompleted = TasksCompleted,
                     TravelTimeHours = TravelTimeHours,
-                    WorkDate = WorkDate,
+                    WorkDate = _workDate,
                     WorkHours = WorkHours,
                     WorkTypeId = WorkTypeId
                 });
@@ -345,12 +344,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UsersSet.List.Add(new User
                 {
                     Id = VolunteerId,
-                    GivenName = volunteerFirstName,
-                    FamilyName = volunteerLastName
+                    GivenName = VolunteerFirstName,
+                    FamilyName = VolunteerLastName
                 });
 
                 // Act
-                var result = BuildSystem().FindById(id);
+                var result = BuildSystem().FindById(Id);
                 return result;
             }
 
@@ -361,13 +360,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 SetupFakeDbSets();
                 FakeSet.List.Add(new WorkLog
                 {
-                    Id = id,
+                    Id = Id,
                     UserId = VolunteerId,
                     LocationId = LocationId,
                     NumberOfVolunteers = NumberOfVolunteers,
                     TasksCompleted = TasksCompleted,
                     TravelTimeHours = TravelTimeHours,
-                    WorkDate = WorkDate,
+                    WorkDate = _workDate,
                     WorkHours = WorkHours,
                     WorkTypeId = WorkTypeId
                 });
@@ -376,12 +375,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 UsersSet.List.Add(new User
                 {
                     Id = VolunteerId,
-                    GivenName = volunteerFirstName,
-                    FamilyName = volunteerLastName
+                    GivenName = VolunteerFirstName,
+                    FamilyName = VolunteerLastName
                 });
 
                 // Act
-                Action act = () => BuildSystem().FindById(id + 1909);
+                Action act = () => BuildSystem().FindById(Id + 1909);
 
                 // Assert
                 Assert.Throws<DoesNotExistException>(act);
@@ -392,8 +391,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public class Update : CreateFakeSet
         {
-            private const int RECORD_COUNT = 1;
-            private WorkLog original = new WorkLog
+            private const int RecordCount = 1;
+            private WorkLog _original = new WorkLog
             {
                 LocationId = 2,
                 WorkTypeId = 2,
@@ -403,7 +402,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkHours = 1.2m,
                 Id = 3
             };
-            private WorkLog item = new WorkLog
+            private WorkLog _item = new WorkLog
             {
                 LocationId = 1,
                 WorkTypeId = 1,
@@ -413,7 +412,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkHours = 1.1m,
                 Id = 3
             };
-            private WorkLog differentUser = new WorkLog
+            private WorkLog _differentUser = new WorkLog
             {
                 LocationId = 1,
                 WorkTypeId = 1,
@@ -429,38 +428,38 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             public void RunHappyPathTest()
             {
                 // Arrange
-                base.SetupFakeDbSets();
-                base.WorkLogPersistenceMock.Setup(x => x.SaveChanges())
-                    .Returns(RECORD_COUNT);
+                SetupFakeDbSets();
+                WorkLogPersistenceMock.Setup(x => x.SaveChanges())
+                    .Returns(RecordCount);
                 ExpectToUpdateEntity();
 
                 // ... for validating that the userid was not changed
-                base.FakeSet.List.Add(original);
+                FakeSet.List.Add(_original);
 
                 // Act
-                BuildSystem().Update(item);
+                BuildSystem().Update(_item);
             }
 
 
             private void RunPositiveTest()
             {
-                base.SetupFakeDbSets();
+                SetupFakeDbSets();
                 WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                        .Returns(1);
 
 
                 // ... for validating that the userid was not changed
-                base.SetupFakeDbSets();
-                base.FakeSet.List.Add(item);
+                SetupFakeDbSets();
+                FakeSet.List.Add(_item);
 
-                BuildSystem().Update(item);
+                BuildSystem().Update(_item);
             }
 
             private void RunNegativeTest(string memberName)
             {
                 try
                 {
-                    BuildSystem().Update(item);
+                    BuildSystem().Update(_item);
                     throw new Exception("this should have failed");
                 }
                 catch (DomainValidationException de)
@@ -472,7 +471,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmWorkHoursMustBeGreaterThanZero()
             {
-                item.WorkHours = 0.0m;
+                _item.WorkHours = 0.0m;
 
                 RunNegativeTest("WorkHours");
             }
@@ -480,7 +479,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmTravelTimeMustBeGreaterThanZero()
             {
-                item.TravelTimeHours = 0.0m;
+                _item.TravelTimeHours = 0.0m;
 
                 RunNegativeTest("TravelTimeHours");
             }
@@ -488,7 +487,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmWorkHoursAcceptsUpTo24Hours()
             {
-                item.WorkHours = 24.0m;
+                _item.WorkHours = 24.0m;
                 ExpectToUpdateEntity();
 
                 RunPositiveTest();
@@ -497,7 +496,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmTravelTimeAcceptsUpTo24Hours()
             {
-                item.TravelTimeHours = 24.0m;
+                _item.TravelTimeHours = 24.0m;
                 ExpectToUpdateEntity();
 
                 RunPositiveTest();
@@ -506,7 +505,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmWorkHoursCannotBeMoreThan24()
             {
-                item.WorkHours = 24.01m;
+                _item.WorkHours = 24.01m;
 
                 RunNegativeTest("WorkHours");
             }
@@ -514,7 +513,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmTravelTimeHoursCannotBeMoreThan24()
             {
-                item.TravelTimeHours = 24.01m;
+                _item.TravelTimeHours = 24.01m;
 
                 RunNegativeTest("TravelTimeHours");
             }

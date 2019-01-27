@@ -5,30 +5,33 @@ using FlightNode.DataCollection.Domain.Managers;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
+using FluentAssertions;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 {
+    [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
     public class WorkTypeDomainManagertests
     {
         public class Fixture : IDisposable
         {
             protected MockRepository MockRepository { get; set; }
             protected Mock<IWorkTypePersistence> WorkTypePersistenceMock { get; set; }
+            protected FakeEfStateModifier EfStateModifier { get; set; }
 
 
             public Fixture()
             {
                 MockRepository = new MockRepository(MockBehavior.Strict);
                 WorkTypePersistenceMock = MockRepository.Create<IWorkTypePersistence>();
+                EfStateModifier = new FakeEfStateModifier();
             }
 
             protected WorkTypeDomainManager BuildSystem()
             {
-                return new WorkTypeDomainManager(WorkTypePersistenceMock.Object);
+                return new WorkTypeDomainManager(WorkTypePersistenceMock.Object) { StateModifier = EfStateModifier };
             }
 
             public void Dispose()
@@ -42,7 +45,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             [Fact]
             public void ConfirmHappyPath()
             {
-                base.BuildSystem();
+                BuildSystem();
             }
 
             [Fact]
@@ -72,15 +75,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected void SetupWorkTypesCollection()
             {
-                base.WorkTypePersistenceMock.SetupGet(x => x.Collection)
+                WorkTypePersistenceMock.SetupGet(x => x.Collection)
                     .Returns(FakeSet);
             }
         }
 
         public class Create : CreateFakeSet
         {
-            private const int RECORD_COUNT = 1;
-            private WorkType item = new WorkType
+            private const int RecordCount = 1;
+            private readonly WorkType _item = new WorkType
             {
                 Description = "this is a valid description",
                 Id = 1,
@@ -94,16 +97,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Arrange
                 var id = 34234;
-                base.SetupWorkTypesCollection();
-                base.WorkTypePersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.Id = id)
-                    .Returns(RECORD_COUNT);
+                SetupWorkTypesCollection();
+                WorkTypePersistenceMock.Setup(x => x.SaveChanges())
+                    .Callback(() => _item.Id = id)
+                    .Returns(RecordCount);
 
                 // Act
-                var result = BuildSystem().Create(item);
+                BuildSystem().Create(_item);
 
                 // Assert
-                Assert.Equal(id, item.Id);
+                Assert.Equal(id, _item.Id);
             }
 
 
@@ -113,22 +116,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Arrange
                 var id = 34234;
-                base.SetupWorkTypesCollection();
-                base.WorkTypePersistenceMock.Setup(x => x.SaveChanges())
-                    .Callback(() => item.Id = id)
-                    .Returns(RECORD_COUNT);
+                SetupWorkTypesCollection();
+                WorkTypePersistenceMock.Setup(x => x.SaveChanges())
+                    .Callback(() => _item.Id = id)
+                    .Returns(RecordCount);
 
                 // Act
-                var result = BuildSystem().Create(item);
+                BuildSystem().Create(_item);
 
                 // Assert
-                Assert.Same(item, base.FakeSet.List[0]);
+                Assert.Same(_item, FakeSet.List[0]);
             }
 
 
             public class Validation : CreateFakeSet
             {
-                private WorkType item = new WorkType
+                private WorkType _item = new WorkType
                 {
                     Description = "this is a valid description",
                     Id = 1,
@@ -139,7 +142,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     try
                     {
-                        BuildSystem().Create(item);
+                        BuildSystem().Create(_item);
                         throw new Exception("this should have failed");
                     }
                     catch (DomainValidationException de)
@@ -148,19 +151,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     }
                 }
 
-                private void RunPositiveTest()
-                {
-                    base.SetupWorkTypesCollection();
-                    WorkTypePersistenceMock.Setup(x => x.SaveChanges())
-                        .Returns(1);
-
-                    BuildSystem().Create(item);
-                }
 
                 [Fact]
                 public void ConfirmDescriptionCannotBeNull()
                 {
-                    item.Description = null;
+                    _item.Description = null;
 
                     RunNegativeTest("Description");
                 }
@@ -168,7 +163,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionIsRequired()
                 {
-                    item.Description = string.Empty;
+                    _item.Description = string.Empty;
 
                     RunNegativeTest("Description");
                 }
@@ -176,7 +171,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionRejectsGreaterThan100()
                 {
-                    item.Description = "a".PadLeft(101, '0');
+                    _item.Description = "a".PadLeft(101, '0');
 
                     RunNegativeTest("Description");
                 }
@@ -191,9 +186,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             public void ConfirmHappyPath()
             {
                 // Arrange
-                base.SetupWorkTypesCollection();
+                SetupWorkTypesCollection();
                 var one = new WorkType();
-                base.FakeSet.List.Add(one);
+                FakeSet.List.Add(one);
 
                 // Act
                 var result = BuildSystem().FindAll();
@@ -210,10 +205,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             {
                 // Arrange
                 var id = 23423;
-                base.SetupWorkTypesCollection();
+                SetupWorkTypesCollection();
                 var one = new WorkType();
                 var two = new WorkType { Id = id };
-                base.FakeSet.List.AddRange(new List<WorkType>() { one, two });
+                FakeSet.List.AddRange(new List<WorkType>() { one, two });
 
                 // Act
                 var result = BuildSystem().FindById(id);
@@ -225,8 +220,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public class Update : CreateFakeSet
         {
-            private const int RECORD_COUNT = 1;
-            private WorkType item = new WorkType
+            private const int RecordCount = 1;
+            private readonly WorkType _item = new WorkType
             {
                 Description = "this is a valid description",
                 Id = 0,
@@ -234,47 +229,31 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             };
 
 
-            protected bool SetModifiedWasCalled = false;
-
-            protected void BypassEntryMethod()
-            {
-                DomainManagerBase<WorkType>.SetModifiedState = (IPersistenceBase<WorkType> persistenceLayer, WorkType input) =>
-                {
-                    SetModifiedWasCalled = true;
-                };
-            }
-
+            
             [Fact]
             public void ConfirmHappyPath()
             {
 
                 // Arrange
-                base.SetupWorkTypesCollection();
-                BypassEntryMethod();
-                base.WorkTypePersistenceMock.Setup(x => x.SaveChanges())
-                    .Returns(RECORD_COUNT);
+                SetupWorkTypesCollection();
+                WorkTypePersistenceMock.Setup(x => x.SaveChanges())
+                    .Returns(RecordCount);
 
                 // Act
-                BuildSystem().Update(item);
+                BuildSystem().Update(_item);
+
+                // Assert
+                EfStateModifier.StateModifierWasCalled.Should().BeTrue();
             }
 
             public class Validation : Update
             {
-                private void RunPositiveTest()
-                {
-                    base.SetupWorkTypesCollection();
-                    BypassEntryMethod();
-                    WorkTypePersistenceMock.Setup(x => x.SaveChanges())
-                           .Returns(1);
-
-                    BuildSystem().Update(item);
-                }
 
                 private void RunNegativeTest(string memberName)
                 {
                     try
                     {
-                        BuildSystem().Update(item);
+                        BuildSystem().Update(_item);
                         throw new Exception("this should have failed");
                     }
                     catch (DomainValidationException de)
@@ -286,7 +265,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionCannotBeNull()
                 {
-                    item.Description = null;
+                    _item.Description = null;
 
                     RunNegativeTest("Description");
                 }
@@ -294,7 +273,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionIsRequired()
                 {
-                    item.Description = string.Empty;
+                    _item.Description = string.Empty;
 
                     RunNegativeTest("Description");
                 }
@@ -302,7 +281,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionMaxLength100()
                 {
-                    item.Description = "a".PadLeft(101, '0');
+                    _item.Description = "a".PadLeft(101, '0');
 
                     RunNegativeTest("Description");
                 }
@@ -310,7 +289,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 [Fact]
                 public void ConfirmDescriptionRejectsGreaterThan100()
                 {
-                    item.Description = "a".PadLeft(101, '0');
+                    _item.Description = "a".PadLeft(101, '0');
 
                     RunNegativeTest("Description");
                 }
