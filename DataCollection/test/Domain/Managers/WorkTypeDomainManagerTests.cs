@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
@@ -19,19 +18,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         {
             protected MockRepository MockRepository { get; set; }
             protected Mock<IWorkTypePersistence> WorkTypePersistenceMock { get; set; }
-            protected FakeEfStateModifier EfStateModifier { get; set; }
-
 
             public Fixture()
             {
                 MockRepository = new MockRepository(MockBehavior.Loose);
                 WorkTypePersistenceMock = MockRepository.Create<IWorkTypePersistence>();
-                EfStateModifier = new FakeEfStateModifier();
             }
 
             protected WorkTypeDomainManager BuildSystem()
             {
-                return new WorkTypeDomainManager(WorkTypePersistenceMock.Object) { StateModifier = EfStateModifier };
+                return new WorkTypeDomainManager(WorkTypePersistenceMock.Object);
             }
 
             public void Dispose()

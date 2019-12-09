@@ -6,7 +6,6 @@ using Moq;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
@@ -25,17 +24,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             protected FakeDbSet<SurveyCompleted> SurveyCompletedSet = new FakeDbSet<SurveyCompleted>();
             protected FakeDbSet<Disturbance> DisturbanceSet = new FakeDbSet<Disturbance>();
             protected FakeDbSet<Observation> ObservationSet = new FakeDbSet<Observation>();
-            protected FakeEfStateModifier EfStateModifier { get; set; }
 
             public Fixture()
             {
                 SurveyPersistenceMock = MockRepository.Create<ISurveyPersistence>();
-                EfStateModifier = new FakeEfStateModifier();
             }
 
             protected SurveyManager BuildSystem()
             {
-                return new SurveyManager(SurveyPersistenceMock.Object) { StateModifier = EfStateModifier };
+                return new SurveyManager(SurveyPersistenceMock.Object);
             }
 
             public void Dispose()
@@ -288,8 +285,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 //
                 // Assert
-                EfStateModifier.CountSetModifiedStateCalls.Should().Be(expectedCount);
-
                 Assert.Equal(id, SurveyCompletedSet.First().SubmittedBy);
                 Assert.Equal(input.WaterHeightId, SurveyCompletedSet.First().WaterHeightId);
             }
@@ -338,7 +333,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    EfStateModifier.CountSetModifiedStateCalls.Should().Be(expectedCount);
                     Assert.Same(input, SurveyPendingSet.First());
                 }
 
@@ -452,7 +446,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                     //
                     // Assert
-                    EfStateModifier.CountSetModifiedStateCalls.Should().Be(expectedCount);
                     Assert.Same(input, SurveyCompletedSet.First());
                 }
 

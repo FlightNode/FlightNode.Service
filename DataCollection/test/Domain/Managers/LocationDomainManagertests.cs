@@ -6,7 +6,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions;
 using Xunit;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
@@ -17,18 +16,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
         {
             protected MockRepository MockRepository { get; set; }
             protected Mock<ILocationPersistence> LocationPersistenceMock { get; set; }
-            protected FakeEfStateModifier EfStateModifier { get; set; }
 
             public Fixture()
             {
                 MockRepository = new MockRepository(MockBehavior.Loose);
                 LocationPersistenceMock = MockRepository.Create<ILocationPersistence>();
-                EfStateModifier = new FakeEfStateModifier();
             }
 
             protected LocationDomainManager BuildSystem()
             {
-                return new LocationDomainManager(LocationPersistenceMock.Object) {StateModifier = EfStateModifier};
+                return new LocationDomainManager(LocationPersistenceMock.Object);
             }
 
             public void Dispose()

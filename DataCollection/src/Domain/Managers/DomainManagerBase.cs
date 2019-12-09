@@ -11,23 +11,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         where TEntity : class, IEntity
     {
         protected readonly IPersistenceBase<TEntity> Persistence;
-
-        private EfStateModifier _efStateModifier;
-
-        /// <summary>
-        /// Injectable property to facilitate unit testing of the state modification.
-        /// </summary>
-        /// <remarks>
-        /// Need an instance per class, and need to be able to override. Property injection is a good solution.
-        /// </remarks>
-        public EfStateModifier StateModifier
-        {
-            get => _efStateModifier ?? (_efStateModifier = new EfStateModifier());
-            set => _efStateModifier = value;
-        }
-
-
-
+        
         protected DomainManagerBase(IPersistenceBase<TEntity> persistence)
         {
             Persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
@@ -83,17 +67,6 @@ namespace FlightNode.DataCollection.Domain.Managers
             Persistence.Update(input);
 
             return Persistence.SaveChanges();
-        }
-    }
-
-    /// <summary>
-    /// Provides a facility to help set the an Entity Framework entity as modified within the EF entry state.
-    /// </summary>
-    public class EfStateModifier
-    {
-        public virtual void SetModifiedState(IModifiable persistenceLayer, object input)
-        {
-            persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
         }
     }
 }

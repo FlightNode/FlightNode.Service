@@ -33,21 +33,6 @@ namespace FlightNode.DataCollection.Domain.Managers
     {
         private readonly ISurveyPersistence _persistence;
 
-        private EfStateModifier _efStateModifier;
-
-        /// <summary>
-        /// Injectable property to facilitate unit testing of the state modification.
-        /// </summary>
-        /// <remarks>
-        /// Need an instance per class, and need to be able to override. Property injection is a good solution.
-        /// </remarks>
-        public EfStateModifier StateModifier
-        {
-            get => _efStateModifier ?? (_efStateModifier = new EfStateModifier());
-            set => _efStateModifier = value;
-        }
-
-
         /// <summary>
         /// Constructs a new instance of <see cref="SurveyManager"/>
         /// </summary>
@@ -376,8 +361,6 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             _persistence.SurveysPending.Add(survey);
-            StateModifier.SetModifiedState(_persistence, survey);
-
         }
 
         private void LoadCompletedSurveyIntoPersistenceLayer(SurveyCompleted survey)
@@ -392,7 +375,6 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             _persistence.SurveysCompleted.Add(survey);
-            StateModifier.SetModifiedState(_persistence, survey);
 
         }
 
@@ -400,13 +382,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
             survey.Observations.ForEach(x =>
             {
-
                 _persistence.Observations.Add(x);
-                //Set the state to Modified only if the object is already created.
-                if (x.Id > 0)
-                {
-                    StateModifier.SetModifiedState(_persistence, x);
-                }
             });
         }
 
@@ -415,11 +391,6 @@ namespace FlightNode.DataCollection.Domain.Managers
             survey.Disturbances.ForEach(x =>
             {
                 _persistence.Disturbances.Add(x);
-                //Set the state to Modified only if the object is already created.
-                if (x.Id > 0)
-                {
-                    StateModifier.SetModifiedState(_persistence, x);
-                }
             });
         }
 

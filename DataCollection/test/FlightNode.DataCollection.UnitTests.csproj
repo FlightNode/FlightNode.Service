@@ -155,7 +155,6 @@
     <Compile Include="Domain\Entities\SurveyPendingTests.cs" />
     <Compile Include="Domain\Managers\BirdSpeciesDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\FakeDbSet.cs" />
-    <Compile Include="Domain\Managers\FakeEfStateModifier.cs" />
     <Compile Include="Domain\Managers\SurveyTypeDomainManagerTests.cs" />
     <Compile Include="Domain\Managers\WaterbirdForagingManagerTests.cs" />
     <Compile Include="Domain\Managers\WaterBirdForaging\WhenExportingResults.cs" />
