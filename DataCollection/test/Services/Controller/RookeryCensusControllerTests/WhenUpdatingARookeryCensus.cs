@@ -40,14 +40,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             {
                 RunPositiveTest();
 
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ACCESS_POINT == y.AccessPointId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => AccessPoint == y.AccessPointId)));
             }
 
             [Fact]
             public void MapsDisturbanceComment()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED == y.DisturbanceComments)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => Disturbed == y.DisturbanceComments)));
             }
 
 
@@ -55,7 +55,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             public void MapsEndDate()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(END_DATE, y.EndDate.Value))));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(EndDate, y.EndDate.Value))));
             }
 
 
@@ -64,28 +64,28 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             public void MapsStartDate()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(START_DATE, y.StartDate.Value))));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DateValuesAreClose(StartDate, y.StartDate.Value))));
             }
 
             [Fact]
             public void MapsLocationId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => LOCATION_ID == y.LocationId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => LocationId == y.LocationId)));
             }
 
             [Fact]
             public void MapsSiteTypeIdToAssessment()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SITE_TYPE_ID == y.AssessmentId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SiteTypeId == y.AssessmentId)));
             }
 
             [Fact]
             public void MapsSurveyCommentsToGeneralComments()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SURVEY_COMMENTS == y.GeneralComments)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyComments == y.GeneralComments)));
             }
 
 
@@ -93,7 +93,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             public void MapsVantagePoint()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => VANTAGE_POINT == y.VantagePointId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => VantagePoint == y.VantagePointId)));
             }
 
 
@@ -101,42 +101,42 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             public void MapsDisturbedBehavior()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_BEHAVIOR == y.Disturbances.First().Result)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DisturbedBehavior == y.Disturbances.First().Result)));
             }
 
             [Fact]
             public void MapsDisturbanceTypeId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_TYPE_ID == y.Disturbances.First().DisturbanceTypeId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DisturbedTypeId == y.Disturbances.First().DisturbanceTypeId)));
             }
 
             [Fact]
             public void MapsDisturbanceId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBANCE_ID == y.Disturbances.First().Id)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DisturbanceId == y.Disturbances.First().Id)));
             }
 
             [Fact]
             public void MapsDisturbanceDuration()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_DURATION == y.Disturbances.First().DurationMinutes)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DisturbedDuration == y.Disturbances.First().DurationMinutes)));
             }
 
             [Fact]
             public void MapsDisturbanceQuantity()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DISTURBED_QUANTITY == y.Disturbances.First().Quantity)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => DisturbedQuantity == y.Disturbances.First().Quantity)));
             }
 
             [Fact]
             public void MapsIdentifierIntoDisturbance()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => IDENTIFIER == y.Disturbances.First().SurveyIdentifier)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => Identifier == y.Disturbances.First().SurveyIdentifier)));
             }
 
             [Fact]
@@ -150,14 +150,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             public void MapsIdentifierIntoObservation()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => IDENTIFIER == y.Observations.First().SurveyIdentifier)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => Identifier == y.Observations.First().SurveyIdentifier)));
             }
 
             [Fact]
             public void MapsObservationId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => OBSERVATION_ID == y.Observations.First().Id)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => ObservationId == y.Observations.First().Id)));
             }
 
             [Fact]
@@ -194,7 +194,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             public void MapSpeciesId()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SPECIES_ID == y.Observations.First().BirdSpeciesId)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SpeciesId == y.Observations.First().BirdSpeciesId)));
             }
 
             [Fact]
@@ -208,7 +208,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             public void MapsSurveyd()
             {
                 RunPositiveTest();
-                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SURVEY_ID == y.Id)));
+                MockDomainManager.Verify(x => x.Update(It.Is<SurveyPending>(y => SurveyId == y.Id)));
             }
 
 
@@ -228,7 +228,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
                 //
                 // Arrange
                 RookeryCensusModel input = CreateDefautInput();
-                input.SurveyIdentifier = IDENTIFIER;
+                input.SurveyIdentifier = Identifier;
 
                 MockDomainManager.Setup(x => x.Update(It.IsAny<SurveyPending>()))
                     .Returns<SurveyPending>(actual => actual);
@@ -237,7 +237,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
 
                 //
                 // Act
-                var result = ExecuteHttpAction(system.Put(IDENTIFIER, input));
+                var result = ExecuteHttpAction(system.Put(Identifier, input));
 
                 return result;
             }
@@ -248,7 +248,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             public void NullInputShouldBeTreatedAsABadRequest()
             {
 
-                var result = BuildSystem().Put(IDENTIFIER, null).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                var result = BuildSystem().Put(Identifier, null).ExecuteAsync(new System.Threading.CancellationToken()).Result;
 
                 Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
             }
@@ -264,9 +264,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
 
 
                 var input = CreateDefautInput();
-                input.SurveyIdentifier = IDENTIFIER;
+                input.SurveyIdentifier = Identifier;
 
-                return BuildSystem().Put(IDENTIFIER, input).ExecuteAsync(new System.Threading.CancellationToken()).Result;
+                return BuildSystem().Put(Identifier, input).ExecuteAsync(new System.Threading.CancellationToken()).Result;
             }
 
             [Fact]

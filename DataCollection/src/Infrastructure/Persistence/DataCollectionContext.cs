@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Linq;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightNode.DataCollection.Infrastructure.Persistence
 {
@@ -278,9 +277,24 @@ namespace FlightNode.DataCollection.Infrastructure.Persistence
         public DataCollectionContext()
             : base(Properties.Settings.Default.ConnectionString)
         {
-            this.Configuration.LazyLoadingEnabled = false;
-            this.Configuration.ProxyCreationEnabled = false;
+            Configuration.LazyLoadingEnabled = false;
+            Configuration.ProxyCreationEnabled = false;
+        }
 
+
+        public void Add<TEntity>(TEntity entity)
+            where TEntity: class
+        {
+            Set<TEntity>().Add(entity);
+
+            //persistenceLayer.Entry(input).State = System.Data.Entity.EntityState.Modified;
+        }
+
+        public void Update<TEntity>(TEntity entity)
+            where TEntity : class
+        {
+            Set<TEntity>().Attach(entity);
+            Entry(entity).State = EntityState.Modified;
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

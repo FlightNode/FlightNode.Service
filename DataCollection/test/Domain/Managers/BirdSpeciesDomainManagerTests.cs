@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Moq;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
@@ -411,7 +408,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 public void SpeciesDoesNotExistThrowsProperException()
                 {
                     ArrangeThatTheSpeciesDoesNotExist();
-
+                    
                     Assert.Throws<DoesNotExistException>(() => Act());
                 }
 
@@ -462,9 +459,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
         public class FindById : BaseTester
         {
-            const int id = 23423;
-            const int surveyId = 233;
-            const string surveyName = "Point Count";
+            const int Id = 23423;
+            const int SurveyId = 233;
+            const string SurveyName = "Point Count";
 
             [Fact]
             public void SpeciesExists()
@@ -473,7 +470,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 var result = Act();
 
-                Assert.Equal(id, result.Id);
+                Assert.Equal(Id, result.Id);
             }
 
             [Fact]
@@ -483,7 +480,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 Act();
 
-                collectionMock.Verify(x => x.Load());
+                _collectionMock.Verify(x => x.Load());
             }
 
             [Fact]
@@ -493,7 +490,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 var result = Act();
 
-                Assert.Equal(result.SurveyTypeNames.First(), surveyName);
+                Assert.Equal(result.SurveyTypeNames.First(), SurveyName);
             }
 
             [Fact]
@@ -508,13 +505,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             private BirdSpecies Act()
             {
                 var system = Fixture.Create<BirdSpeciesDomainManager>();
-                var result = system.FindById(id);
+                var result = system.FindById(Id);
                 return result;
             }
 
             private FakeDbSet<BirdSpecies> ArrangeForReturnOfOneBird()
             {
-                var bird = new BirdSpecies { Id = id };
+                var bird = new BirdSpecies { Id = Id };
 
                 var fakeSet = new FakeDbSet<BirdSpecies>();
                 fakeSet.Add(bird);
@@ -523,15 +520,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 persistenceMock.SetupGet(x => x.Collection)
                     .Returns(fakeSet);
 
-                var surveyType = new SurveyType { Id = surveyId, Description = surveyName };
+                var surveyType = new SurveyType { Id = SurveyId, Description = SurveyName };
                 bird.SurveyTypes.Add(surveyType);
 
                 var entityMock = Fixture.Freeze<Mock<IDbEntityEntryDecorator>>();
-                collectionMock = Fixture.Freeze<Mock<IDbCollectionEntryDecorator>>();
-                collectionMock.Setup(x => x.Load());
+                _collectionMock = Fixture.Freeze<Mock<IDbCollectionEntryDecorator>>();
+                _collectionMock.Setup(x => x.Load());
 
                 entityMock.Setup(x => x.Collection(It.IsAny<string>()))
-                    .Returns(collectionMock.Object);
+                    .Returns(_collectionMock.Object);
 
                 persistenceMock.Setup(x => x.Entry(It.IsAny<object>()))
                     .Returns(entityMock.Object);
@@ -539,12 +536,12 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 return fakeSet;
             }
 
-            Mock<IDbCollectionEntryDecorator> collectionMock;
+            Mock<IDbCollectionEntryDecorator> _collectionMock;
 
             private void ArrangeForAnAlternateDataset()
             {
                 var fakeSet = new FakeDbSet<BirdSpecies>();
-                fakeSet.Add(new BirdSpecies { Id = id + 100});
+                fakeSet.Add(new BirdSpecies { Id = Id + 100});
 
                 var persistenceMock = Fixture.Freeze<Mock<IBirdSpeciesPersistence>>();
                 persistenceMock.SetupGet(x => x.Collection)

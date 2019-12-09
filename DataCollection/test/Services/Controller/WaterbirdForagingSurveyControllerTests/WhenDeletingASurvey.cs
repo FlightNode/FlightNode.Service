@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Moq;
 using System.Web.Http;
 using System.Web.Http.Results;
 using System.Net;
 using FlightNode.DataCollection.Domain.Entities;
+using FluentAssertions;
 
 namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.WaterbirdForagingSurveyControllerTests
 {
@@ -20,14 +17,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             private IHttpActionResult RunTest()
             {
                 // Arrange
-                MockDomainManager.Setup(x => x.FindBySurveyId(IDENTIFIER, SurveyType.Foraging))
+                MockDomainManager.Setup(x => x.FindBySurveyId(Identifier, SurveyType.Foraging))
                     .Returns(CreateDefaultEntity());
 
-                MockDomainManager.Setup(x => x.Delete(IDENTIFIER))
+                MockDomainManager.Setup(x => x.Delete(Identifier))
                     .Returns(true);
 
                 // Act
-                return BuildSystem().Delete(IDENTIFIER);
+                return BuildSystem().Delete(Identifier);
             }
 
             [Fact]
@@ -35,7 +32,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             {
                 RunTest();
 
-                MockDomainManager.Verify(x => x.Delete(IDENTIFIER), Times.Once());
+                MockDomainManager.Verify(x => x.Delete(Identifier), Times.Once());
             }
 
             [Fact]
@@ -43,6 +40,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             {
                 var result = RunTest() as StatusCodeResult;
 
+                result.Should().NotBeNull();
+                // ReSharper disable once PossibleNullReferenceException
                 Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
             }
         }
@@ -53,11 +52,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             public void ThenReturn404NotFound()
             {
                 // Arrange
-                MockDomainManager.Setup(x => x.FindBySurveyId(IDENTIFIER, SurveyType.Foraging))
+                MockDomainManager.Setup(x => x.FindBySurveyId(Identifier, SurveyType.Foraging))
                     .Returns(null as ISurvey);
 
                 // Act
-                var result = BuildSystem().Delete(IDENTIFIER);
+                var result = BuildSystem().Delete(Identifier);
 
                 // Assert
                 Assert.IsType<NotFoundResult>(result);
@@ -71,11 +70,11 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Waterbi
             {
 
                 // Arrange
-                MockDomainManager.Setup(x => x.FindBySurveyId(IDENTIFIER, SurveyType.Foraging))
+                MockDomainManager.Setup(x => x.FindBySurveyId(Identifier, SurveyType.Foraging))
                     .Throws<InvalidOperationException>();
 
                 // Act
-                Func<IHttpActionResult> act = () => BuildSystem().Delete(IDENTIFIER);
+                Func<IHttpActionResult> act = () => BuildSystem().Delete(Identifier);
 
                 // Assert
                 Assert.Throws<InvalidOperationException>(act);

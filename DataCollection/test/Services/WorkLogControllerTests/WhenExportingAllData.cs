@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using FlightNode.Common.Exceptions;
 using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Services.Models.WorkLog;
 using System.Net;
@@ -16,20 +14,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerT
         // Mapping of data types is tested elsewhere.
         // Here, let's just confirm that all records are mapped
 
-        private const int id = 123;
-        private const int id2 = 34234;
-        private const int userId = 223;
+        private const int Id = 123;
+        private const int Id2 = 34234;
 
         [Fact]
         public void ConfirmMapsFirstRecord()
         {
-            Assert.Equal(id, RunPositiveTest().First().Id);
+            Assert.Equal(Id, RunPositiveTest().First().Id);
         }
 
         [Fact]
         public void ConfirmMapsSecondRecord()
         {
-            Assert.Equal(id2, RunPositiveTest().Skip(1).First().Id);
+            Assert.Equal(Id2, RunPositiveTest().Skip(1).First().Id);
         }
 
         private List<WorkLogModel> RunPositiveTest()
@@ -39,13 +36,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.WorkLogControllerT
                 {
                     new WorkLogReportRecord
                     {
-                        Id = id,
+                        Id = Id,
                         WorkDate = "01/10/2016"
                     },
 
                     new WorkLogReportRecord
                     {
-                        Id = id2,
+                        Id = Id2,
                         WorkDate = "01/10/2016"
                     }
                 };

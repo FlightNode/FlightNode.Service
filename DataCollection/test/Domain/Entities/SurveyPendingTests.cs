@@ -96,35 +96,35 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
         public class ToSurveyCompleted
         {
 
-            protected readonly Guid IDENTIFIER = new Guid("a507f681-c111-447a-bc1f-195916891226");
-            protected const int ACCESS_POINT = 1;
-            protected const string DISTURBED = "disturbed";
-            protected const string DISTURBED_BEHAVIOR = "!#%#@#%";
-            protected const int DISTURBED_TYPE_ID = 2;
-            protected const int DISTURBED_DURATION = 234;
-            protected const int DISTURBED_QUANTITY = 3;
-            protected readonly DateTime END_DATE = new DateTime(2013, 2, 3, 5, 2, 6);
-            protected readonly DateTime START_DATE = new DateTime(2013, 2, 3, 2, 2, 6);
-            protected readonly DateTime LOW_TIDE = new DateTime(2013, 2, 3, 2, 2, 8);
-            protected const int LOCATION_ID = 4;
-            protected const int ADULTS = 6;
-            protected const int SPECIES_ID = 7;
-            protected const int FEEDING_ID = 8;
-            protected const int HABITAT_ID = 9;
-            protected const int JUVENILES = 10;
-            protected const int PRIMARY_ACTIVITY_ID = 11;
-            protected const int SECONDARY_ACTIVITY_ID = 12;
-            protected const int OBSERVER_ID = 13;
-            protected const int SITE_TYPE_ID = 14;
-            protected const int STEP = 15;
-            protected const string SURVEY_COMMENTS = "Survey comments";
-            protected const int TEMPERATURE = 16;
+            protected readonly Guid Identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
+            protected const int AccessPoint = 1;
+            protected const string Disturbed = "disturbed";
+            protected const string DisturbedBehavior = "!#%#@#%";
+            protected const int DisturbedTypeId = 2;
+            protected const int DisturbedDuration = 234;
+            protected const int DisturbedQuantity = 3;
+            protected readonly DateTime EndDate = new DateTime(2013, 2, 3, 5, 2, 6);
+            protected readonly DateTime StartDate = new DateTime(2013, 2, 3, 2, 2, 6);
+            protected readonly DateTime LowTide = new DateTime(2013, 2, 3, 2, 2, 8);
+            protected const int LocationId = 4;
+            protected const int Adults = 6;
+            protected const int SpeciesId = 7;
+            protected const int FeedingId = 8;
+            protected const int HabitatId = 9;
+            protected const int Juveniles = 10;
+            protected const int PrimaryActivityId = 11;
+            protected const int SecondaryActivityId = 12;
+            protected const int ObserverId = 13;
+            protected const int SiteTypeId = 14;
+            protected const int Step = 15;
+            protected const string SurveyComments = "Survey comments";
+            protected const int Temperature = 16;
             protected const bool WindDrivenTide = true;
-            protected const int VANTAGE_POINT = 18;
-            protected const int WEATHER = 19;
+            protected const int VantagePoint = 18;
+            protected const int Weather = 19;
             protected const int WindSpeed = 20;
-            protected const int USER_ID = 22;
-            protected const int SURVEY_TYPE_ID = 23;
+            protected const int UserId = 22;
+            protected const int SurveyTypeId = 23;
             protected const string Observers = "a, b, and c";
             protected const int WindDirection = 3;
             protected const decimal PrepTimeHours = 0.01m;
@@ -134,21 +134,21 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
             {
                 var result = new SurveyPending
                 {
-                    AccessPointId = ACCESS_POINT,
-                    AssessmentId = SITE_TYPE_ID,
-                    DisturbanceComments = DISTURBED,
-                    EndDate = END_DATE,
-                    GeneralComments = SURVEY_COMMENTS,
-                    LocationId = LOCATION_ID,
-                    StartDate = START_DATE,
-                    Temperature = TEMPERATURE,
-                    SubmittedBy = USER_ID,
-                    SurveyIdentifier = IDENTIFIER,
-                    SurveyTypeId = SURVEY_TYPE_ID,
+                    AccessPointId = AccessPoint,
+                    AssessmentId = SiteTypeId,
+                    DisturbanceComments = Disturbed,
+                    EndDate = EndDate,
+                    GeneralComments = SurveyComments,
+                    LocationId = LocationId,
+                    StartDate = StartDate,
+                    Temperature = Temperature,
+                    SubmittedBy = UserId,
+                    SurveyIdentifier = Identifier,
+                    SurveyTypeId = SurveyTypeId,
                     WindDrivenTide = WindDrivenTide,
-                    TimeOfLowTide = LOW_TIDE,
-                    VantagePointId = VANTAGE_POINT,
-                    WeatherId = WEATHER,
+                    TimeOfLowTide = LowTide,
+                    VantagePointId = VantagePoint,
+                    WeatherId = Weather,
                     WindSpeed = WindSpeed,
                     Observers = Observers,
                     WindDirection = WindDirection,
@@ -157,21 +157,21 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 
                 result.Add(new Disturbance
                 {
-                    DisturbanceTypeId = DISTURBED_TYPE_ID,
-                    DurationMinutes = DISTURBED_DURATION,
-                    Quantity = DISTURBED_QUANTITY,
-                    Result = DISTURBED_BEHAVIOR,
-                    SurveyIdentifier = IDENTIFIER
+                    DisturbanceTypeId = DisturbedTypeId,
+                    DurationMinutes = DisturbedDuration,
+                    Quantity = DisturbedQuantity,
+                    Result = DisturbedBehavior,
+                    SurveyIdentifier = Identifier
                 });
                 result.Add(new Observation
                 {
-                    SurveyIdentifier = IDENTIFIER,
-                    Bin1 = ADULTS,
-                    Bin2 = JUVENILES,
-                    FeedingSuccessRate = FEEDING_ID,
-                    HabitatTypeId = HABITAT_ID,
-                    PrimaryActivityId = PRIMARY_ACTIVITY_ID,
-                    SecondaryActivityId = SECONDARY_ACTIVITY_ID
+                    SurveyIdentifier = Identifier,
+                    Bin1 = Adults,
+                    Bin2 = Juveniles,
+                    FeedingSuccessRate = FeedingId,
+                    HabitatTypeId = HabitatId,
+                    PrimaryActivityId = PrimaryActivityId,
+                    SecondaryActivityId = SecondaryActivityId
                 });
 
                 return result;
@@ -200,74 +200,74 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 [Fact]
                 public void MapsAccessPoint()
                 {
-                    Assert.Equal(ACCESS_POINT, RunTest().AccessPointId);
+                    Assert.Equal(AccessPoint, RunTest().AccessPointId);
                 }
 
                 [Fact]
                 public void MapsAssessment()
                 {
-                    Assert.Equal(SITE_TYPE_ID, RunTest().AssessmentId);
+                    Assert.Equal(SiteTypeId, RunTest().AssessmentId);
                 }
 
                 [Fact]
                 public void MapsDisturbanceComments()
                 {
-                    Assert.Equal(DISTURBED, RunTest().DisturbanceComments);
+                    Assert.Equal(Disturbed, RunTest().DisturbanceComments);
                 }
 
                 [Fact]
                 public void MapsDisturbance()
                 {
-                    Assert.Equal(DISTURBED_BEHAVIOR, RunTest().Disturbances[0].Result);
+                    Assert.Equal(DisturbedBehavior, RunTest().Disturbances[0].Result);
                 }
 
                 [Fact] 
                 public void MapsEndDate()
                 {
-                    Assert.Equal(END_DATE, RunTest().EndDate);
+                    Assert.Equal(EndDate, RunTest().EndDate);
                 }
 
 
                 [Fact]
                 public void MapsGeneralComments()
                 {
-                    Assert.Equal(SURVEY_COMMENTS, RunTest().GeneralComments);
+                    Assert.Equal(SurveyComments, RunTest().GeneralComments);
                 }
 
                 [Fact]
                 public void MapsLocationId()
                 {
-                    Assert.Equal(LOCATION_ID, RunTest().LocationId);
+                    Assert.Equal(LocationId, RunTest().LocationId);
                 }
 
                 [Fact]
                 public void MapsStartDate()
                 {
-                    Assert.Equal(START_DATE, RunTest().StartDate);
+                    Assert.Equal(StartDate, RunTest().StartDate);
                 }
 
                 [Fact]
                 public void MapsTemperature()
                 {
-                    Assert.Equal(TEMPERATURE, RunTest().Temperature);
+                    Assert.Equal(Temperature, RunTest().Temperature);
                 }
 
                 [Fact]
                 public void MapsSubmittedBy()
                 {
-                    Assert.Equal(USER_ID, RunTest().SubmittedBy);
+                    Assert.Equal(UserId, RunTest().SubmittedBy);
                 }
 
                 [Fact]
                 public void MapsSurveyIdentifier()
                 {
-                    Assert.Equal(IDENTIFIER, RunTest().SurveyIdentifier);
+                    Assert.Equal(Identifier, RunTest().SurveyIdentifier);
                 }
 
                 [Fact]
                 public void MapsSurveyTypeId()
                 {
-                    Assert.Equal(SURVEY_TYPE_ID, RunTest().SurveyTypeId);
+                    Assert.Equal(SurveyTypeId, RunTest().SurveyTypeId);
                 }
 
                 [Fact]
@@ -279,19 +279,19 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Entities
                 [Fact]
                 public void MapsTimeOfLowTide()
                 {
-                    Assert.Equal(LOW_TIDE, RunTest().TimeOfLowTide);
+                    Assert.Equal(LowTide, RunTest().TimeOfLowTide);
                 }
 
                 [Fact]
                 public void MapsVantagePoint()
                 {
-                    Assert.Equal(VANTAGE_POINT, RunTest().VantagePointId);
+                    Assert.Equal(VantagePoint, RunTest().VantagePointId);
                 }
 
                 [Fact]
                 public void MapsWeatherId()
                 {
-                    Assert.Equal(WEATHER, RunTest().WeatherId);
+                    Assert.Equal(Weather, RunTest().WeatherId);
                 }
 
                 [Fact]

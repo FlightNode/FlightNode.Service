@@ -27,7 +27,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
             get
             {
-                return _persistence as IBirdSpeciesPersistence;
+                return Persistence as IBirdSpeciesPersistence;
             }
         }
 
@@ -43,13 +43,13 @@ namespace FlightNode.DataCollection.Domain.Managers
 
         public override BirdSpecies FindById(int id)
         {
-            var bird = _persistence.Collection
+            var bird = Persistence.Collection
                 .FirstOrDefault(x => x.Id == id);
 
             // Force EF to query for surveys
             // Cannot use "Include" because already using "AsNoTracking" for performance
-            _persistence.Collection.Attach(bird);
-            _persistence.Entry(bird)
+            Persistence.Collection.Attach(bird);
+            Persistence.Entry(bird)
                 .Collection(nameof(BirdSpecies.SurveyTypes))
                 .Load();
 
@@ -142,7 +142,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             bird.SurveyTypes.Remove(toRemove);
 
-            _persistence.SaveChanges();
+            Persistence.SaveChanges();
         }
 
 

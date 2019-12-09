@@ -6,5 +6,6 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
     where TEntity : class, IEntity
     {
         ICrudSet<TEntity> Collection { get; }
+
     }
 }

@@ -1,5 +1,4 @@
-﻿using FlightNode.Common.Exceptions;
-using FlightNode.DataCollection.Domain.Entities;
+﻿using FlightNode.DataCollection.Domain.Entities;
 using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using System;
 using System.Collections.Generic;
@@ -25,6 +24,11 @@ namespace FlightNode.DataCollection.Domain.Managers
     /// <summary>
     /// Domain / business manager for waterbird foraging surveys.
     /// </summary>
+    /// <remarks>
+    /// This class doesn't inherit from <see cref="DomainManagerBase{TEntity}"/>
+    /// because it deals with both pending and completed surveys. Perhaps
+    /// duplicate code can be refactored away in the future.
+    /// </remarks>
     public class SurveyManager : ISurveyManager
     {
         private readonly ISurveyPersistence _persistence;
@@ -35,12 +39,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         /// <param name="persistence"></param>
         public SurveyManager(ISurveyPersistence persistence)
         {
-            if (persistence == null)
-            {
-                throw new ArgumentNullException("persistence");
-            }
-
-            _persistence = persistence;
+            _persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
         }
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             if (survey == null)
             {
-                return survey;
+                return null;
             }
 
             // We are not currently setup to take advantage of EF's hydration option (.Include(path)),
@@ -362,8 +361,6 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             _persistence.SurveysPending.Add(survey);
-            _persistence.SetModifiedStateOn(survey);
-
         }
 
         private void LoadCompletedSurveyIntoPersistenceLayer(SurveyCompleted survey)
@@ -378,7 +375,6 @@ namespace FlightNode.DataCollection.Domain.Managers
             }
 
             _persistence.SurveysCompleted.Add(survey);
-            _persistence.SetModifiedStateOn(survey);
 
         }
 
@@ -386,13 +382,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
             survey.Observations.ForEach(x =>
             {
-
                 _persistence.Observations.Add(x);
-                //Set the state to Modified only if the object is already created.
-                if (x.Id > 0)
-                {
-                    _persistence.SetModifiedStateOn(x);
-                }
             });
         }
 
@@ -401,11 +391,6 @@ namespace FlightNode.DataCollection.Domain.Managers
             survey.Disturbances.ForEach(x =>
             {
                 _persistence.Disturbances.Add(x);
-                //Set the state to Modified only if the object is already created.
-                if (x.Id > 0)
-                {
-                    _persistence.SetModifiedStateOn(x);
-                }
             });
         }
 

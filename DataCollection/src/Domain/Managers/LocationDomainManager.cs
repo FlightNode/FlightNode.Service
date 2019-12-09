@@ -21,7 +21,7 @@ namespace FlightNode.DataCollection.Domain.Managers
         {
             get
             {
-                return _persistence as ILocationPersistence;
+                return Persistence as ILocationPersistence;
             }
         }
 

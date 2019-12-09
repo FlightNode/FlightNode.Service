@@ -17,7 +17,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
         protected Mock<ILog> MockLogger;
         protected Mock<ISanitizer> MockSanitizer;
 
-        protected const string url = "http://some/where/";
+        protected const string Url = "http://some/where/";
 
         public LoggingControllerBaseFixture()
         {
@@ -33,7 +33,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             controller.Logger = MockLogger.Object;
 
             controller.Request = new HttpRequestMessage();
-            controller.Request.RequestUri = new Uri(url);
+            controller.Request.RequestUri = new Uri(Url);
 
             controller.Configuration = new HttpConfiguration();
 
@@ -48,7 +48,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller
             controller.Logger = MockLogger.Object;
 
             controller.Request = new HttpRequestMessage();
-            controller.Request.RequestUri = new Uri(url);
+            controller.Request.RequestUri = new Uri(Url);
 
             controller.Configuration = new HttpConfiguration();
 

@@ -10,35 +10,35 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
 
     public class Fixture : LoggingControllerBaseFixture<RookeryCensusController, ISurveyManager>
     {
-        protected readonly Guid IDENTIFIER = new Guid("a507f681-c111-447a-bc1f-195916891226");
-        protected const int ACCESS_POINT = 1;
-        protected const string DISTURBED = "disturbed";
-        protected const string DISTURBED_BEHAVIOR = "!#%#@#%";
-        protected const int DISTURBED_TYPE_ID = 2;
-        protected const int DISTURBED_DURATION = 234;
-        protected const int DISTURBED_QUANTITY = 3;
-        protected readonly DateTime END_DATE = new DateTime(2016, 6, 11, 20, 05, 0);
+        protected readonly Guid Identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
+        protected const int AccessPoint = 1;
+        protected const string Disturbed = "disturbed";
+        protected const string DisturbedBehavior = "!#%#@#%";
+        protected const int DisturbedTypeId = 2;
+        protected const int DisturbedDuration = 234;
+        protected const int DisturbedQuantity = 3;
+        protected readonly DateTime EndDate = new DateTime(2016, 6, 11, 20, 05, 0);
         protected readonly string EndDateString = "2016-06-11T05:00:00.000Z";
         protected readonly string EndDateStringShort = "2016-06-11";
         protected readonly string EndTimeString = "1970-01-01T20:05:00.000Z";
         protected readonly string EndTimeStringShort = "8:05 PM";
-        protected readonly DateTime START_DATE = new DateTime(2016, 6, 11, 18, 01, 0);
+        protected readonly DateTime StartDate = new DateTime(2016, 6, 11, 18, 01, 0);
         protected readonly string StartDateString = "2016-06-11T05:00:00.000Z";
         protected readonly string StartDateStringShort = "2016-06-11";
         protected readonly string StartTimeString = "1970-01-01T18:01:00.000Z";
         protected readonly string StartTimeStringShort = "6:01 PM";
-        protected const int LOCATION_ID = 4;
-        protected const int SPECIES_ID = 7;
-        protected const int OBSERVER_ID = 13;
+        protected const int LocationId = 4;
+        protected const int SpeciesId = 7;
+        protected const int ObserverId = 13;
         protected const string Observers = "a, b, and c";
-        protected const int SITE_TYPE_ID = 14;
-        protected const int STEP = 1;
-        protected const string SURVEY_COMMENTS = "Survey comments";
-        protected const int VANTAGE_POINT = 18;
-        protected const int SURVEY_ID = 21;
-        protected const int OBSERVATION_ID = 22;
-        protected const int DISTURBANCE_ID = 23;
-        protected const string LOCATION_NAME = "Charlie's Pasture";
+        protected const int SiteTypeId = 14;
+        protected const int Step = 1;
+        protected const string SurveyComments = "Survey comments";
+        protected const int VantagePoint = 18;
+        protected const int SurveyId = 21;
+        protected const int ObservationId = 22;
+        protected const int DisturbanceId = 23;
+        protected const string LocationName = "Charlie's Pasture";
         protected const int SubmittedBy = 25;
         protected const decimal PrepTime = 23.99m;
         protected const bool NestsPresent = true;
@@ -49,39 +49,39 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
         protected ISurvey BuildDefaultSurvey()
         {
             var domainResult = new SurveyPending();
-            domainResult.AccessPointId = ACCESS_POINT;
-            domainResult.AssessmentId = SITE_TYPE_ID;
-            domainResult.DisturbanceComments = DISTURBED;
+            domainResult.AccessPointId = AccessPoint;
+            domainResult.AssessmentId = SiteTypeId;
+            domainResult.DisturbanceComments = Disturbed;
             domainResult.Disturbances.Add(new Disturbance
             {
-                Id = DISTURBANCE_ID,
-                DisturbanceTypeId = DISTURBED_TYPE_ID,
-                DurationMinutes = DISTURBED_DURATION,
-                Quantity = DISTURBED_QUANTITY,
-                Result = DISTURBED_BEHAVIOR,
-                SurveyIdentifier = IDENTIFIER
+                Id = DisturbanceId,
+                DisturbanceTypeId = DisturbedTypeId,
+                DurationMinutes = DisturbedDuration,
+                Quantity = DisturbedQuantity,
+                Result = DisturbedBehavior,
+                SurveyIdentifier = Identifier
             });
-            domainResult.EndDate = END_DATE;
-            domainResult.GeneralComments = SURVEY_COMMENTS;
-            domainResult.Id = SURVEY_ID;
-            domainResult.LocationId = LOCATION_ID;
+            domainResult.EndDate = EndDate;
+            domainResult.GeneralComments = SurveyComments;
+            domainResult.Id = SurveyId;
+            domainResult.LocationId = LocationId;
             domainResult.Observations.Add(new Observation
             {
-                Id = OBSERVATION_ID,
+                Id = ObservationId,
                 Bin1 = NumberOfAdults,
-                BirdSpeciesId = SPECIES_ID,                
-                SurveyIdentifier = IDENTIFIER,
+                BirdSpeciesId = SpeciesId,                
+                SurveyIdentifier = Identifier,
                 ChicksPresent = ChicksPresent,
                 FledglingPresent = FledglingsPresent,
                 NestPresent = NestsPresent
             });
             domainResult.Observers = Observers;
-            domainResult.StartDate = START_DATE;
+            domainResult.StartDate = StartDate;
             domainResult.SubmittedBy = 14;
-            domainResult.SurveyIdentifier = IDENTIFIER;
+            domainResult.SurveyIdentifier = Identifier;
             domainResult.SurveyTypeId = 15;
-            domainResult.VantagePointId = VANTAGE_POINT;
-            domainResult.LocationName = LOCATION_NAME;
+            domainResult.VantagePointId = VantagePoint;
+            domainResult.LocationName = LocationName;
             domainResult.PrepTimeHours = PrepTime;
 
             return domainResult;
@@ -91,13 +91,13 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
         {
             var input = new RookeryCensusModel
             {
-                AccessPointId = ACCESS_POINT,
-                DisturbanceComments = DISTURBED,
-                LocationId = LOCATION_ID,
-                SiteTypeId = SITE_TYPE_ID,
-                SurveyComments = SURVEY_COMMENTS,
-                VantagePointId = VANTAGE_POINT,
-                SurveyId = SURVEY_ID,
+                AccessPointId = AccessPoint,
+                DisturbanceComments = Disturbed,
+                LocationId = LocationId,
+                SiteTypeId = SiteTypeId,
+                SurveyComments = SurveyComments,
+                VantagePointId = VantagePoint,
+                SurveyId = SurveyId,
                 StartDate = StartDateString,
                 StartTime = StartTimeString,
                 EndTime = EndTimeString,
@@ -107,17 +107,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
             };
             input.Disturbances.Add(new DisturbanceModel
             {
-                Behavior = DISTURBED_BEHAVIOR,
-                DisturbanceTypeId = DISTURBED_TYPE_ID,
-                DurationMinutes = DISTURBED_DURATION,
-                Quantity = DISTURBED_QUANTITY,
-                DisturbanceId = DISTURBANCE_ID
+                Behavior = DisturbedBehavior,
+                DisturbanceTypeId = DisturbedTypeId,
+                DurationMinutes = DisturbedDuration,
+                Quantity = DisturbedQuantity,
+                DisturbanceId = DisturbanceId
             });
             input.Observations.Add(new ObservationModel
             {
                 Adults = NumberOfAdults,
-                BirdSpeciesId = SPECIES_ID,
-                ObservationId = OBSERVATION_ID,
+                BirdSpeciesId = SpeciesId,
+                ObservationId = ObservationId,
                 NestsPresent = NestsPresent,
                 FledglingsPresent = FledglingsPresent,
                 ChicksPresent = ChicksPresent
@@ -128,35 +128,35 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Services.Controller.Rookery
         {
             var input = new SurveyPending
             {
-                AccessPointId = ACCESS_POINT,
-                DisturbanceComments = DISTURBED,
-                LocationId = LOCATION_ID,
-                AssessmentId = SITE_TYPE_ID,
-                GeneralComments = SURVEY_COMMENTS,
-                VantagePointId = VANTAGE_POINT,
-                Id = SURVEY_ID,
-                StartDate = START_DATE,
-                EndDate = END_DATE,
+                AccessPointId = AccessPoint,
+                DisturbanceComments = Disturbed,
+                LocationId = LocationId,
+                AssessmentId = SiteTypeId,
+                GeneralComments = SurveyComments,
+                VantagePointId = VantagePoint,
+                Id = SurveyId,
+                StartDate = StartDate,
+                EndDate = EndDate,
                 Observers = Observers,
                 SubmittedBy = SubmittedBy,
                 PrepTimeHours = PrepTime
             };
             input.Disturbances.Add(new Disturbance
             {
-                Result = DISTURBED_BEHAVIOR,
-                DisturbanceTypeId = DISTURBED_TYPE_ID,
-                DurationMinutes = DISTURBED_DURATION,
-                Quantity = DISTURBED_QUANTITY,
-                Id = DISTURBANCE_ID
+                Result = DisturbedBehavior,
+                DisturbanceTypeId = DisturbedTypeId,
+                DurationMinutes = DisturbedDuration,
+                Quantity = DisturbedQuantity,
+                Id = DisturbanceId
             });
             input.Observations.Add(new Observation
             {
                 Bin1 = NumberOfAdults,
-                BirdSpeciesId = SPECIES_ID,
+                BirdSpeciesId = SpeciesId,
                 NestPresent = NestsPresent,
                 ChicksPresent = ChicksPresent,
                 FledglingPresent = FledglingsPresent,
-                Id = OBSERVATION_ID
+                Id = ObservationId
             });
             return input;
         }

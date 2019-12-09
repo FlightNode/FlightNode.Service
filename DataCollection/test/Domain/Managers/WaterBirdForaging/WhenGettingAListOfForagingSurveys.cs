@@ -3,7 +3,6 @@ using FlightNode.DataCollection.Domain.Interfaces.Persistence;
 using Xunit;
 using FlightNode.DataCollection.Domain.Entities;
 using System;
-using FlightNode.DataCollection.Domain.UnitTests.Domain.Managers;
 using FlightNode.DataCollection.Domain.Managers;
 using System.Linq;
 
@@ -34,23 +33,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
 
         public class GivenThereIsAPendingForagingSurvey : Fixture
         {
-            const int locationId = 13;
-            const int userId = 99;
-            static Guid identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
-            const string siteCode = "3333";
-            const string siteName = "897987987";
-            static DateTime startDate = new DateTime(2000, 1, 2, 3, 4, 5);
-            const string firstName = "C3";
-            const string lastName = "PIO";
-            const string expectedName = "C3 PIO";
-            const int surveyTypeId = 2;
+            const int LocationId = 13;
+            const int UserId = 99;
+            static Guid _identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
+            const string SiteCode = "3333";
+            const string SiteName = "897987987";
+            static DateTime _startDate = new DateTime(2000, 1, 2, 3, 4, 5);
+            const string FirstName = "C3";
+            const string LastName = "PIO";
+            const string ExpectedName = "C3 PIO";
+            const int SurveyTypeId = 2;
 
             [Fact]
             public void ThenReturnOneRecord()
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
                 Assert.Equal(1, result.Count);
             }
@@ -60,7 +59,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
                 Assert.Equal("Pending", result.First().Status);
             }
@@ -70,9 +69,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(identifier, result.First().SurveyIdentifier);
+                Assert.Equal(_identifier, result.First().SurveyIdentifier);
             }
 
             [Fact]
@@ -80,9 +79,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(siteName, result.First().SiteName);
+                Assert.Equal(SiteName, result.First().SiteName);
             }
 
             [Fact]
@@ -90,9 +89,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(siteCode, result.First().SiteCode);
+                Assert.Equal(SiteCode, result.First().SiteCode);
             }
 
             [Fact]
@@ -100,9 +99,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(startDate, result.First().StartDate);
+                Assert.Equal(_startDate, result.First().StartDate);
             }
 
             [Fact]
@@ -110,32 +109,32 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(expectedName, result.First().SubmittedBy);
+                Assert.Equal(ExpectedName, result.First().SubmittedBy);
             }
 
             private void ArrangeTest()
             {
                 var survey = new SurveyPending
                 {
-                    LocationId = locationId,
-                    SubmittedBy = userId,
-                    SurveyIdentifier = identifier,
-                    StartDate = startDate,
-                    SurveyTypeId = surveyTypeId
+                    LocationId = LocationId,
+                    SubmittedBy = UserId,
+                    SurveyIdentifier = _identifier,
+                    StartDate = _startDate,
+                    SurveyTypeId = SurveyTypeId
                 };
                 var location = new Location
                 {
-                    Id = locationId,
-                    SiteCode = siteCode,
-                    SiteName = siteName
+                    Id = LocationId,
+                    SiteCode = SiteCode,
+                    SiteName = SiteName
                 };
                 var user = new User
                 {
-                    FamilyName = lastName,
-                    GivenName = firstName,
-                    Id = userId
+                    FamilyName = LastName,
+                    GivenName = FirstName,
+                    Id = UserId
                 };
 
                 SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
@@ -155,23 +154,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
 
         public class GivenThereIsACompletedForagingSurvey : Fixture
         {
-            const int locationId = 13;
-            const int userId = 99;
-            static Guid identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
-            const string siteCode = "3333";
-            const string siteName = "897987987";
-            static DateTime startDate = new DateTime(2000, 1, 2, 3, 4, 5);
-            const string firstName = "C3";
-            const string lastName = "PIO";
-            const string expectedName = "C3 PIO";
-            const int surveyTypeId = 2;
+            const int LocationId = 13;
+            const int UserId = 99;
+            static Guid _identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
+            const string SiteCode = "3333";
+            const string SiteName = "897987987";
+            static DateTime _startDate = new DateTime(2000, 1, 2, 3, 4, 5);
+            const string FirstName = "C3";
+            const string LastName = "PIO";
+            const string ExpectedName = "C3 PIO";
+            const int SurveyTypeId = 2;
 
             [Fact]
             public void ThenReturnOneRecord()
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
                 Assert.Equal(1, result.Count);
             }
@@ -181,7 +180,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
                 Assert.Equal("Complete", result.First().Status);
             }
@@ -191,9 +190,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(identifier, result.First().SurveyIdentifier);
+                Assert.Equal(_identifier, result.First().SurveyIdentifier);
             }
 
             [Fact]
@@ -201,9 +200,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(siteName, result.First().SiteName);
+                Assert.Equal(SiteName, result.First().SiteName);
             }
 
             [Fact]
@@ -211,9 +210,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(siteCode, result.First().SiteCode);
+                Assert.Equal(SiteCode, result.First().SiteCode);
             }
 
             [Fact]
@@ -221,9 +220,9 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(startDate, result.First().StartDate);
+                Assert.Equal(_startDate, result.First().StartDate);
             }
 
             [Fact]
@@ -231,32 +230,32 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
-                Assert.Equal(expectedName, result.First().SubmittedBy);
+                Assert.Equal(ExpectedName, result.First().SubmittedBy);
             }
 
             private void ArrangeTest()
             {
                 var survey = new SurveyCompleted
                 {
-                    LocationId = locationId,
-                    SubmittedBy = userId,
-                    SurveyIdentifier = identifier,
-                    StartDate = startDate,
-                    SurveyTypeId = surveyTypeId
+                    LocationId = LocationId,
+                    SubmittedBy = UserId,
+                    SurveyIdentifier = _identifier,
+                    StartDate = _startDate,
+                    SurveyTypeId = SurveyTypeId
                 };
                 var location = new Location
                 {
-                    Id = locationId,
-                    SiteCode = siteCode,
-                    SiteName = siteName
+                    Id = LocationId,
+                    SiteCode = SiteCode,
+                    SiteName = SiteName
                 };
                 var user = new User
                 {
-                    FamilyName = lastName,
-                    GivenName = firstName,
-                    Id = userId
+                    FamilyName = LastName,
+                    GivenName = FirstName,
+                    Id = UserId
                 };
 
                 SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
@@ -275,23 +274,22 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
 
         public class GivenThereAreBothPendingAndCompleteForagingSurveys : Fixture
         {
-            const int locationId = 13;
-            const int userId = 99;
-            static Guid identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
-            const string siteCode = "3333";
-            const string siteName = "897987987";
-            static DateTime startDate = new DateTime(2000, 1, 2, 3, 4, 5);
-            const string firstName = "C3";
-            const string lastName = "PIO";
-            const string expectedName = "C3 PIO";
-            const int surveyTypeId = 2;
+            private const int LocationId = 13;
+            private const int UserId = 99;
+            private static readonly Guid Identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
+            private const string SiteCode = "3333";
+            private const string SiteName = "897987987";
+            private static readonly DateTime StartDate = new DateTime(2000, 1, 2, 3, 4, 5);
+            private const string FirstName = "C3";
+            private const string LastName = "PIO";
+            private const int SurveyTypeId = 2;
 
             [Fact]
             public void ThenReturnBothRecords()
             {
                 ArrangeTest();
 
-                var result = Manager.GetSurveyListByTypeAndUser(surveyTypeId);
+                var result = Manager.GetSurveyListByTypeAndUser(SurveyTypeId);
 
                 Assert.Equal(2, result.Count);
             }
@@ -301,31 +299,31 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 var pending = new SurveyPending
                 {
-                    LocationId = locationId,
-                    SubmittedBy = userId,
-                    SurveyIdentifier = identifier,
-                    StartDate = startDate,
-                    SurveyTypeId = surveyTypeId
+                    LocationId = LocationId,
+                    SubmittedBy = UserId,
+                    SurveyIdentifier = Identifier,
+                    StartDate = StartDate,
+                    SurveyTypeId = SurveyTypeId
                 };
                 var complete = new SurveyCompleted
                 {
-                    LocationId = locationId,
-                    SubmittedBy = userId,
-                    SurveyIdentifier = identifier,
-                    StartDate = startDate,
-                    SurveyTypeId = surveyTypeId
+                    LocationId = LocationId,
+                    SubmittedBy = UserId,
+                    SurveyIdentifier = Identifier,
+                    StartDate = StartDate,
+                    SurveyTypeId = SurveyTypeId
                 };
                 var location = new Location
                 {
-                    Id = locationId,
-                    SiteCode = siteCode,
-                    SiteName = siteName
+                    Id = LocationId,
+                    SiteCode = SiteCode,
+                    SiteName = SiteName
                 };
                 var user = new User
                 {
-                    FamilyName = lastName,
-                    GivenName = firstName,
-                    Id = userId
+                    FamilyName = LastName,
+                    GivenName = FirstName,
+                    Id = UserId
                 };
 
                 SurveyPersistenceMock.SetupGet(x => x.SurveysCompleted)
@@ -344,16 +342,15 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
 
         public class GivenThereIsAPendingOtherSurvey : Fixture
         {
-            const int locationId = 13;
-            const int userId = 99;
-            static Guid identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
-            const string siteCode = "3333";
-            const string siteName = "897987987";
-            static DateTime startDate = new DateTime(2000, 1, 2, 3, 4, 5);
-            const string firstName = "C3";
-            const string lastName = "PIO";
-            const string expectedName = "C3 PIO";
-            const int surveyTypeId = 22;
+            const int LocationId = 13;
+            const int UserId = 99;
+            static Guid _identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
+            const string SiteCode = "3333";
+            const string SiteName = "897987987";
+            static DateTime _startDate = new DateTime(2000, 1, 2, 3, 4, 5);
+            const string FirstName = "C3";
+            const string LastName = "PIO";
+            const int SurveyTypeId = 22;
 
             [Fact]
             public void ThenReturnNoRecords()
@@ -369,23 +366,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 var survey = new SurveyPending
                 {
-                    LocationId = locationId,
-                    SubmittedBy = userId,
-                    SurveyIdentifier = identifier,
-                    StartDate = startDate,
-                    SurveyTypeId = surveyTypeId
+                    LocationId = LocationId,
+                    SubmittedBy = UserId,
+                    SurveyIdentifier = _identifier,
+                    StartDate = _startDate,
+                    SurveyTypeId = SurveyTypeId
                 };
                 var location = new Location
                 {
-                    Id = locationId,
-                    SiteCode = siteCode,
-                    SiteName = siteName
+                    Id = LocationId,
+                    SiteCode = SiteCode,
+                    SiteName = SiteName
                 };
                 var user = new User
                 {
-                    FamilyName = lastName,
-                    GivenName = firstName,
-                    Id = userId
+                    FamilyName = LastName,
+                    GivenName = FirstName,
+                    Id = UserId
                 };
 
                 SurveyPersistenceMock.SetupGet(x => x.SurveysPending)
@@ -404,16 +401,16 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
 
         public class GivenThereIsACompleteOtherSurvey : Fixture
         {
-            const int locationId = 13;
-            const int userId = 99;
-            static Guid identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
-            const string siteCode = "3333";
-            const string siteName = "897987987";
-            static DateTime startDate = new DateTime(2000, 1, 2, 3, 4, 5);
-            const string firstName = "C3";
-            const string lastName = "PIO";
-            const string expectedName = "C3 PIO";
-            const int surveyTypeId = 22;
+            const int LocationId = 13;
+            const int UserId = 99;
+            static Guid _identifier = new Guid("a507f681-c111-447a-bc1f-195916891226");
+            const string SiteCode = "3333";
+            const string SiteName = "897987987";
+            static DateTime _startDate = new DateTime(2000, 1, 2, 3, 4, 5);
+            const string FirstName = "C3";
+            const string LastName = "PIO";
+            const string ExpectedName = "C3 PIO";
+            const int SurveyTypeId = 22;
 
             [Fact]
             public void ThenReturnNoRecords()
@@ -429,23 +426,23 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers.WaterBirdFo
             {
                 var survey = new SurveyCompleted
                 {
-                    LocationId = locationId,
-                    SubmittedBy = userId,
-                    SurveyIdentifier = identifier,
-                    StartDate = startDate,
-                    SurveyTypeId = surveyTypeId
+                    LocationId = LocationId,
+                    SubmittedBy = UserId,
+                    SurveyIdentifier = _identifier,
+                    StartDate = _startDate,
+                    SurveyTypeId = SurveyTypeId
                 };
                 var location = new Location
                 {
-                    Id = locationId,
-                    SiteCode = siteCode,
-                    SiteName = siteName
+                    Id = LocationId,
+                    SiteCode = SiteCode,
+                    SiteName = SiteName
                 };
                 var user = new User
                 {
-                    FamilyName = lastName,
-                    GivenName = firstName,
-                    Id = userId
+                    FamilyName = LastName,
+                    GivenName = FirstName,
+                    Id = UserId
                 };
 
                 SurveyPersistenceMock.SetupGet(x => x.SurveysPending)

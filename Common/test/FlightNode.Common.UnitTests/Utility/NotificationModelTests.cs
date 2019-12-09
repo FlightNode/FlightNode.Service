@@ -1,4 +1,5 @@
 ﻿using FlightNode.Common.Utility;
+using FluentAssertions;
 using System;
 using Xunit;
 
@@ -48,7 +49,7 @@ namespace FlightNode.Common.UnitTests.Utility
                 var expected = "hi";
                 var system = new NotificationModel("a", "b", expected);
 
-                Assert.Equal(expected, system.Body);
+                system.Body.Should().Be(expected);
             }
 
             [Fact]
