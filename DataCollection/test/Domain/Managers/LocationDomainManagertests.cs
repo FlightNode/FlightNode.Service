@@ -21,7 +21,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public Fixture()
             {
-                MockRepository = new MockRepository(MockBehavior.Strict);
+                MockRepository = new MockRepository(MockBehavior.Loose);
                 LocationPersistenceMock = MockRepository.Create<ILocationPersistence>();
                 EfStateModifier = new FakeEfStateModifier();
             }
@@ -33,7 +33,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public void Dispose()
             {
-                MockRepository.VerifyAll();
             }
         }
 
@@ -108,6 +107,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     .Callback(() => item.Id = id)
                     .Returns(RecordCount);
 
+                LocationPersistenceMock.Setup(x => x.Add(item));
+
                 // Act
                 BuildSystem().Create(item);
 
@@ -117,7 +118,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
 
             [Fact]
-            public void ConfirmInputIsAddedToCollection()
+            public void ConfirmInputIsSavedToPersistenceLayer()
             {
 
                 // Arrange
@@ -128,11 +129,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     .Callback(() => item.Id = id)
                     .Returns(RecordCount);
 
+                LocationPersistenceMock.Setup(x => x.Add(item));
+
                 // Act
                 BuildSystem().Create(item);
 
                 // Assert
-                Assert.Same(item, FakeSet.List[0]);
+                LocationPersistenceMock.Verify(x => x.SaveChanges(), Times.Once);
+                LocationPersistenceMock.Verify(x => x.Add(item), Times.Once);
             }
 
 
@@ -144,6 +148,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     try
                     {
+                        LocationPersistenceMock.Setup(x => x.Add(item));
+
                         BuildSystem().Create(item);
                         throw new Exception("this should have failed");
                     }
@@ -158,6 +164,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     SetupLocationsCollection();
                     LocationPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
+                    LocationPersistenceMock.Setup(x => x.Add(item));
 
                     BuildSystem().Create(item);
                 }
@@ -378,15 +385,17 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 // Arrange
                 var item = BuildDefault();
                 SetupLocationsCollection();
-                
+
+                LocationPersistenceMock.Setup(x => x.Add(item));
+
                 LocationPersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(RecordCount);
 
                 // Act
-                BuildSystem().Update(item);
+                var recordCount = BuildSystem().Update(item);
 
                 // Assert
-                EfStateModifier.StateModifierWasCalled.Should().BeTrue();
+                Assert.Equal(RecordCount, recordCount);
             }
 
             public class Validation : Update
@@ -398,6 +407,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     
                     LocationPersistenceMock.Setup(x => x.SaveChanges())
                            .Returns(1);
+                    LocationPersistenceMock.Setup(x => x.Add(item));
 
                     BuildSystem().Update(item);
                 }
@@ -407,6 +417,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     try
                     {
+                        LocationPersistenceMock.Setup(x => x.Add(item));
                         BuildSystem().Update(item);
                         throw new Exception("this should have failed");
                     }

@@ -43,7 +43,7 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             input.Validate();
 
-            Persistence.Collection.Add(input);
+            Persistence.Add(input);
             Persistence.SaveChanges();
 
             // input will now have its primary key populated
@@ -76,9 +76,11 @@ namespace FlightNode.DataCollection.Domain.Managers
 
             // TODO: re-evaluate the architecture. Is DomainManagerBase for the domain or persistence layer?
             // If it is for the domain layer, it shouldn't know anything about EF internals!
-            Persistence.Collection.Attach(input);
+            //Persistence.Collection.Attach(input);
 
-            StateModifier.SetModifiedState(Persistence, input);
+            //StateModifier.SetModifiedState(Persistence, input);
+
+            Persistence.Update(input);
 
             return Persistence.SaveChanges();
         }

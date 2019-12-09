@@ -24,7 +24,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public Fixture()
             {
-                MockRepository = new MockRepository(MockBehavior.Strict);
+                MockRepository = new MockRepository(MockBehavior.Loose);
                 WorkTypePersistenceMock = MockRepository.Create<IWorkTypePersistence>();
                 EfStateModifier = new FakeEfStateModifier();
             }
@@ -36,7 +36,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public void Dispose()
             {
-                MockRepository.VerifyAll();
             }
         }
 
@@ -101,6 +100,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkTypePersistenceMock.Setup(x => x.SaveChanges())
                     .Callback(() => _item.Id = id)
                     .Returns(RecordCount);
+                WorkTypePersistenceMock.Setup(x => x.Add(_item));
 
                 // Act
                 BuildSystem().Create(_item);
@@ -111,7 +111,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
 
             [Fact]
-            public void ConfirmInputIsAddedToCollection()
+            public void ConfirmInputIsSavedToPersistenceLayer()
             {
 
                 // Arrange
@@ -120,12 +120,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkTypePersistenceMock.Setup(x => x.SaveChanges())
                     .Callback(() => _item.Id = id)
                     .Returns(RecordCount);
+                WorkTypePersistenceMock.Setup(x => x.Add(_item));
 
                 // Act
                 BuildSystem().Create(_item);
 
                 // Assert
-                Assert.Same(_item, FakeSet.List[0]);
+                WorkTypePersistenceMock.Verify(x => x.SaveChanges(), Times.Once);
+                WorkTypePersistenceMock.Verify(x => x.Add(_item), Times.Once);
             }
 
 
@@ -236,6 +238,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
                 // Arrange
                 SetupWorkTypesCollection();
+
+                WorkTypePersistenceMock.Setup(x => x.Update(_item));
                 WorkTypePersistenceMock.Setup(x => x.SaveChanges())
                     .Returns(RecordCount);
 
@@ -243,7 +247,8 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 BuildSystem().Update(_item);
 
                 // Assert
-                EfStateModifier.StateModifierWasCalled.Should().BeTrue();
+                WorkTypePersistenceMock.Verify(x => x.Update(_item), Times.Once);
+                WorkTypePersistenceMock.Verify(x => x.SaveChanges(), Times.Once);
             }
 
             public class Validation : Update

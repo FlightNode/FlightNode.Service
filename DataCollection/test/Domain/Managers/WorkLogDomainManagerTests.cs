@@ -22,7 +22,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public Fixture()
             {
-                MockRepository = new MockRepository(MockBehavior.Strict);
+                MockRepository = new MockRepository(MockBehavior.Loose);
                 WorkLogPersistenceMock = MockRepository.Create<IWorkLogPersistence>();
             }
 
@@ -33,7 +33,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             public void Dispose()
             {
-                MockRepository.VerifyAll();
             }
         }
 
@@ -80,11 +79,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
             protected void ExpectToUpdateEntity()
             {
-                var entityMock = MockRepository.Create<IDbEntityEntryDecorator>();
-                entityMock.SetupSet(x => x.State = EntityState.Modified);
-
-                WorkLogPersistenceMock.Setup(x => x.Entry(It.IsAny<object>()))
-                    .Returns(entityMock.Object);
+                WorkLogPersistenceMock.Setup(x => x.Update(It.IsAny<object>()));
             }
         }
 
@@ -113,6 +108,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                     .Callback(() => _item.LocationId = id)
                     .Returns(RecordCount);
+                WorkLogPersistenceMock.Setup(x => x.Add(_item));
 
                 // Act
                 var result = BuildSystem().Create(_item);
@@ -123,7 +119,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
 
 
             [Fact]
-            public void ConfirmInputIsAddedToCollection()
+            public void ConfirmInputIsSavedToPersistenceLayer()
             {
 
                 // Arrange
@@ -132,12 +128,14 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                     .Callback(() => _item.LocationId = id)
                     .Returns(RecordCount);
+                WorkLogPersistenceMock.Setup(x => x.Add(_item));
 
                 // Act
                 var result = BuildSystem().Create(_item);
 
                 // Assert
-                Assert.Same(_item, FakeSet.List[0]);
+                WorkLogPersistenceMock.Verify(x =>x.SaveChanges(), Times.Once);
+                WorkLogPersistenceMock.Verify(x => x.Add(_item), Times.Once);
             }
 
 
@@ -170,6 +168,7 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 private void RunPositiveTest()
                 {
                     SetupFakeDbSets();
+                    WorkLogPersistenceMock.Setup(x => x.Add(_item));
                     WorkLogPersistenceMock.Setup(x => x.SaveChanges())
                         .Returns(1);
 

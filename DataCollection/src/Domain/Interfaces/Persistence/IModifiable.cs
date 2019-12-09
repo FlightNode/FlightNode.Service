@@ -6,5 +6,11 @@ namespace FlightNode.DataCollection.Domain.Interfaces.Persistence
     {
         int SaveChanges();
         IDbEntityEntryDecorator Entry(object entity);
+        
+        void Add<TEntity>(TEntity entity)
+            where TEntity : class;
+
+        void Update<TEntity>(TEntity entity)
+            where TEntity : class;
     }
 }
