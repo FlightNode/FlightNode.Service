@@ -103,10 +103,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
             public void GivenRecordDoesNotExistsThenReturnFalse()
             {
                 // Arrange
-                
+
                 SurveyPersistenceMock.Setup(x => x.SurveysPending)
                     .Returns(FakeSurveysPending);
-                
+
 
                 // Act
                 var result = BuildSystem().Delete(Identifier);
@@ -257,13 +257,10 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                     Id = id
                 };
 
-                var observation = new Observation { Id = 1 };   // causes an update 
+                var observation = new Observation { Id = 1 };   // causes an update
                 input.Observations.Add(observation);
-                var disturb = new Disturbance { Id = 2 };   // causes an update 
+                var disturb = new Disturbance { Id = 2 };   // causes an update
                 input.Disturbances.Add(disturb);
-
-                // .. three objects are being saved
-                const int expectedCount = 3;
 
                 // Mocks
                 SetupCrudSets();
@@ -307,7 +304,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     //
                     // Arrange
-                    const int expectedCount = 3; // Observation, Disturbance, and Survey
                     const int id = 3233;
 
                     var input = new SurveyPending { Id = id };
@@ -420,7 +416,6 @@ namespace FlightNode.DataCollection.Domain.UnitTests.Domain.Managers
                 {
                     //
                     // Arrange
-                    const int expectedCount = 3; // Observation, Disturbance, and Survey
                     const int id = 3233;
 
                     var input = new SurveyCompleted { Id = id };
