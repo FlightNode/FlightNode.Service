@@ -1,5 +1,6 @@
 # FlightNode.DataCollection
-API for bird monitoring and volunteer data collection. See http://flightnode.gifthub.io for more information.
+
+API for bird monitoring and volunteer data collection. See https://flightnode.github.io for more information.
 
 Until the dependencies are more stable, the solution for FlightNode.DataCollection will have direct references to projects in other repositories. Create a common base directory (e.g. `c:\workspaces\FlightNode`) and clone all FlightNode projects into that same parent.
 
