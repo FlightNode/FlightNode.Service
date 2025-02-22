@@ -42,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightNode.Common", "src\Fl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightNode.Common.UnitTests", "test\FlightNode.Common.UnitTests\FlightNode.Common.UnitTests.csproj", "{986E3868-2878-4CF8-AFA1-1CED803EA044}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FligthNote.Common.Api.UnitTests", "test\FligthNote.Common.Api.UnitTests\FligthNote.Common.Api.UnitTests.csproj", "{3715E7D9-92E0-4C85-889F-85D81E357BD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightNode.Common.Api.UnitTests", "test\FlightNode.Common.Api.UnitTests\FlightNode.Common.Api.UnitTests.csproj", "{3715E7D9-92E0-4C85-889F-85D81E357BD8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataCollection", "DataCollection", "{94C10F5D-AEBE-4B6B-8CE7-835D118FE212}"
 EndProject

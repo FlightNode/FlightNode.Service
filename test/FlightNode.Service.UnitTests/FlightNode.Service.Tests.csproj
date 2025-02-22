@@ -79,6 +79,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="Microsoft.Build.RunVSTest" Version="1.0.319">
+      <Private>True</Private>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </Reference>
   </ItemGroup>
   <!-- <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -104,7 +108,7 @@
       <Project>{05902c28-0900-4902-9300-0540eedac9c1}</Project>
       <Name>FlightNode.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\FlightNode.DataCollection.csproj">
+    <ProjectReference Include="..\..\src\FlightNode.DataCollection\FlightNode.DataCollection.csproj">
       <Project>{060bf052-8fa5-4beb-95ae-a4da69bc7c54}</Project>
       <Name>FlightNode.DataCollection</Name>
     </ProjectReference>
